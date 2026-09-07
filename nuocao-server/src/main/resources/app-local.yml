@@ -1,0 +1,60 @@
+#########################################
+# redis configuration
+#使用redisx的配置格式，在注入redission时自定义达到兼容目的
+#########################################
+nuocao.redis:
+  db: 0
+  server: "127.0.0.1:6379"
+  password: ""
+  user: ""
+  timeout: "10s"
+  maxTotal: 200 #最大连接数
+  maxIdle: 200	#最大空闲数
+  minIdle: 5	#最小空闲数，目前仅redission支持，redisx不支持
+  maxWaitMillis: 3000 #最大建立连接等待时间 毫秒
+  #maxAttempts: 5 #最大重试，集群模式有效
+  connectionTimeout: 3000	#连接超时 毫秒
+
+knife4j.basic.enable: false
+#########################################
+# datasource configuration
+#########################################
+nuocao.datasource:
+  dynamic:
+    type: "com.zaxxer.hikari.HikariDataSource"
+    strict: true
+    # mysql
+    master:
+      driverClassName: "com.mysql.cj.jdbc.Driver"
+      jdbcUrl: "jdbc:mysql://localhost:3306/nuocao?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&useInformationSchema=true"
+      username: "root"
+      password: "7758521"
+
+#########################################
+# 开发模式，打印sql日志
+#########################################
+mybatis-flex:
+  globalConfig: #全局配置（要与 FlexGlobalConfig 类的属性一一对应）//只是示例，别照抄
+    logEnabled: true #是否打印sql
+
+#########################################
+# sa-token redis configuration
+#########################################
+sa-token:
+  redis:
+    server: ${nuocao.redis.server}
+    password: ${nuocao.redis.password}
+    db: ${nuocao.redis.db}
+    timeout: ${nuocao.redis.timeout}
+    #maxTotal: 200
+#
+#nuocao.redisson:
+#  tablefiled: |
+#    singleServerConfig:
+#      database: 0
+#      address: "redis://127.0.0.1:6379"
+#      password:
+
+# 缓存配置
+nuocao.cache:
+  md5Key: false

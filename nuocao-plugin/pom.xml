@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nuocao</groupId>
+        <artifactId>nuocao</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>nuocao-plugin</artifactId>
+    <packaging>pom</packaging>
+    <description>功能插件模块</description>
+
+    <modules>
+        <!-- 系统管理功能 -->
+        <module>nuocao-plugin-sys</module>
+        <!-- 账户登录插件 -->
+        <module>nuocao-plugin-auth</module>
+        <!-- 代码生成插件 -->
+        <module>nuocao-plugin-gen</module>
+        <!-- 开发工具插件 -->
+        <module>nuocao-plugin-dev</module>
+    </modules>
+
+</project>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nuocao</groupId>
+        <artifactId>nuocao</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>nuocao-data-access</artifactId>
+    <packaging>jar</packaging>
+    <description>数据访问权限模块，含系统基础过滤器</description>
+
+    <dependencies>
+        <!-- 每个插件都要引入自己的对外接口 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-sys-api</artifactId>
+        </dependency>
+
+        <!-- 引入登录鉴权接口，用于实现其登录所需逻辑 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-auth-api</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

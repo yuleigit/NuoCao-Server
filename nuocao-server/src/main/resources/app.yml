@@ -1,0 +1,167 @@
+#########################################
+# server configuration
+#########################################
+server.port: 8098
+#########################################
+# code encode
+#########################################
+file:
+  encoding=UTF-8:
+
+#########################################
+# solon profiles configuration
+#########################################
+solon.env: local
+#solon.env: test
+#solon.env: prod
+
+#########################################
+# request configuration
+#########################################
+server.request.maxHeaderSize: 10kb
+server.request.maxBodySize: 100MB
+server.request.maxFileSize: 100MB
+
+#服务 http 最小线程数（默认：0表示自动，支持固定值 2 或 内核倍数 x2）
+server.http.coreThreads: 0
+#服务 http 最大线程数（默认：0表示自动，支持固定值 32 或 内核倍数 x32）
+server.http.maxThreads: 0
+
+#########################################
+# logging configuration
+#########################################
+solon.logging.appender:
+  console:
+    level: "TRACE"
+
+solon.logging.logger:
+  "root": #默认记录器配置
+    level: "INFO"
+  "com.zaxxer.hikari":
+    level: "WARN"
+  "net.dreamlu.iot.mqtt":
+    level: "WARN"
+
+#########################################
+# serialization configuration
+#########################################
+
+solon.serialization.json:
+  dateAsTimeZone: 'GMT+8'
+  dateAsFormat: 'yyyy-MM-dd HH:mm:ss' #配置日期格式（默认输出为时间戳，对 Date、LocalDateTime 有效）
+  #dateAsTicks: false #将date转为毫秒数（和 dateAsFormat 二选一）
+  longAsString: true #将long型转为字符串输出 （默认为false）
+  #boolAsInt: false   #将bool型转为字符串输出 （默认为false）
+  #nullStringAsEmpty: false
+  #nullBoolAsFalse: false
+  #nullNumberAsZero: false
+  #nullArrayAsEmpty: false
+  #nullAsWriteable: false
+  #enumAsName: false #枚举使用名字（v2.2.1 后支持）
+
+#########################################
+# mybatis-flex configuration
+#########################################
+mybatis-flex:
+  typeAliasesPackage: #支持包名 或 类名（大写开头 或 *）//支持 ** 或 * 占位符
+    - "com.nuocao.**.modular.**.entity"
+  mapperLocations:
+    - "classpath:com/nuocao/**/mapping/*.xml"
+  typeHandlersPackage:
+    - "com.nuocao.auth.handler"
+  configuration: #扩展配置（要与 FlexConfiguration 类的属性一一对应）
+    cacheEnabled: false
+    mapperVerifyEnabled: false #如果为 true，则要求所有 mapper 有 @Mapper 主解
+    mapUnderscoreToCamelCase: true
+    default-scripting-language-driver: raw
+  globalConfig: #全局配置（要与 FlexGlobalConfig 类的属性一一对应）//只是示例，别照抄
+    printBanner: false
+    configuration:
+      cacheEnabled: false #mybatis 二级缓存
+    logEnabled: false #是否打印sql
+    keyConfig:
+      keyType: "Generator"
+      value: "snowFlakeId"
+
+#########################################
+# knife4j configuration
+#########################################
+knife4j.enable: true
+knife4j.production: false
+knife4j.basic.enable: true
+knife4j.basic.username: admin
+knife4j.basic.password: x1231XDc
+knife4j.setting.enableOpenApi: false
+knife4j.setting.enableSwaggerModels: false
+knife4j.setting.enableFooter: false
+knife4j.setting.enableFooterCustom: true
+knife4j.setting.footerCustomContent: Apache License 2.0 | Copyright 2025-[NUOCAO](https://www.nuocao.com)
+
+#########################################
+# sa-token configuration
+#########################################
+sa-token.token-name: token
+sa-token.timeout: 2592000
+sa-token.active-timeout: -1
+sa-token.is-concurrent: true
+sa-token.is-share: true
+sa-token.max-login-count: -1
+sa-token.token-style: random-32
+sa-token.is-log: false
+sa-token.is-print: false
+
+#########################################
+# easy poi configuration
+#########################################
+easy.poi.base.isDev: false
+
+#########################################
+# nuocao框架参数配置
+#########################################
+
+# dev configuration
+nuocao.config:
+  version: '1.0.0'
+  name: "NuoCao"
+  front-url: http://localhost:81
+  backend-url: http://localhost:82
+
+# 缓存配置
+nuocao.cache:
+    md5Key: true
+    keyHeader: "cache"
+    defSeconds: 3600
+# 加密配置，用于sm2和sm4，需与前端/nuocao/utils/smCrypto.js中保持一致
+# 正式环境请通过app-pro.yml等配置文件覆盖后发布，请前端保持一致的sm2PublicKey
+nuocao.crypt:
+  # [SM2 非对称加密配置] 用于登录密码加密、数字签名
+  # 公钥：可以暴露给前端，用于加密明文
+  sm2PublicKey: "0401d4a6ef9c904b04b0722330d479bc5905143a85de0048167c398b6571f2b1281a59633cd10937781413b4cd35a64235896ce5d6f0231b06d11d7bf868c1c93d"
+  # 私钥：严禁外泄，用于解密前端传来的密文
+  sm2PrivateKey: "2db154ddd77fef84b6c9412dac1f3a03b934c3af1c65ae9b5ca4d97786b0b2e7"
+  # [SM4 对称加密配置] 用于大数据量加密、数据库字段脱敏
+  # 密钥 (Key): 必须为 32 位十六进制字符串 (128-bit)
+  sm4Key: "a72c0453dc3c7b525938b334668e995c"
+  # 初始化向量 (IV): CBC 模式必须配置，长度同为 32 位十六进制，前后端必须一致
+  sm4Iv: "a5008cd4ad6e50c02b38a36f7d661b77"
+
+tenant:
+  enable: true
+  table-ignore:
+    - dev_dict
+    - dev_config
+    - sys_tenant
+    - sys_tenant_plan
+  path-ignore:
+    #- /auth/b/**
+    #根目录为欢迎页面，无需验证租户
+    - /
+    - /auth/account/**
+    - /dev/code/**
+    - /fileclient/userCenter/**
+    - /dictData/dict/i18n:language
+    - /auth/captcha
+    - /iot/callback/**
+    - /dev/config/sysBaseList
+    - /sys/tenantapply/**
+    - /iot/restful/**

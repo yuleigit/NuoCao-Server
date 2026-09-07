@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nuocao</groupId>
+        <artifactId>nuocao-plugin</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+
+    <artifactId>nuocao-plugin-auth</artifactId>
+    <packaging>jar</packaging>
+    <description>账户登录授权插件，主要用与通过sys-api等完成用户登陆验证</description>
+
+    <dependencies>
+        <!-- 每个插件都要引入自己的对外接口 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-auth-api</artifactId>
+        </dependency>
+        <!-- 开发工具 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-dev-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-data-access</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nuocao</groupId>
+        <artifactId>nuocao-plugin</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>nuocao-plugin-sys</artifactId>
+    <packaging>jar</packaging>
+    <description>系统管理功能插件，主要是鉴权管理、菜单资源设置等</description>
+
+    <dependencies>
+        <!-- 每个插件都要引入自己的对外接口 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-sys-api</artifactId>
+        </dependency>
+
+        <!-- 账号鉴权模块 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-auth-api</artifactId>
+        </dependency>
+
+        <!-- 数据权限模块 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-data-access</artifactId>
+        </dependency>
+    </dependencies>
+</project>

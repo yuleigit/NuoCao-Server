@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nuocao</groupId>
+        <artifactId>nuocao</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <groupId>org.example</groupId>
+    <artifactId>nuocao-server</artifactId>
+    <packaging>jar</packaging>
+    <description>项目启动模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon</artifactId>
+        </dependency>
+
+        <!-- solon-web -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-web</artifactId>
+        </dependency>
+
+
+        <!-- sa-token-solon-plugin -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>sa-token-solon-plugin</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>cn.dev33</groupId>-->
+<!--            <artifactId>sa-token-redisx</artifactId>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>cn.dev33</groupId>-->
+<!--            <artifactId>sa-token-snack3</artifactId>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redisson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+        </dependency>
+
+        <!-- solon-logging-logback -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-logging-logback</artifactId>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- dynamic-datasource -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-data-dynamicds</artifactId>
+        </dependency>
+
+        <!-- cache -->
+<!--        <dependency>-->
+<!--            <groupId>org.noear</groupId>-->
+<!--            <artifactId>solon-cache-jedis</artifactId>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <artifactId>solon-cache-jedis</artifactId>-->
+<!--                    <groupId>org.noear</groupId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+
+        <!-- hikari -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+
+        <!-- mysql -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
+        <!-- redis -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>redisx</artifactId>
+        </dependency>
+
+        <!-- redisson -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>redisson-solon-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-cache-redisson</artifactId>
+        </dependency>
+        <!-- mybatis-flex -->
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-solon-plugin</artifactId>
+        </dependency>
+
+        <!-- 基础配模块 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-data-access</artifactId>
+        </dependency>
+
+
+        <!-- 登录鉴权插件 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-auth</artifactId>
+        </dependency>
+
+        <!-- 开发工具插件 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-dev</artifactId>
+        </dependency>
+
+        <!-- 代码生成插件 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-gen</artifactId>
+        </dependency>
+
+
+        <!-- 系统功能插件 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-sys</artifactId>
+        </dependency>
+
+        <!-- jackson序列化工具 -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-serialization-jackson</artifactId>
+        </dependency>
+
+        <!--solon aot start（用于 aot 时注册 native 元信息）-->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-aot</artifactId>
+        </dependency>
+        <!--solon aot end-->
+
+
+    </dependencies>
+
+
+</project>

@@ -1,0 +1,164 @@
+INFO  2026-02-04 10:38:36.744 [-main][*][o.noear.solon.Solon]: 
+App: Start loading
+INFO  2026-02-04 10:38:36.758 [-main][*][o.n.solon.SolonApp]: 
+Using profiles env: local
+INFO  2026-02-04 10:38:39.120 [-main][*][o.redisson.Version]: 
+Redisson 3.45.0
+INFO  2026-02-04 10:38:40.073 [-redisson-netty-1-5][*][o.r.c.ConnectionsHolder]: 
+1 connections initialized for 127.0.0.1/127.0.0.1:6379
+INFO  2026-02-04 10:38:40.119 [-redisson-netty-1-13][*][o.r.c.ConnectionsHolder]: 
+5 connections initialized for 127.0.0.1/127.0.0.1:6379
+INFO  2026-02-04 10:38:43.568 [-main][*][o.n.s.s.s.i.SmHttpPlugin]: 
+solon.connector:main: smarthttp: Started ServerConnector@{HTTP/1.1,[http/1.1]}{http://localhost:92}
+INFO  2026-02-04 10:38:43.569 [-main][*][o.n.s.s.s.i.SmHttpPlugin]: 
+Server:main: smarthttp: Started (smart http 2.5/3.9.0) @88ms
+INFO  2026-02-04 10:38:43.570 [-main][*][o.noear.solon.Solon]: 
+App: End loading elapsed=7419ms pid=19272 v=3.9.0
+INFO  2026-02-04 10:38:43.570 [-main][*][c.nuocao.Application]: 
+>>> APPLICATION STARTING SUCCESS
+INFO  2026-02-04 10:38:55.372 [-smarthttp-3][*][c.n.d.a.t.f.TenantFilter]: 
+[TenantFilter] -> 此次请求未携带租户id ip:0:0:0:0:0:0:0:1,method:GET,uri:http://localhost:92/favicon.ico
+INFO  2026-02-04 10:38:55.477 [-smarthttp-4][*][c.n.d.a.t.f.TenantFilter]: 
+[TenantFilter] -> 此次请求未携带租户id ip:0:0:0:0:0:0:0:1,method:GET,uri:http://localhost:92/favicon.ico
+WARN  2026-02-04 10:39:27.904 [-smarthttp-8][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:39:28.027 [-smarthttp-10][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:39:28.182 [-smarthttp-11][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:54:00.419 [-smarthttp-12][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:54:00.456 [-smarthttp-13][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:55:24.351 [-smarthttp-14][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:55:24.386 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:56:06.347 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 10:56:06.381 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:00:03.346 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:00:03.380 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:00:13.321 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:00:13.355 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:01:31.353 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:01:31.388 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:02:35.643 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:02:35.679 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:02:37.859 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:04:35.494 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:04:35.526 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:04:39.860 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:04:48.378 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:04:48.419 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:04:51.500 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:06:32.362 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:06:32.403 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:06:48.475 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:06:48.532 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:06:54.735 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:06:54.780 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:07:21.407 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:07:21.479 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:07:29.356 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:07:29.399 [-smarthttp-16][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:17:39.364 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:17:39.414 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:17.227 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:17.262 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:44.714 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:47.371 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:47.868 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:48.678 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:49.470 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:18:50.259 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:19:06.326 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:19:07.357 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:19:55.592 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:19:58.094 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:19:59.156 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:19:59.726 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:25:30.731 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:25:30.810 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:26:25.301 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:26:25.323 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:26:25.352 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:26:36.426 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:26:36.447 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:26:36.486 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:30:36.716 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:30:36.740 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:30:36.766 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:30:38.849 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:30:40.081 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:30:41.778 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:30:42.415 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:31:05.107 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:31:06.498 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:43:35.792 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+WARN  2026-02-04 11:43:35.844 [-smarthttp-15][*][c.n.c.u.CommonCryptogramUtils]: 
+>>> 字段解密失败，返回原文值：15831699533
+INFO  2026-02-04 11:47:27.115 [-Thread-1][*][o.n.s.s.s.i.SmHttpPlugin]: 
+Server:main: smarthttp: Has Stopped (smart http 2.5/3.9.0)
+INFO  2026-02-04 11:47:27.124 [-Thread-1][*][o.noear.solon.Solon]: 
+App: Stopped

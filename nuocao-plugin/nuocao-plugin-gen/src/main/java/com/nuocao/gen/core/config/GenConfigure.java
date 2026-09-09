@@ -25,7 +25,7 @@ public class GenConfigure {
                         .description("代码生成GEN")
                         .version("1.0.0"))
                 .groupName("代码生成GEN")
-                .apis("com.nuocao.sys")
+                .apis("com.nuocao.gen")
                 .basicAuth(openApiExtensionResolver.getSetting().getBasic())
                 .vendorExtensions(openApiExtensionResolver.buildExtensions());
     }

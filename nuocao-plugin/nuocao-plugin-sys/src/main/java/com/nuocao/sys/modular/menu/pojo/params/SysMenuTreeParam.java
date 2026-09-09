@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * 菜单树查询参数
  **/
@@ -15,5 +17,7 @@ public class SysMenuTreeParam {
     @ApiModelProperty(value = "顶级菜单ID")
     private Long topId;
 
+    @ApiModelProperty(value = "菜单Id集合",hidden = true)
+    private List<Long> menuIds;
 
 }

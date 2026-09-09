@@ -15,7 +15,6 @@ import com.nuocao.sys.api.enums.DataScopeObjectTypeEnum;
 import com.nuocao.sys.api.utils.SysTenantApiUtils;
 import com.nuocao.sys.core.event.RolePermissionUpdateEvent;
 import com.nuocao.sys.core.event.UserPermissionUpdateEvent;
-import com.nuocao.sys.modular.datascope.entity.SysDataScope;
 import com.nuocao.sys.modular.menu.service.SysMenuService;
 import com.nuocao.sys.modular.permission.convert.SysUserPermissionConvert;
 import com.nuocao.sys.modular.permission.entity.SysUserPermission;
@@ -96,8 +95,8 @@ public class SysUserPermissionServiceImpl implements SysUserPermissionService {
     @Override
     public SysUserPermission get(String objectType, Long objectId) {
         QueryWrapper query = new QueryWrapper();
-        query.eq(SysDataScope::getObjectType,objectType)
-                .eq(SysDataScope::getObjectId,objectId);
+        query.eq(SysUserPermission::getObjectType,objectType)
+                .eq(SysUserPermission::getObjectId,objectId);
         return sysUserPermissionMapper.selectOneByQuery(query);
     }
 

@@ -156,6 +156,25 @@ public class CollectionUtils {
     }
 
     /**
+     * 将传入的同类型多个参数转为 List
+     *
+     * @param args 同类型的任意数量参数（或同类型数组）
+     * @param <T>  元素类型
+     * @return 包含所有参数的 List
+     */
+    @SafeVarargs
+    public static <T> List<T> toList(T... args) {
+        if (args == null) {
+            return List.of(); // 或返回 Collections.emptyList()
+        }
+        // 如果需要可变（可添加/删除元素）的 List：
+        // return new ArrayList<>(Arrays.asList(args));
+
+        // 如果只需要不可变/只读 List：
+        return Arrays.asList(args);
+    }
+
+    /**
      * 合并 Map 中的所有 List 值为一个单一的 List
      * @usage
      * List<Value> allValues = CollectionUtils.mergeValuesFromMap(groupMap);

@@ -176,6 +176,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         data.setCategory(DataScopeCategoryEnum.ORG.getType());
         data.setObjectType(DataScopeObjectTypeEnum.ROLE.getType());
         data.setIds(param.getIds());
+        data.setScopeType(param.getScopeType());
         sysDataScopeApi.updateDataScope(data);
     }
 

@@ -1,10 +1,18 @@
 package com.nuocao.sys.modular.menu.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.common.annotation.CommonLog;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
+import com.nuocao.common.utils.ConvertUtils;
+import com.nuocao.common.utils.collection.CollectionUtils;
+import com.nuocao.sys.api.SysMenuApi;
+import com.nuocao.sys.api.SysRoleApi;
+import com.nuocao.sys.api.SysUserPermissionApi;
 import com.nuocao.sys.api.dto.menu.SysMenuTreeResultDTO;
+import com.nuocao.sys.api.utils.SysMenuApiUtils;
+import com.nuocao.sys.api.utils.SysTenantApiUtils;
 import com.nuocao.sys.modular.menu.convert.SysMenuConvert;
 import com.nuocao.sys.modular.menu.pojo.params.SysMenuAddParam;
 import com.nuocao.sys.modular.menu.pojo.params.SysMenuEditParam;
@@ -13,6 +21,7 @@ import com.nuocao.sys.modular.menu.pojo.params.SysMenuTreeParam;
 import com.nuocao.sys.modular.menu.pojo.result.SysMenuDetailResult;
 import com.nuocao.sys.modular.menu.pojo.result.SysMenuSelectorResult;
 import com.nuocao.sys.modular.menu.service.SysMenuService;
+import com.nuocao.sys.modular.permission.service.SysUserPermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.noear.solon.annotation.*;
@@ -22,6 +31,7 @@ import org.noear.solon.validation.annotation.Validated;
 
 import org.noear.solon.validation.annotation.NotEmpty;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +47,8 @@ public class SysMenuController {
     @Inject
     private SysMenuService sysMenuService;
 
-
+    @Inject
+    private SysUserPermissionService permissionService;
     /**
      * 获取菜单树
      */
@@ -125,10 +136,17 @@ public class SysMenuController {
     /**
      * 获取模块选择器
      */
-    @ApiOperation("获取带button列表的菜单tree，授权使用")
+    @ApiOperation("获取带button列表的菜单tree，授权使用,仅返回我有权使用的菜单")
     @Get
     @Mapping("/sys/menu/treeButton")
     public CommonResult<List<SysMenuTreeResultDTO>> treeButton(SysMenuTreeParam sysMenuTreeParam) {
+        if(!SysTenantApiUtils.isTenantAdmin(StpLoginUserUtils.getLoginUser().getTenantId(), StpLoginUserUtils.getLoginUserId())){
+            List<Long> ids =permissionService.getUserHaveMenuIdList(StpLoginUserUtils.getLoginUserId());
+            if(CollectionUtils.isEmpty(ids)){
+                ids= CollectionUtils.toList(0L);
+            }
+            sysMenuTreeParam.setMenuIds(ids);
+        }
         return CommonResult.data(sysMenuService.tree(sysMenuTreeParam));
     }
 

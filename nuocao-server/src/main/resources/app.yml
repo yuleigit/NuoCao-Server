@@ -91,8 +91,8 @@ knife4j.production: false
 knife4j.basic.enable: true
 knife4j.basic.username: admin
 knife4j.basic.password: x1231XDc
-knife4j.setting.enableOpenApi: false
-knife4j.setting.enableSwaggerModels: false
+knife4j.setting.enableOpenApi: true
+knife4j.setting.enableSwaggerModels: true
 knife4j.setting.enableFooter: false
 knife4j.setting.enableFooterCustom: true
 knife4j.setting.footerCustomContent: Apache License 2.0 | Copyright 2025-[NUOCAO](https://www.nuocao.com)
@@ -157,6 +157,7 @@ tenant:
     #根目录为欢迎页面，无需验证租户
     - /
     - /auth/account/**
+
     - /dev/code/**
     - /fileclient/userCenter/**
     - /dictData/dict/i18n:language
@@ -165,3 +166,7 @@ tenant:
     - /dev/config/sysBaseList
     - /sys/tenantapply/**
     - /iot/restful/**
+    - /doc.html
+    - /webjars/**
+    - /swagger-resources/**
+    - /swagger/**

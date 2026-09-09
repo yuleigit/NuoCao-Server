@@ -42,7 +42,12 @@ public class SaTokenConfigure {
             "/",
             /* 静态资源 */
             "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/webjars/**",
             "/v2/api-docs",
+            "/v2/api-docs/**",
+            "/doc.html",
             "/v2/api-docs-ext",
             "/configuration/ui",
             "/configuration/security",

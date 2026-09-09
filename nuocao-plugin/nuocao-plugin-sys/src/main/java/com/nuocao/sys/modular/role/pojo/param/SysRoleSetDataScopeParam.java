@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noear.solon.validation.annotation.Length;
 import org.noear.solon.validation.annotation.NotBlank;
+import org.noear.solon.validation.annotation.NotNull;
 
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class SysRoleSetDataScopeParam {
 
     /** 角色id */
     @ApiModelProperty(value = "角色id", required = true, position = 1)
-    @NotBlank
+    @NotNull
     private Long id;
 
     /** 权限范围ALL,ONLY,CHILD,CUSTOM,SELF */

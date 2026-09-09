@@ -19,7 +19,7 @@ public class SysRoleSetPermissionParam {
 
     /** 角色id */
     @ApiModelProperty(value = "角色id", required = true, position = 1)
-    @NotBlank
+    @NotNull
     private Long id;
 
     /** 授权功能菜单ID集合 */

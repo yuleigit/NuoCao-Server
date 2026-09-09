@@ -69,7 +69,10 @@ public class SysMenuButtonServiceImpl implements SysMenuButtonService {
     @Override
     public List<SysMenuButton> selectMenuButton(Long menuId) {
         List<SysMenuButton> buttons =  sysMenuMapper.selectListByQueryAs(
-                new LambdaQueryWrapperX<SysMenu>().selectX(SysMenu::getTitle,SysMenu::getCode,SysMenu::getId).eqX(SysMenu::getParentId,menuId)
+                new LambdaQueryWrapperX<SysMenu>()
+                        .selectX(SysMenu::getTitle,SysMenu::getCode,SysMenu::getId)
+                        .eqX(SysMenu::getParentId,menuId)
+                        .eqX(SysMenu::getType,SysMenuTypeEnum.BUTTON.getType())
                 ,SysMenuButton.class
         );
         return buttons==null?new ArrayList<>():buttons;

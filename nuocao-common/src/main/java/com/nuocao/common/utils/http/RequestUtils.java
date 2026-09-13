@@ -128,4 +128,21 @@ public class RequestUtils {
         }
         return userAgent;
     }
+
+    /**
+     * 获取当前请求url，如不存在则为空
+     * @return
+     */
+    public static String getReqUrl(){
+        String url="";
+        try {
+            Context context = Context.current();
+            if (context != null) {
+                url= context.url();
+            }
+        }catch (Exception ex){
+            url="";
+        }
+        return url;
+    }
 }

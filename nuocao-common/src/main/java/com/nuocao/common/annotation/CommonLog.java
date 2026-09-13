@@ -19,12 +19,6 @@ public @interface CommonLog {
      */
     public String value() default "";
 
-
-    /**
-     * 模块
-     */
-    public String modular() default "";
-
     /**
      * 操作
      */

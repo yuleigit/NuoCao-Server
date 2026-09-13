@@ -27,7 +27,10 @@ public class DevLogAddDTO {
      * 用户ID
      */
     private Long userId;
-
+    /**
+     * 租户ID
+     */
+    private Long tenantId;
     /**
      * 用户账号，用户名
      */
@@ -36,7 +39,7 @@ public class DevLogAddDTO {
     /**
      * 请求方法名
      */
-    private String reqMethod;
+//    private String reqMethod;
 
     /**
      * 请求URL
@@ -46,19 +49,30 @@ public class DevLogAddDTO {
     /**
      * 请求参数
      */
-    private String reqParams;
+    //private String reqParams;
 
     /**
      * 开始请求时间
      */
-    private LocalDateTime beginTime = LocalDateTimeUtils.now();
+     @Builder.Default
+    private Long beginTime = LocalDateTimeUtils.currentTimestamp();
     /**
      * 结束请求时间
      */
-    private LocalDateTime endTime = LocalDateTimeUtils.now();
+    @Builder.Default
+    private Long endTime = LocalDateTimeUtils.currentTimestamp();
+
+
     /**
-     * 执行时长，单位：毫秒
+     * 获取执行间隔毫秒数
+     * @return
      */
-    private Integer duration=0;
+    public Integer getDuration(){
+        if (beginTime == null || endTime == null) {
+            return 0;
+        }
+        long duration = endTime - beginTime;
+        return duration < 0 ? 0 : (int) duration;
+    }
 
 }

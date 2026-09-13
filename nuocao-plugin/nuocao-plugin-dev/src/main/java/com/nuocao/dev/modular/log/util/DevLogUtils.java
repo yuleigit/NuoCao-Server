@@ -2,6 +2,7 @@ package com.nuocao.dev.modular.log.util;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.common.annotation.CommonLog;
 import com.nuocao.common.utils.*;
 import com.nuocao.common.utils.http.IpUtils;
@@ -45,21 +46,23 @@ public class DevLogUtils {
     public static void executeExceptionLog(CommonLog commonLog, DevLogAddDTO addDto, Invocation inv, Exception exception) {
 
         DevLog devLog = buildBaseLog();
+        setCommonData(devLog,commonLog,addDto,inv);
         ThreadUtil.execute(() -> {
             creatLogSignValue(devLog);
-            devLog.setExeMessage(DevLogExeStatusEnum.FAIL.getValue());
+            devLog.setExeStatus(DevLogExeStatusEnum.FAIL.getValue());
             devLog.setExeMessage(exception.getMessage());
-            devLogService.add(devLog);
+            TenantUtils.executeIgnore(()-> {
+                devLogService.add(devLog);
+            });
         });
     }
 
     private static void setCommonData(DevLog devLog,CommonLog commonLog,DevLogAddDTO addDto,Invocation inv){
-        Context request = RequestUtils.getCurrentRequest();
-        Long loginId = StpUtil.isLogin()? StpUtil.getLoginIdAsLong():0L;
+        Long loginId = addDto.getUserId();
         if (NumberUtils.isLtZero(loginId)) {
             loginId = 0L;
         }
-        Long finalLoginId = loginId;
+
         devLog.setCategory(DevLogCategoryEnum.OPERATE.getValue());
         devLog.setTitle(commonLog.value());
         devLog.setOperationType(commonLog.operationType().name());
@@ -67,19 +70,21 @@ public class DevLogUtils {
         devLog.setClassName(inv.target().getClass().getName());
         devLog.setFunName(inv.method().getMethod().getName());
         devLog.setReqMethod(inv.method().getMethod().getName());
-        devLog.setReqUrl(request.url());
+        devLog.setReqUrl(addDto.getReqUrl());
         devLog.setReqParams(JsonUtils.toJsonString(inv.args()));
-        devLog.setCreateUser(finalLoginId);
+        devLog.setCreateUser(loginId);
         devLog.setOperatorType(addDto.getUserType());
         if(StringUtils.isBlank(devLog.getOperatorType())){
             devLog.setOperatorType(commonLog.operatorType().name());
         }
-        devLog.setModular(commonLog.modular());
+        devLog.setModular(getModular(inv));
         devLog.setOperatorUserName(addDto.getUserName());
-        devLog.setOperatorUserId(addDto.getUserId()==null?finalLoginId: addDto.getUserId());
+        devLog.setOperatorUserId(loginId);
         devLog.setBeginTime(addDto.getBeginTime());
         devLog.setEndTime(addDto.getEndTime());
         devLog.setDuration(addDto.getDuration());
+        devLog.setTenantId(ConvertUtils.toLong(addDto.getTenantId(),0L));
+
     }
 
     /**
@@ -103,7 +108,7 @@ public class DevLogUtils {
                 devLog.setCategory(category.getValue());
                 devLog.setTitle(category.equals(DevLogCategoryEnum.LOGOUT)?"用户登出":"用户登录");
                 devLog.setExeStatus(DevLogExeStatusEnum.SUCCESS.getValue());
-                devLog.setBeginTime(LocalDateTimeUtils.now());
+                devLog.setBeginTime(LocalDateTimeUtils.currentTimestamp());
                 devLog.setOperatorUserName(username);
                 devLog.setTenantId(tenantId==null?0L:tenantId);
                 creatLogSignValue(devLog);
@@ -144,5 +149,40 @@ public class DevLogUtils {
     private static void creatLogSignValue (DevLog devLog) {
         String logStr = devLog.toString().replaceAll(" +","");
         devLog.setSignData(CommonCryptogramUtils.doSignature(logStr));
+    }
+
+    private static final String MODULAR_MARKER = ".modular.";
+
+    /**
+     * 解析当前的模块名称
+     */
+    public static String getModular(Invocation inv) {
+        // 1. 获取类名
+        String className = inv.target().getClass().getName();
+
+        // 2. 规则一：优先按 ".modular." 定位，截取其后的模块名
+        int modularIndex = className.indexOf(MODULAR_MARKER);
+        if (modularIndex != -1) {
+            int start = modularIndex + MODULAR_MARKER.length();
+            int end = className.indexOf('.', start);
+            if (end != -1) {
+                return className.substring(start, end);
+            }
+        }
+
+        // 3. 规则二：没有 ".modular." 时，截取第 2 个点和第 3 个点之间的内容
+        int p1 = className.indexOf('.');
+        if (p1 != -1) {
+            int p2 = className.indexOf('.', p1 + 1);
+            if (p2 != -1) {
+                int p3 = className.indexOf('.', p2 + 1);
+                if (p3 != -1) {
+                    return className.substring(p2 + 1, p3);
+                }
+            }
+        }
+
+        // 4. 兜底逻辑
+        return "";
     }
 }

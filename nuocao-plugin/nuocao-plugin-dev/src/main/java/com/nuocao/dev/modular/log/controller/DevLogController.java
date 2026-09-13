@@ -3,6 +3,7 @@ package com.nuocao.dev.modular.log.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.mybatisflex.core.paginate.Page;
 import com.nuocao.common.annotation.CommonLog;
+import com.nuocao.common.enums.CommonOperationTypeEnum;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.dev.modular.log.entity.DevLog;
@@ -58,8 +59,8 @@ public class DevLogController {
     /**
      * 清空日志
      */
-    @ApiOperation("清空日志")
-    @CommonLog("清空日志")
+    @ApiOperation("删除日志")
+    @CommonLog(value = "删除日志", operationType = CommonOperationTypeEnum.DELETE)
     @Post
     @SaCheckPermission("dev:log:delete")
     @Mapping("/dev/log/delete")

@@ -108,12 +108,12 @@ public class DevLog {
      * 开始执行时间
      */
     @ApiModelProperty(value = "开始执行时间", position = 3)
-    private LocalDateTime beginTime;
+    private Long beginTime;
     /**
      * 结束执行时间
      */
     @ApiModelProperty(value = "开始执行时间", position = 3)
-    private LocalDateTime endTime;
+    private Long endTime;
     /**
      * 执行时间（毫秒）
      */

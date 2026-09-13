@@ -62,7 +62,7 @@ public class DevLogServiceImpl implements DevLogService {
         queryWrapper.in(DevLog::getCategory, DevLogCategoryEnum.LOGIN.getValue(), DevLogCategoryEnum.LOGOUT.getValue())
                 .between(DevLog::getBeginTime, lastWeek, now).orderBy(DevLog::getBeginTime);
         Map<String, List<JSONObject>> listMap = mapper.selectListByQuery(queryWrapper)
-                .stream().map(devLog -> JSONUtil.parseObj(devLog).set("date", LocalDateTimeUtils.formatDate(devLog.getBeginTime())))
+                .stream().map(devLog -> JSONUtil.parseObj(devLog).set("date", LocalDateTimeUtils.fromTimestamp(devLog.getBeginTime())))
                 .collect(Collectors.groupingBy(jsonObject -> jsonObject.getStr("date")));
         long between = DateUtil.between(lastWeek, now, DateUnit.DAY);
         List<DevLogVisLineChartDataResult> resultList = CollectionUtil.newArrayList();
@@ -113,7 +113,7 @@ public class DevLogServiceImpl implements DevLogService {
                 .in(DevLog::getCategory, DevLogCategoryEnum.OPERATE.getValue(), DevLogCategoryEnum.EXCEPTION.getValue()).between(DevLog::getBeginTime, lastWeek, now)
                 .orderBy(DevLog::getBeginTime);
         Map<String, List<JSONObject>> listMap = mapper.selectListByQuery(queryWrapper)
-                .stream().map(devLog -> JSONUtil.parseObj(devLog).set("date", LocalDateTimeUtils.formatDate(devLog.getBeginTime())))
+                .stream().map(devLog -> JSONUtil.parseObj(devLog).set("date", LocalDateTimeUtils.fromTimestamp(devLog.getBeginTime())))
                 .collect(Collectors.groupingBy(jsonObject -> jsonObject.getStr("date")));
         long between = DateUtil.between(lastWeek, now, DateUnit.DAY);
         List<DevLogOpBarChartDataResult> resultList = CollectionUtil.newArrayList();
@@ -170,7 +170,7 @@ public class DevLogServiceImpl implements DevLogService {
                 .likeIfPresent(DevLog::getTitle,param.getTitle());
 
         if (!param.hasSortingFields()) {
-            queryWrapper.orderBy(DevLog::getBeginTime, false);
+            queryWrapper.orderBy(DevLog::getId, false);
         }
         // page查询中排除较大的字段（提升查询速度）
         queryWrapper.select(DevLog::getId, DevLog::getCategory,DevLog::getModular, DevLog::getTitle, DevLog::getExeStatus, DevLog::getOperatorIp,

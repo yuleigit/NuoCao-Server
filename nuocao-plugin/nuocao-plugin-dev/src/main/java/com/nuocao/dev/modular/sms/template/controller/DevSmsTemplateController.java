@@ -37,6 +37,7 @@ public class DevSmsTemplateController {
      */
     @ApiOperation("获取短信模板分页")
     @Get
+    @SaCheckPermission("dev:sms:template:query")
     @Mapping("/dev/sms/template/page")
     public CommonResult<PageResult<DevSmsTemplateResult>> page(DevSmsTemplatePageParam pageParam) {
         return CommonResult.data(DevSmsTemplateConvert.INSTANCE.convertPage(devSmsTemplateService.page(pageParam)));

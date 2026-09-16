@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  **/
 @Getter
 @Setter
-@Table(value = "DEV_SMS")
+@Table(value = "dev_sms_log")
 public class DevSmsLog extends CommonEntity {
 
     /** id */

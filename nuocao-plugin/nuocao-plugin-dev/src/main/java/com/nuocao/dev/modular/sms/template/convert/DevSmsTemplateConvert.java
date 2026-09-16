@@ -6,12 +6,13 @@ import com.nuocao.dev.modular.sms.template.entity.DevSmsTemplate;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateAddParam;
 import com.nuocao.dev.modular.sms.template.result.DevSmsTemplateResult;
 import nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
+import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
  * 短信模板 转换器
  */
-
+@Mapper
 public interface DevSmsTemplateConvert {
 
     DevSmsTemplateConvert INSTANCE = Mappers.getMapper(DevSmsTemplateConvert.class);

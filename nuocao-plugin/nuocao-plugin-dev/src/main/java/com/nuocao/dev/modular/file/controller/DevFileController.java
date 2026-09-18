@@ -94,7 +94,7 @@ public class DevFileController {
      */
     @ApiOperation("获取文件分页列表")
     @Get
-    @SaCheckPermission("dev:file:page")
+    @SaCheckPermission("dev:file:query")
     @Mapping("/dev/file/page")
     public CommonResult<PageResult<DevFile>> page(DevFilePageParam devFilePageParam) {
         return CommonResult.data(devFileService.page(devFilePageParam));
@@ -105,6 +105,7 @@ public class DevFileController {
      */
     @ApiOperation("获取文件列表")
     @Get
+    @SaCheckPermission("dev:file:query")
     @Mapping("/dev/file/list")
     public CommonResult<List<DevFile>> list(DevFileListParam devFileListParam) {
         return CommonResult.data(devFileService.list(devFileListParam));
@@ -127,6 +128,7 @@ public class DevFileController {
     @ApiOperation("删除文件")
     @CommonLog("删除文件")
     @Post
+    @SaCheckPermission("dev:file:delete")
     @Mapping(value = "/dev/file/delete")
     public CommonResult<String> delete(@Validated @NotEmpty(message = "集合不能为空")
                                        CommonValidList<DevFileIdParam> devFileIdParamList) {

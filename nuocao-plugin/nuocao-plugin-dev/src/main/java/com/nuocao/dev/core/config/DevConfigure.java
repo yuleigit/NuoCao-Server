@@ -8,6 +8,8 @@ import com.nuocao.dev.core.client.sms.SmsChannelFactory;
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
 import org.noear.solon.annotation.Inject;
+import org.noear.solon.core.AppContext;
+import org.noear.solon.core.event.AppLoadEndEvent;
 import org.noear.solon.docs.DocDocket;
 import org.noear.solon.docs.models.ApiInfo;
 
@@ -40,11 +42,15 @@ public class DevConfigure {
      *会自动去容器寻找 List<FileStorageClient>
      */
     @Bean
-    public FileStorageFactory fileStorageFactory(@Inject List<FileStorageClient> clients) {
+    public FileStorageFactory fileStorageFactory(@Inject List<FileStorageClient> clients, AppContext context) {
         FileStorageFactory factory = new FileStorageFactory();
         if (clients != null) {
             clients.forEach(factory::registerEngine);
         }
+        // 订阅 AppLoadEndEvent 事件（应用启动完成后执行）
+//        context.onEvent(AppLoadEndEvent.class, event -> {
+//            factory.reloadAllConfigs();
+//        });
         return factory;
     }
 
@@ -53,11 +59,16 @@ public class DevConfigure {
      * 注册短信通道
      */
     @Bean
-    public SmsChannelFactory smsChannelFactory(@Inject List<SmsChannelClient> clients) {
+    public SmsChannelFactory smsChannelFactory(@Inject List<SmsChannelClient> clients, AppContext context) {
         SmsChannelFactory factory = new SmsChannelFactory();
         if (clients != null) {
             clients.forEach(factory::registerChannel);
         }
+
+        // 订阅 AppLoadEndEvent 事件（应用启动完成后执行）
+//        context.onEvent(AppLoadEndEvent.class, event -> {
+//            factory.reloadAllConfigs();
+//        });
         return factory;
     }
 }

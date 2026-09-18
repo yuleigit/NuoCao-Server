@@ -2,19 +2,21 @@ package com.nuocao.dev.core.client.file;
 
 import com.nuocao.common.exception.CommonException;
 import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Configuration;
 import org.noear.solon.annotation.Inject;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
 public class FileStorageFactory {
     private final Map<String, FileStorageClient> clientMap = new ConcurrentHashMap<>();
 
-    @Inject
     public void setEngines(List<FileStorageClient> clients) {
         clients.forEach(engine -> clientMap.put(engine.getType(), engine));
+    }
+    public void registerEngine(FileStorageClient client) {
+        clientMap.putIfAbsent(client.getType(),client);
     }
 
     /**

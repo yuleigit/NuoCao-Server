@@ -12,13 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  *
  */
-@Component
 public class SmsChannelFactory {
     private final Map<String, SmsChannelClient> clientMap = new ConcurrentHashMap<>();
 
-    @Inject
-    public void setChannel(List<SmsChannelClient> clients) {
+    public void setChannels(List<SmsChannelClient> clients) {
         clients.forEach(channel -> clientMap.put(channel.getChannelCode(), channel));
+    }
+    public void registerChannel(SmsChannelClient client) {
+        clientMap.putIfAbsent(client.getChannelCode(),client);
     }
 
     /**

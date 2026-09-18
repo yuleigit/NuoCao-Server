@@ -1,5 +1,6 @@
 package com.nuocao.dev.modular.file.entity;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 import com.nuocao.common.pojo.CommonEntity;
@@ -65,6 +66,7 @@ public class DevFile extends CommonEntity {
 
     /** 图片所属租户 */
     @ApiModelProperty(value = "图片所属租户", position = 12)
+    @Column(tenantId = true)
     private Long tenantId;
 
 

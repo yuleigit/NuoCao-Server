@@ -40,7 +40,7 @@ public class DevConfigServiceImpl  implements DevConfigService {
     private static final String CONFIG_CACHE_KEY = "dev-config:";
     private static final String CONFIG_CACHE_MAP_KEY = "dev-config-map:";
 
-    private static final Set<String> ALLOW_BLANK_KEY_SET=Set.of(new String[]{"SNOWY_FILE_ALIYUN_BIND_DOMAIN_URL","SNOWY_FILE_TENCENT_BIND_DOMAIN_URL"});
+    private static final Set<String> ALLOW_BLANK_KEY_SET=Set.of(new String[]{"dev_file_aliyun_bind_domain_url","dev_file_tencent_bind_domain_url"});
 
     @Inject
     private DevConfigMapper mapper;

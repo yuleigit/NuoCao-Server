@@ -45,7 +45,6 @@ public class DevFileController {
      * 动态上传文件返回id
      **/
     @ApiOperation("动态上传文件返回id")
-    @CommonLog("动态上传文件返回id")
     @Post
     @Mapping("/dev/file/uploadReturnId")
     public CommonResult<String> uploadDynamicReturnId(UploadedFile file) {
@@ -56,7 +55,6 @@ public class DevFileController {
      * 动态上传文件返回url
      **/
     @ApiOperation("动态上传文件返回url")
-    @CommonLog("动态上传文件返回url")
     @Post
     @Mapping("/dev/file/uploadReturnUrl")
     public CommonResult<String> uploadDynamicReturnUrl(UploadedFile file) {
@@ -67,7 +65,6 @@ public class DevFileController {
      * 本地文件上传，返回文件id
      **/
     @ApiOperation("上传本地文件返回id")
-    @CommonLog("上传本地文件返回id")
     @Post
     @Mapping("/dev/file/uploadReturnId/{engine}")
     public CommonResult<String> uploadLocalReturnId(
@@ -80,7 +77,6 @@ public class DevFileController {
      * 本地文件上传，返回文件Url
      **/
     @ApiOperation("上传本地文件返回url")
-    @CommonLog("上传本地文件返回url")
     @Post
     @Mapping("/dev/file/uploadReturnUrl/{engine}")
     public CommonResult<String> uploadLocalReturnUrl(

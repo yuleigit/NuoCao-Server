@@ -6,9 +6,11 @@ import com.nuocao.common.exception.CommonException;
 import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.bean.BeanUtils;
 import com.nuocao.dev.core.client.file.FileStorageClient;
+import lombok.extern.slf4j.Slf4j;
 import nuocao.plugin.dev.api.enums.file.DevFileBucketAuthEnum;
 import nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
 import nuocao.plugin.dev.api.DevConfigApi;
+import org.noear.solon.annotation.Component;
 import org.noear.solon.core.handle.UploadedFile;
 
 import java.io.BufferedInputStream;
@@ -18,6 +20,8 @@ import java.io.InputStream;
 /**
  * 文件引擎 本地 实现
  */
+@Slf4j
+@Component
 public class LocalFileStorageClientImpl implements FileStorageClient {
 
     private static String uploadFileFolder = null;

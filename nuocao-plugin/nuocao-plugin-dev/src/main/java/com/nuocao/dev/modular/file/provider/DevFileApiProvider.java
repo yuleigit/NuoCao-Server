@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 public class DevFileApiProvider implements DevFileApi {
     /** 默认文件引擎 */
-    private static final String DEFAULT_FILE_ENGINE_KEY = "SYS_DEFAULT_FILE_ENGINE";
+    private static final String DEFAULT_FILE_ENGINE_KEY = "sys_default_file_engine";
 
     @Inject
     private DevFileService devFileService;

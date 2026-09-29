@@ -8,10 +8,7 @@ import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
 import com.nuocao.common.utils.DesensitizationUtils;
 import com.nuocao.sys.modular.account.enums.SysAccountFromSourceEnum;
-import com.nuocao.sys.modular.account.pojo.param.SysAccountAddParam;
-import com.nuocao.sys.modular.account.pojo.param.SysAccountEditParam;
-import com.nuocao.sys.modular.account.pojo.param.SysAccountIdParam;
-import com.nuocao.sys.modular.account.pojo.param.SysAccountPageParam;
+import com.nuocao.sys.modular.account.pojo.param.*;
 import com.nuocao.sys.modular.account.pojo.result.SysAccountDetailResult;
 import com.nuocao.sys.modular.account.pojo.result.SysAccountPageResult;
 import com.nuocao.sys.modular.account.pojo.result.SysAccountSimpleResult;
@@ -128,15 +125,16 @@ public class SysAccountController {
 
 
     /**
-     * 启用用户
+     * 重置密码
      **/
     @ApiOperation("重置密码")
     @CommonLog("重置密码")
     @SaCheckPermission("sys:account:resetPwd")
     @Post
     @Mapping("/sys/account/resetPassword")
-    public CommonResult<String> resetPwd(@Validated SysAccountIdParam sysAccountIdParam) {
-        return CommonResult.ok(sysAccountService.resetPassword(sysAccountIdParam.getId()));
+    public CommonResult<String> resetPwd(@Validated SysAccountResetPwdParam resetPwdParam) {
+        sysAccountService.updatePassword(resetPwdParam.getId(),resetPwdParam.getNewPassword());
+        return CommonResult.ok();
     }
 
 

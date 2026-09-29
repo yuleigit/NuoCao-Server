@@ -82,11 +82,12 @@ public interface SysAccountService {
 
 
     /**
-     * 重置密码，重置为随机密码8位密码，并返回给前段
+     * 修改密码
+     *
      * @param accountId
-     * @return 返回使用CommonCryptogramUtils.doSm2Encrypt加密后的密码
+     * @return
      */
-    String resetPassword(Long accountId);
+    String updatePassword(Long accountId, String newPassword);
 
     /**
      * 删除账户

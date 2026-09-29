@@ -238,7 +238,7 @@ public class SysUserServiceImpl implements SysUserService {
 
 
 
-
+        String phone = sysUser.getPhone();
         validInfo(sysUser);
 
         mapper.updateById(sysUser);
@@ -319,14 +319,14 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public String resetPassword(SysUserIdParam sysUserIdParam) {
-        SysUser user = queryEntity(sysUserIdParam.getId());
-        String newPassword= AccountPasswordUtils.genPassword(6);
+    public String updatePassword(Long userId, String newPassword) {
+        SysUser user = queryEntity(userId);
+        AccountPasswordUtils.validNewPassword(newPassword);
         String newPasswordEn = CommonCryptogramUtils.doHashValue(newPassword);
-        UpdateChain.of(SysUser.class).set(SysUser::getPassword,newPasswordEn)
-                        .eq(SysUser::getId,user.getId());
+
+        syncPasswordByUsername(user.getUsername(),newPasswordEn,true);
         sysAccountApi.syncPassword(user.getUsername(),newPasswordEn,true);
-        return CommonCryptogramUtils.doSm2Encrypt(newPassword);
+        return newPassword;
     }
 
 

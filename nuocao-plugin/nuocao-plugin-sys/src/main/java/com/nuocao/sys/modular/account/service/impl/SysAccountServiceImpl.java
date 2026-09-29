@@ -177,13 +177,16 @@ public class SysAccountServiceImpl  implements SysAccountService {
     }
 
     @Override
-    public String resetPassword(Long accountId) {
+    public String updatePassword(Long accountId, String newPassword) {
+        SysAccount account = queryEntity(accountId);
         //生成随机新密码
-        String newPassword = AccountPasswordUtils.genPassword(8);
+        AccountPasswordUtils.validNewPassword(newPassword);
+        //String newPassword = AccountPasswordUtils.genPassword(8);
         String password= CommonCryptogramUtils.doHashValue(newPassword);
-        UpdateChain.of(SysAccount.class).eq(SysAccount::getId,accountId)
-                .set(SysAccount::getPassword,password).update();
-        return CommonCryptogramUtils.doSm2Encrypt(newPassword);
+        syncPasswordByUsername(account.getUsername(),password,true);
+        //这里修改后同步用户端密码是为了方便兼容两种登录模式，可根据自己业务需求更新为只在account中存储或去掉account这个表
+        sysUserApi.syncPasswordByUsername(account.getUsername(),password,true);
+        return newPassword;
     }
 
     @Override

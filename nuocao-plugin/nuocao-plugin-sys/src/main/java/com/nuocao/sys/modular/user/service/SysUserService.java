@@ -130,7 +130,7 @@ public interface SysUserService  {
     /**
      * 重置用户密码,并返回新密码
      **/
-    String resetPassword(SysUserIdParam sysUserIdParam);
+    String updatePassword(Long userId, String newPassword);
 
 
     /**

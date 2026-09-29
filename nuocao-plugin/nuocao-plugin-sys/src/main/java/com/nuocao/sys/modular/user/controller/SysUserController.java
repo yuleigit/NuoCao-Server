@@ -2,11 +2,12 @@ package com.nuocao.sys.modular.user.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.nuocao.common.annotation.CommonLog;
+import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
+import com.nuocao.data.access.tenant.config.TenantConfig;
 import com.nuocao.sys.api.dto.SysRoleDTO;
-import com.nuocao.sys.modular.user.convert.SysUserConvert;
 import com.nuocao.sys.modular.user.entity.SysUser;
 import com.nuocao.sys.modular.user.enums.SysUserSourceFromTypeEnum;
 import com.nuocao.sys.modular.user.pojo.param.*;
@@ -36,7 +37,8 @@ public class SysUserController {
     @Inject
     private SysUserService sysUserService;
 
-
+    @Inject
+    private TenantConfig tenantConfig;
     /**
      * 获取用户分页
      */
@@ -160,9 +162,12 @@ public class SysUserController {
     @Post
     @SaCheckPermission("sys:user:resetPwd")
     @Mapping("/sys/user/resetPassword")
-    public CommonResult<String> resetPassword(@Validated SysUserIdParam sysUserIdParam) {
-        String newPassword = sysUserService.resetPassword(sysUserIdParam);
-        return CommonResult.ok("密码重置成功，新密码："+newPassword);
+    public CommonResult<String> resetPassword(@Validated SysUserResetPwdParam resetPwdParam) {
+        if(tenantConfig.getTenantEnable()){
+           throw new CommonExceptionI18n("sys.user.tenant.disableResetPwd");
+        }
+        String newPassword = sysUserService.updatePassword(resetPwdParam.getId(),resetPwdParam.getNewPassword());
+        return CommonResult.ok("密码重置成功");
     }
 
 

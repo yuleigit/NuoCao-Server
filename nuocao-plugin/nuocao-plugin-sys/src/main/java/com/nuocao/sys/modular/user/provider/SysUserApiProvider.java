@@ -84,6 +84,7 @@ public class SysUserApiProvider implements SysUserApi {
 
     @Override
     public void syncPasswordByUsername(String username, String password, boolean passwordHashValue) {
+        //这里修改后同步用户端密码是为了方便兼容两种登录模式，可根据自己业务需求更新为只在account中存储或去掉account这个表
         sysUserService.syncPasswordByUsername(username,password,passwordHashValue);
     }
 }

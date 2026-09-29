@@ -86,7 +86,7 @@ public class AccountPasswordUtils {
         if(NumberUtils.isGtZero(passwordMaxLength)){
             Integer maxLengthInt = Convert.toInt(passwordMaxLength);
             if(password.length() > maxLengthInt){
-                throw new CommonExceptionI18n("sys.password.length.max",passwordMinLength);
+                throw new CommonExceptionI18n("sys.password.length.max",passwordMaxLength);
             }
         }
         // 密码复杂度

@@ -16,7 +16,10 @@ import java.lang.annotation.*;
 public @interface Mobile {
 
     String message() default "手机号格式不正确";
-
+    /**
+     * 是否启用解密（默认为 false）
+     */
+    boolean encrypted() default false;
     Class<?>[] groups() default {};
 
 

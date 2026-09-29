@@ -83,4 +83,11 @@ public interface SysRoleService  {
      */
     List<SysRoleDTO> getRoleListByUserId(Long userId);
 
+    /**
+     * 虎丘用户的下级角色列表，以自身角色选最大值确认，有角色管理权限和租户管理员可以管理全部
+     * @param userId
+     * @return
+     */
+    List<SysRoleDTO> getUserChildrenRoleList(Long userId);
+
 }

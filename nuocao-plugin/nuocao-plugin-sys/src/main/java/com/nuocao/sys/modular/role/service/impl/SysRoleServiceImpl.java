@@ -199,6 +199,16 @@ public class SysRoleServiceImpl implements SysRoleService {
         return roleList==null?new ArrayList<>():roleList;
     }
 
+    @Override
+    public List<SysRoleDTO> getUserChildrenRoleList(Long userId) {
+        List<SysRoleDTO> userRoleList=getRoleListByUserId(userId);
+        if(CollectionUtils.isEmpty((userRoleList))) return new ArrayList<>();
+        int roleWeight = userRoleList.stream().mapToInt(SysRoleDTO::getWeight).max().orElse(0);
+        LambdaQueryWrapperX<SysRole> query = new LambdaQueryWrapperX<SysRole>().ltX(SysRole::getWeight,roleWeight);
+        List<SysRoleDTO> roleList= mapper.selectListByQueryAs(query,SysRoleDTO.class);
+        return roleList==null?new ArrayList<>():roleList;
+    }
+
     private void validInfo(SysRole info){
         //验证是否重复
         SysRole temp = mapper.selectOne(SysRole::getName,info.getName());

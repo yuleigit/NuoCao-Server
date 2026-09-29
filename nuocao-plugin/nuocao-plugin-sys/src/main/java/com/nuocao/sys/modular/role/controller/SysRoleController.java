@@ -1,11 +1,13 @@
 package com.nuocao.sys.modular.role.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.common.annotation.CommonLog;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
 import com.nuocao.sys.api.dto.DataScopeEditDTO;
+import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.modular.role.entity.SysRole;
 import com.nuocao.sys.modular.role.pojo.param.*;
 import com.nuocao.sys.modular.role.pojo.result.SysRolePermissionResult;
@@ -17,6 +19,8 @@ import org.noear.solon.validation.annotation.Valid;
 import org.noear.solon.validation.annotation.Validated;
 
 import org.noear.solon.validation.annotation.NotEmpty;
+
+import java.util.List;
 
 /**
  * 角色控制器
@@ -141,7 +145,12 @@ public class SysRoleController {
     }
 
 
-
+    @ApiOperation(value = "获取可授权角色",notes = "获取当前用户可维护的角色，这个根据权重只能管理低于自身权重的角色")
+    @Post
+    @Mapping("/sys/role/userChildrenRole")
+    public CommonResult<List<SysRoleDTO>> userChildrenRole() {
+        return CommonResult.data(sysRoleService.getUserChildrenRoleList(StpLoginUserUtils.getLoginUserId()));
+    }
 
 
 }

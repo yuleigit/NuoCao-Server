@@ -8,13 +8,13 @@ import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
 import com.nuocao.common.utils.DesensitizationUtils;
 import com.nuocao.sys.modular.account.enums.SysAccountFromSourceEnum;
-import com.nuocao.sys.modular.account.param.SysAccountAddParam;
-import com.nuocao.sys.modular.account.param.SysAccountEditParam;
-import com.nuocao.sys.modular.account.param.SysAccountIdParam;
-import com.nuocao.sys.modular.account.param.SysAccountPageParam;
-import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
-import com.nuocao.sys.modular.account.result.SysAccountPageResult;
-import com.nuocao.sys.modular.account.result.SysAccountSimpleResult;
+import com.nuocao.sys.modular.account.pojo.param.SysAccountAddParam;
+import com.nuocao.sys.modular.account.pojo.param.SysAccountEditParam;
+import com.nuocao.sys.modular.account.pojo.param.SysAccountIdParam;
+import com.nuocao.sys.modular.account.pojo.param.SysAccountPageParam;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountDetailResult;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountPageResult;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountSimpleResult;
 import com.nuocao.sys.modular.account.service.SysAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -132,7 +132,7 @@ public class SysAccountController {
      **/
     @ApiOperation("重置密码")
     @CommonLog("重置密码")
-    @SaCheckPermission("sys:account:rePwd")
+    @SaCheckPermission("sys:account:resetPwd")
     @Post
     @Mapping("/sys/account/resetPassword")
     public CommonResult<String> resetPwd(@Validated SysAccountIdParam sysAccountIdParam) {
@@ -145,10 +145,10 @@ public class SysAccountController {
      */
     @ApiOperation("查询用户基础信息")
     @Get
-    @Mapping("/fileclient/queryUserByAccount")
-    public CommonResult<SysAccountSimpleResult> queryUserByAccount(@Validated @NotBlank(message = "必须输入账户") String account) {
-        SysAccountSimpleResult user =sysAccountService.getUserSimpleByAccount(account);
-        CommonExceptionI18n.notNull(user,"sys.account.notExists",account);
+    @Mapping("/sys/account/queryUserByAccount")
+    public CommonResult<SysAccountSimpleResult> queryUserByAccount(@Validated @NotBlank(message = "必须输入账户") String username) {
+        SysAccountSimpleResult user =sysAccountService.getUserSimpleByUsername(username);
+        CommonExceptionI18n.notNull(user,"sys.account.notExists",username);
         user.setNickname(DesensitizationUtils.desensitizeChineseName(user.getNickname()));
         user.setPhone(DesensitizationUtils.desensitizePhone(user.getPhone()));
         return CommonResult.data(user);

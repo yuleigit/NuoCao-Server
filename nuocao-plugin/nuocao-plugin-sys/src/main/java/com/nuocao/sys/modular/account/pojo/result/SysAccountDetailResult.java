@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.result;
+package com.nuocao.sys.modular.account.pojo.result;
 
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;

@@ -5,6 +5,7 @@ import com.nuocao.common.annotation.CommonLog;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
+import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.modular.user.convert.SysUserConvert;
 import com.nuocao.sys.modular.user.entity.SysUser;
 import com.nuocao.sys.modular.user.enums.SysUserSourceFromTypeEnum;
@@ -73,6 +74,32 @@ public class SysUserController {
         sysUserService.edit(sysUserEditParam);
         return CommonResult.ok();
     }
+
+    /**
+     * 编辑用户
+     */
+    @ApiOperation("给用户分配角色")
+    @CommonLog("给用户分配角色")
+    @Post
+    @SaCheckPermission("sys:user:roleSet")
+    @Mapping("/sys/user/setRoles")
+    public CommonResult<String> setRoles(@Validated SysUserSetRolesParam setRolesParam) {
+        sysUserService.setUserRoleIds(setRolesParam.getUserId(),setRolesParam.getRoleIds());
+        return CommonResult.ok();
+    }
+
+
+    /**
+     * 编辑用户
+     */
+    @ApiOperation("获取角色")
+    @Post
+    @Mapping("/sys/user/getRoleIds")
+    public CommonResult<List<SysRoleDTO>> getRoles(@Validated SysUserIdParam sysUserIdParam) {
+        ;
+        return CommonResult.data(sysUserService.getUserRoles(sysUserIdParam.getId()));
+    }
+
 
     /**
      * 删除用户

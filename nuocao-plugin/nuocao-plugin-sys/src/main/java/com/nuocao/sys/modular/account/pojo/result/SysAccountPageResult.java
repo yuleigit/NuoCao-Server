@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.result;
+package com.nuocao.sys.modular.account.pojo.result;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -28,4 +28,10 @@ public class SysAccountPageResult {
     /** 用户姓名 */
     @ApiModelProperty(value = "手机号码")
     private String phone;
+
+    /**
+     * 用户状态
+     */
+    @ApiModelProperty(value = "用户状态", position = 38)
+    private Integer status;
 }

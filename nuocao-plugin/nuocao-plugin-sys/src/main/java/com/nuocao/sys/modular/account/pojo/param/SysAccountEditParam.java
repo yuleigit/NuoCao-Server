@@ -1,5 +1,4 @@
-
-package com.nuocao.sys.modular.account.param;
+package com.nuocao.sys.modular.account.pojo.param;
 
 import com.nuocao.common.validation.Mobile;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,28 +6,26 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noear.solon.validation.annotation.Email;
 import org.noear.solon.validation.annotation.NotBlank;
+import org.noear.solon.validation.annotation.NotNull;
 
 
 /**
- * 系统账户添加类
-
+ * 系统账户 编辑参数
+   用于管理员强制修改用户信息。一般不要用
  **/
 @Getter
 @Setter
-public class SysAccountAddParam {
+public class SysAccountEditParam {
 
-    /** 账号 */
-    @ApiModelProperty(value = "账号", required = true, position = 1)
-    @NotBlank(message = "account不能为空")
-    private String username;
+    @ApiModelProperty(value="账户ID")
+    @NotNull(message = "ID必须填写")
+    private Long id;
+
 
     /** 姓名 */
     @ApiModelProperty(value = "昵称", required = true, position = 2)
     @NotBlank(message = "昵称不能为空")
     private String nickname;
-
-    @ApiModelProperty(value = "密码")
-    private String password;
 
     /** 手机 */
     @ApiModelProperty(value = "手机", position = 23)

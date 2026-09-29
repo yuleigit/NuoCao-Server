@@ -38,6 +38,7 @@ import com.nuocao.data.access.tenant.util.TenantUtils;
 import com.nuocao.sys.api.SysAccountApi;
 import com.nuocao.sys.api.SysTenantApi;
 import com.nuocao.sys.api.dto.SysAccountDTO;
+import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.api.dto.SysUserDTO;
 import com.nuocao.sys.api.enums.SysUserIdentityTypeEnum;
 import com.nuocao.sys.core.pass.AccountPasswordUtils;
@@ -198,8 +199,12 @@ public class SysUserServiceImpl implements SysUserService {
     public void add(SysUserAddParam sysUserAddParam, String sourceFromType, boolean passwordIsHashValue) {
         SysUser sysUser = SysUserConvert.INSTANCE.convert(sysUserAddParam);
         //验证是否开启多租户模式，多租户模式不可直接添加仅能通过邀请进入
-
-
+        //未启用时，必须输入密码
+        if(!tenantConfig.getTenantEnable()){
+            if(StringUtils.isEmpty(sysUserAddParam.getPassword()) ){
+                throw new CommonExceptionI18n("sys.password.notEmpty");
+            }
+        }
 
         validInfo(sysUser);
 
@@ -443,6 +448,11 @@ public class SysUserServiceImpl implements SysUserService {
 
     }
 
+    @Override
+    public List<SysRoleDTO> getUserRoles(Long userId) {
+        return sysRoleService.getRoleListByUserId(userId);
+    }
+
     @Transaction
     @Override
     public void importUser(UploadedFile file) {
@@ -579,12 +589,12 @@ public class SysUserServiceImpl implements SysUserService {
     public void validInfo(SysUser info) {
 
         //验证账号是否重复
-        SysUser temp = mapper.selectOne(SysUser::getUsername,info.getUsername());
-        if(temp!=null && !temp.getId().equals(info.getId()))
-        {
-            throw new CommonExceptionI18n("sys.user.account.exists",temp.getUsername());
+        if(!StringUtils.isNull(info.getUsername())) {
+            SysUser temp = mapper.selectOne(SysUser::getUsername, info.getUsername());
+            if (temp != null && !temp.getId().equals(info.getId())) {
+                throw new CommonExceptionI18n("sys.user.account.exists", temp.getUsername());
+            }
         }
-
         if(NumberUtils.isGtZero(info.getId())){//修改验证
             //得到老数据
             SysUser oldInfo = queryEntity(info.getId());
@@ -595,7 +605,7 @@ public class SysUserServiceImpl implements SysUserService {
         //需要更新电话时候，则验证电话是否存在
         if(StringUtils.isNotBlank(info.getPhone())){
             String phone = CommonCryptogramUtils.doSm4CbcEncrypt(info.getPhone());
-            temp = mapper.selectOne(SysUser::getPhone,phone);
+            SysUser temp = mapper.selectOne(SysUser::getPhone,phone);
             if(temp!=null && !temp.getId().equals(info.getId()))
             {
                 throw new CommonExceptionI18n("sys.user.phone.exists",temp.getUsername());
@@ -605,7 +615,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         if (StringUtils.isNotBlank(info.getEmail())) {
-            temp = mapper.selectOne(SysUser::getPhone,info.getPhone());
+            SysUser temp = mapper.selectOne(SysUser::getPhone,info.getPhone());
             if(temp!=null && !temp.getId().equals(info.getId()))
             {
                 throw new CommonExceptionI18n("sys.user.email.exists",temp.getUsername());

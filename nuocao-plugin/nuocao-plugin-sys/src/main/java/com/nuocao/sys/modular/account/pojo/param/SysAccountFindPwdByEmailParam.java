@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.param;
+package com.nuocao.sys.modular.account.pojo.param;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -6,12 +6,12 @@ import lombok.Setter;
 import org.noear.solon.validation.annotation.NotBlank;
 
 /**
- * 获取邮箱验证码
+ * 用户找回密码参数
  *
  **/
 @Getter
 @Setter
-public class SysAccountGetEmailValidCodeParam {
+public class SysAccountFindPwdByEmailParam {
 
     /** 邮箱 */
     @ApiModelProperty(value = "邮箱")
@@ -19,7 +19,7 @@ public class SysAccountGetEmailValidCodeParam {
     private String email;
 
     /** 验证码 */
-    @ApiModelProperty(value = "验证码",notes = "获取手机验证码时，需要填写图片验证码")
+    @ApiModelProperty(value = "验证码")
     @NotBlank(message = "validCode不能为空")
     private String validCode;
 
@@ -27,4 +27,9 @@ public class SysAccountGetEmailValidCodeParam {
     @ApiModelProperty(value = "验证码请求号")
     @NotBlank(message = "validCodeReqNo不能为空")
     private String validCodeReqNo;
+
+    /** 新密码 */
+    @ApiModelProperty(value = "新密码")
+    @NotBlank(message = "newPassword不能为空")
+    private String newPassword;
 }

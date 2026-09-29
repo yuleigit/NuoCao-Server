@@ -30,6 +30,5 @@ public class SysUserAddParam  extends SysUserBase {
     private String username;
 
     @ApiModelProperty(value = "密码")
-    @NotBlank
     private String password;
 }

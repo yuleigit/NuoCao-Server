@@ -1,6 +1,7 @@
 package com.nuocao.sys.modular.user.service;
 
 import com.nuocao.common.page.PageResult;
+import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.api.dto.SysUserDTO;
 import com.nuocao.sys.modular.user.entity.SysUser;
 import com.nuocao.sys.modular.user.pojo.param.*;
@@ -214,6 +215,12 @@ public interface SysUserService  {
      */
     void setUserRoleIds(Long userId,List<Long> roleIds);
 
+    /**
+     * 获取用户对应角色ID
+     * @param userId
+     * @return
+     */
+    List<SysRoleDTO>  getUserRoles(Long userId);
 
     /**
      * 用户导入

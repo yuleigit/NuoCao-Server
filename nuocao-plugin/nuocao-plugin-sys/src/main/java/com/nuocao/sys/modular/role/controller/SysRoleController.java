@@ -149,7 +149,7 @@ public class SysRoleController {
     @Post
     @Mapping("/sys/role/userChildrenRole")
     public CommonResult<List<SysRoleDTO>> userChildrenRole() {
-        return CommonResult.data(sysRoleService.getUserChildrenRoleList(StpLoginUserUtils.getLoginUserId()));
+        return CommonResult.data(sysRoleService.getLoginUserChildrenRoleList());
     }
 
 

@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.result;
+package com.nuocao.sys.modular.account.pojo.result;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.param;
+package com.nuocao.sys.modular.account.pojo.param;
 
 import io.swagger.annotations.ApiModelProperty;
 import org.noear.solon.validation.annotation.NotBlank;

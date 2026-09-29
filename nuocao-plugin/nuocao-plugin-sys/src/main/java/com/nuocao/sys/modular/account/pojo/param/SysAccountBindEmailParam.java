@@ -1,34 +1,34 @@
-package com.nuocao.sys.modular.account.param;
+package com.nuocao.sys.modular.account.pojo.param;
 
-import com.nuocao.common.validation.Mobile;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.noear.solon.validation.annotation.NotBlank;
 
-
+/**
+ * 绑定邮箱参数
+ **/
 @Getter
 @Setter
-public class SysAccountFindPwdByPhoneParam {
+public class SysAccountBindEmailParam {
 
-    /** 手机号 */
-    @ApiModelProperty(value = "手机号",notes = "加密发送")
-    @NotBlank(message = "phone不能为空")
-    @Mobile
-    private String phone;
+    /** 邮箱 */
+   @ApiModelProperty(value = "邮箱")
+    @NotBlank(message = "email不能为空")
+    private String email;
 
     /** 验证码 */
-    @ApiModelProperty(value = "验证码")
+   @ApiModelProperty(value = "验证码")
     @NotBlank(message = "validCode不能为空")
     private String validCode;
 
     /** 验证码请求号 */
-    @ApiModelProperty(value = "验证码请求号")
+   @ApiModelProperty(value = "验证码请求号")
     @NotBlank(message = "validCodeReqNo不能为空")
     private String validCodeReqNo;
 
     /** 新密码 */
-    @ApiModelProperty(value = "新密码",notes = "加密发送")
+   @ApiModelProperty(value = "新密码")
     @NotBlank(message = "newPassword不能为空")
     private String newPassword;
 }

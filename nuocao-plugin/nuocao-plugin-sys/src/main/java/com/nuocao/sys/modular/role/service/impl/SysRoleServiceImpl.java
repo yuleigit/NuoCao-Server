@@ -2,12 +2,15 @@ package com.nuocao.sys.modular.role.service.impl;
 
 import com.alibaba.excel.util.StringUtils;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
+import com.nuocao.auth.api.dto.SaUserLoginInfoDTO;
 import com.nuocao.common.ObjectUtils;
 import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.mapper.LambdaQueryWrapperX;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.utils.NumberUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
+import com.nuocao.data.access.tenant.util.TenantUtils;
 import com.nuocao.sys.api.SysDataScopeApi;
 import com.nuocao.sys.api.SysUserPermissionApi;
 import com.nuocao.sys.api.dto.DataScopeEditDTO;
@@ -15,6 +18,7 @@ import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.api.dto.UserPermissionEditDTO;
 import com.nuocao.sys.api.enums.DataScopeCategoryEnum;
 import com.nuocao.sys.api.enums.DataScopeObjectTypeEnum;
+import com.nuocao.sys.api.utils.SysTenantApiUtils;
 import com.nuocao.sys.core.enums.SysRoleCodeEnum;
 import com.nuocao.sys.modular.org.service.SysOrgService;
 import com.nuocao.sys.modular.role.convert.SysRoleConvert;
@@ -200,12 +204,23 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public List<SysRoleDTO> getUserChildrenRoleList(Long userId) {
-        List<SysRoleDTO> userRoleList=getRoleListByUserId(userId);
-        if(CollectionUtils.isEmpty((userRoleList))) return new ArrayList<>();
-        int roleWeight = userRoleList.stream().mapToInt(SysRoleDTO::getWeight).max().orElse(0);
-        LambdaQueryWrapperX<SysRole> query = new LambdaQueryWrapperX<SysRole>().ltX(SysRole::getWeight,roleWeight);
-        List<SysRoleDTO> roleList= mapper.selectListByQueryAs(query,SysRoleDTO.class);
+    public List<SysRoleDTO> getLoginUserChildrenRoleList() {
+        SaUserLoginInfoDTO loginUser = StpLoginUserUtils.getLoginUser();
+        if(loginUser==null || NumberUtils.isLeZero(loginUser.getId())){
+            throw new CommonExceptionI18n("common.not.login");
+        }
+        List<SysRoleDTO> roleList;
+        if(StpLoginUserUtils.hasPermission("sys:role:query") || SysTenantApiUtils.isTenantAdmin(loginUser.getTenantId(),loginUser.getId()))
+        {
+            roleList= mapper.selectListByQueryAs(new LambdaQueryWrapperX<SysRole>(),SysRoleDTO.class);
+        }else {
+            List<SysRoleDTO> userRoleList=getRoleListByUserId(loginUser.getId());
+            if(CollectionUtils.isEmpty((userRoleList))) return new ArrayList<>();
+            int roleWeight = userRoleList.stream().mapToInt(SysRoleDTO::getWeight).max().orElse(0);
+            LambdaQueryWrapperX<SysRole> query = new LambdaQueryWrapperX<SysRole>().ltX(SysRole::getWeight,roleWeight);
+            roleList= mapper.selectListByQueryAs(query,SysRoleDTO.class);
+        }
+
         return roleList==null?new ArrayList<>():roleList;
     }
 

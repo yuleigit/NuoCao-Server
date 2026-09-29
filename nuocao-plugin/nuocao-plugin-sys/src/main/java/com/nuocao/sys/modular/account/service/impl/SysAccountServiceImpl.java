@@ -8,7 +8,6 @@ import com.nuocao.auth.api.dto.AccountLoginInfoDTO;
 import com.nuocao.common.ObjectUtils;
 import com.nuocao.common.cache.CacheUtils;
 import com.nuocao.common.captcha.ImageCaptchaUtils;
-import com.nuocao.common.constants.Constants;
 import com.nuocao.common.enums.CommonEnableStatusEnum;
 import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.mapper.LambdaQueryWrapperX;
@@ -26,10 +25,10 @@ import com.nuocao.sys.modular.account.convert.SysAccountConvert;
 import com.nuocao.sys.modular.account.entity.SysAccount;
 import com.nuocao.sys.modular.account.enums.SysAccountFromSourceEnum;
 import com.nuocao.sys.modular.account.mapper.SysAccountMapper;
-import com.nuocao.sys.modular.account.param.*;
-import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
-import com.nuocao.sys.modular.account.result.SysAccountPageResult;
-import com.nuocao.sys.modular.account.result.SysAccountSimpleResult;
+import com.nuocao.sys.modular.account.pojo.param.*;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountDetailResult;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountPageResult;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountSimpleResult;
 import com.nuocao.sys.modular.account.service.SysAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Inject;
@@ -111,8 +110,8 @@ public class SysAccountServiceImpl  implements SysAccountService {
     }
 
     @Override
-    public SysAccountSimpleResult getUserSimpleByAccount(String account) {
-        return SysAccountConvert.INSTANCE.convertSimple(mapper.selectOne(SysAccount::getId, account));
+    public SysAccountSimpleResult getUserSimpleByUsername(String username) {
+        return SysAccountConvert.INSTANCE.convertSimple(mapper.selectOne(SysAccount::getUsername, username));
     }
 
     @Override
@@ -127,7 +126,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
         SysAccount sysAccount = SysAccountConvert.INSTANCE.convert(addParam);
 
         String addLockKey = getAddLockKey(addParam);
-        String password_de = passwordIsSm2?CommonCryptogramUtils.doSm2Encrypt(addParam.getPassword()):addParam.getPassword();
+        String password_de = passwordIsSm2?CommonCryptogramUtils.doSm2Decrypt(addParam.getPassword()):addParam.getPassword();
         if(!StringUtils.isEmpty(password_de)){ //输入了密码，验证密码
             AccountPasswordUtils.validNewPassword(password_de);
         }

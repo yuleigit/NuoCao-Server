@@ -88,6 +88,6 @@ public interface SysRoleService  {
      * @param userId
      * @return
      */
-    List<SysRoleDTO> getUserChildrenRoleList(Long userId);
+    List<SysRoleDTO> getLoginUserChildrenRoleList();
 
 }

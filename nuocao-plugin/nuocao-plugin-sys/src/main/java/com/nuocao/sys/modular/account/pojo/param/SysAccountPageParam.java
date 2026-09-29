@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.param;
+package com.nuocao.sys.modular.account.pojo.param;
 
 import com.nuocao.common.page.SortPageParam;
 import io.swagger.annotations.ApiModelProperty;

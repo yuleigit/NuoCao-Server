@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.param;
+package com.nuocao.sys.modular.account.pojo.param;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -6,12 +6,12 @@ import lombok.Setter;
 import org.noear.solon.validation.annotation.NotBlank;
 
 /**
- * 用户找回密码参数
- *
+ * 用户通过验证邮箱修改密码参数
+
  **/
 @Getter
 @Setter
-public class SysAccountFindPwdByEmailParam {
+public class SysAccountUpdatePwdByEmailParam {
 
     /** 邮箱 */
     @ApiModelProperty(value = "邮箱")

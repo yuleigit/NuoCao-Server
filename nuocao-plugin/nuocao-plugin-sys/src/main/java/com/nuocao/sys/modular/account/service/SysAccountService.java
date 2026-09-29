@@ -5,10 +5,10 @@ import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.sys.api.dto.SysAccountDTO;
 import com.nuocao.sys.modular.account.entity.SysAccount;
-import com.nuocao.sys.modular.account.param.*;
-import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
-import com.nuocao.sys.modular.account.result.SysAccountPageResult;
-import com.nuocao.sys.modular.account.result.SysAccountSimpleResult;
+import com.nuocao.sys.modular.account.pojo.param.*;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountDetailResult;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountPageResult;
+import com.nuocao.sys.modular.account.pojo.result.SysAccountSimpleResult;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public interface SysAccountService {
     /**
      * 获取用户简单信息
      */
-    SysAccountSimpleResult getUserSimpleByAccount(String account);
+    SysAccountSimpleResult getUserSimpleByUsername(String username);
 
     /**
      *  获取账户分页

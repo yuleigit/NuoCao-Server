@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.param;
+package com.nuocao.sys.modular.account.pojo.param;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -18,6 +18,5 @@ public class SysAccountIdParam {
     /** id */
     @ApiModelProperty(value = "账户ID", required = true)
     @NotNull
-    @Size(min = 1)
     private Long id;
 }

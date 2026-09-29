@@ -25,5 +25,9 @@ public class Constants {
     public static final String REDIS="redis://";
     public static final String REDISS="rediss://";
 
+    /**
+     * 系统管理员账号名称
+     */
+    public static final String SYS_ADMIN_USERNAME="superAdmin";
 
 }

@@ -8,6 +8,7 @@ import com.nuocao.auth.api.dto.AccountLoginInfoDTO;
 import com.nuocao.common.ObjectUtils;
 import com.nuocao.common.cache.CacheUtils;
 import com.nuocao.common.captcha.ImageCaptchaUtils;
+import com.nuocao.common.constants.Constants;
 import com.nuocao.common.enums.CommonEnableStatusEnum;
 import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.mapper.LambdaQueryWrapperX;
@@ -36,6 +37,8 @@ import org.noear.solon.annotation.Component;
 import org.noear.solon.data.annotation.Transaction;
 
 import java.util.List;
+
+import static com.nuocao.common.constants.Constants.SYS_ADMIN_USERNAME;
 
 /**
  * 系统账户 service 接口实现类
@@ -526,20 +529,13 @@ public class SysAccountServiceImpl  implements SysAccountService {
      */
     private QueryWrapper getQueryWrapper(SysAccountPageParam pageParams){
         if(pageParams==null) return new QueryWrapper();
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.notIn(SysAccount::getUsername,new String[]{"superAdmin"});
-        if(StringUtils.isNotBlank(pageParams.getNickname())) {
-            queryWrapper.like(SysAccount::getUsername, pageParams.getNickname());
-        }
-        if(StringUtils.isNotBlank(pageParams.getUsername())) {
-            queryWrapper.like(SysAccount::getName, pageParams.getUsername());
-        }
-        if(StringUtils.isNotBlank(pageParams.getPhone())) {
-            queryWrapper.eq(SysAccount::getPhone, pageParams.getPhone());
-        }
-        if(ObjectUtils.isNotNull(pageParams.getStatus())) {
-            queryWrapper.eq(SysAccount::getStatus, pageParams.getStatus());
-        }
+        LambdaQueryWrapperX<SysAccount> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.notIn(SysAccount::getUsername,new String[]{SYS_ADMIN_USERNAME});
+        queryWrapper.likeIfPresent(SysAccount::getUsername, pageParams.getUsername());
+        queryWrapper.likeIfPresent(SysAccount::getNickname, pageParams.getNickname());
+        queryWrapper.eqIfPresent(SysAccount::getPhone, pageParams.getPhone());
+        queryWrapper.eqIfPresent(SysAccount::getStatus, pageParams.getStatus());
+
         if(ObjectUtils.isEmpty(pageParams.getSortingFields())) {
             queryWrapper.orderBy(SysAccount::getId,false).orderBy(SysAccount::getCreateTime,false);
         }

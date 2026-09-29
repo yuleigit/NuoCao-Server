@@ -1,6 +1,8 @@
 package com.nuocao.common.validation;
 
 
+import org.noear.solon.validation.annotation.Validated;
+
 import java.lang.annotation.*;
 
 @Target({

@@ -9,15 +9,34 @@ import org.noear.solon.validation.Validator;
 
 public class MobileValidator implements Validator<Mobile> {
 
+    public static final MobileValidator instance = new MobileValidator();
 
     @Override
-    public Result validateOfContext(Context ctx, Mobile anno, String value, StringBuilder tmp) {
-        if (StrUtil.isEmpty(value)) {
+    public Result validateOfValue(Mobile anno, Object value, StringBuilder tmp) {
+        if (value != null && value instanceof String == false) {
             return Result.failure();
         }
 
-        String realPhone = value;
+        String val = (String) value;
 
+        return verify(anno,val);
+    }
+
+
+
+    @Override
+    public Result validateOfContext(Context ctx, Mobile anno, String value, StringBuilder tmp) {
+
+
+
+        return verify(anno,value);
+    }
+
+    private Result verify(Mobile anno,String value){
+        if (StrUtil.isEmpty(value)) {
+            return Result.failure();
+        }
+        String realPhone = value;
         // 如果注解中配置了需要解密，则进行 SM4 解密
         if (anno.encrypted()) {
             try {

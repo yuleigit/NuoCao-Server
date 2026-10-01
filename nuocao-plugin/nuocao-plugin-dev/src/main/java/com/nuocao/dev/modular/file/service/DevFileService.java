@@ -101,6 +101,9 @@ public interface DevFileService  {
      */
     DevFile queryEntity(String id);
 
+
+    DevFile queryEntityByFileId(String fileId);
+
     /**根据url删除文件
      */
     void storeDeleteFileByUrl(List<String> urlList);

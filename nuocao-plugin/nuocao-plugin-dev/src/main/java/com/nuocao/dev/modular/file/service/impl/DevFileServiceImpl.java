@@ -124,7 +124,7 @@ public class DevFileServiceImpl  implements DevFileService {
     public void download(DevFileIdParam devFileIdParam, Context ctx) throws IOException {
         DevFile devFile;
         try {
-            devFile = this.queryEntity(devFileIdParam.getId());
+            devFile = this.queryEntityByFileId(devFileIdParam.getId());
         } catch (Exception e) {
             ResponseUtils.renderError(ctx, e.getMessage());
             return;
@@ -368,7 +368,14 @@ public class DevFileServiceImpl  implements DevFileService {
         }
         return devFile;
     }
-
+    @Override
+    public DevFile queryEntityByFileId(String fileId) {
+        DevFile devFile = mapper.selectOne(DevFile::getFileId,fileId);
+        if (ObjectUtil.isEmpty(devFile)) {
+            throw new CommonExceptionI18n("dev.file.notExists", fileId);
+        }
+        return devFile;
+    }
     @Override
     public void storeDeleteFileByUrl(List<String> urlList) {
         if(urlList==null || urlList.isEmpty()) return;

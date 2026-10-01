@@ -123,8 +123,8 @@ easy.poi.base.isDev: false
 nuocao.config:
   version: '1.0.0'
   name: "NuoCao"
-  front-url: http://localhost:81
-  backend-url: http://localhost:82
+  front-url: http://localhost:9988
+  backend-url: http://localhost:8098
 
 # 缓存配置
 nuocao.cache:
@@ -159,6 +159,7 @@ tenant:
     - /auth/account/**
 
     - /dev/code/**
+    - /dev/file/download
     - /fileclient/userCenter/**
     - /dictData/dict/i18n:language
     - /auth/captcha

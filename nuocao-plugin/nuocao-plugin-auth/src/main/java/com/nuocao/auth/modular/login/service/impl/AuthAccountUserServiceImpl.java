@@ -272,21 +272,19 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         });
     }
 
-    private void fillLoginUserBaseInfo(AuthLoginUserDTO realLoginUser)
-    {
-        if(NumberUtils.isLeZero(realLoginUser.getTenantId())) {
-            SaUserLoginInfoDTO loginUser = userLoginApi.getUserByUsername(realLoginUser.getUsername());
-            // 缓存用户信息，此处使用TokenSession为了指定时间内无操作则自动下线
+    private void fillLoginUserBaseInfo(AuthLoginUserDTO realLoginUser) {
+        Long tenantId = realLoginUser.getTenantId();
+        String username = realLoginUser.getUsername();
+
+        // 1. 根据是否包含租户 ID，在对应的上下文中获取用户信息
+        SaUserLoginInfoDTO loginUser = NumberUtils.isLeZero(tenantId)
+                ? userLoginApi.getUserByUsername(username)
+                : TenantUtils.execute(tenantId, () -> userLoginApi.getUserByUsername(username));
+
+        // 2. 统一判断防空并设置 LoginUser
+        if (loginUser != null) {
             StpLoginUserUtils.setLoginUser(loginUser);
-        }else{
-            TenantUtils.execute(realLoginUser.getTenantId(),()->{
-                SaUserLoginInfoDTO loginUser = userLoginApi.getUserByUsername(realLoginUser.getUsername());
-                // 缓存用户信息，此处使用TokenSession为了指定时间内无操作则自动下线
-                StpLoginUserUtils.setLoginUser(loginUser);
-            });
-
         }
-
     }
 
     @Override

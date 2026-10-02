@@ -130,7 +130,7 @@ public class DevConfigServiceImpl  implements DevConfigService {
 
     @Override
     public void edit(DevConfigEditParam devConfigEditParam) {
-        DevConfig oldConfig = queryEntity(devConfigEditParam.getConfigId());
+        DevConfig oldConfig = queryEntity(devConfigEditParam.getId());
         DevConfig devConfig = DevConfigConvert.INSTANCE.convert(devConfigEditParam);
         validInfo(devConfig);
         mapper.updateById(devConfig);

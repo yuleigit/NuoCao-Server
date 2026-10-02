@@ -14,8 +14,8 @@ import org.noear.solon.validation.annotation.NotNull;
 public class DevConfigEditParam extends DevConfigAddEditCommonParam {
 
     /** id */
-    @ApiModelProperty(value = "configId", required = true, position = 1)
-    @NotBlank(message = "configId不能为空")
-    private Long configId;
+    @ApiModelProperty(value = "id", required = true, position = 1)
+    @NotNull(message = "id不能为空")
+    private Long id;
 
 }

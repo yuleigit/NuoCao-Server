@@ -16,7 +16,7 @@ import lombok.Setter;
 public class DevConfig extends CommonEntity {
 
     /** id */
-    @ApiModelProperty(value = "configId", position = 1)
+    @ApiModelProperty(value = "id", position = 1)
     @Id
     private Long id;
 
@@ -46,7 +46,4 @@ public class DevConfig extends CommonEntity {
     @ApiModelProperty(value = "排序码", position = 6)
     private Integer sortCode;
 
-    /** 扩展信息 */
-    @ApiModelProperty(value = "扩展信息", position = 7)
-    private String extJson;
 }

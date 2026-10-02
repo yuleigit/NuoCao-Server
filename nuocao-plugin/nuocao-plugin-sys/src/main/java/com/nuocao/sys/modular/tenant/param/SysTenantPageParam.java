@@ -32,7 +32,7 @@ public class SysTenantPageParam extends SortPageParam {
 
     /** 联系人 */
     @ApiModelProperty(value = "联系人")
-    private String contactsUser;
+    private String contactName;
 
     /** 系统名称 */
     @ApiModelProperty(value = "系统名称")

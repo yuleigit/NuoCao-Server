@@ -4,6 +4,7 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.handler.Fastjson2TypeHandler;
+import com.nuocao.common.pojo.CommonEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(value = "sys_tenant_package")
-public class SysTenantPackage {
+public class SysTenantPackage extends CommonEntity {
 
     /** 租户套餐ID */
     @Id
@@ -46,23 +47,4 @@ public class SysTenantPackage {
     @Column(typeHandler = Fastjson2TypeHandler.class)
     private List<Long> menuIds;
 
-    /** 乐观锁 */
-    @ApiModelProperty(value = "乐观锁", position = 4)
-    private Integer deleteFlag;
-
-    /** 创建人 */
-    @ApiModelProperty(value = "创建人", position = 5)
-    private String createdUser;
-
-    /** 创建时间 */
-    @ApiModelProperty(value = "创建时间", position = 6)
-    private Date createdTime;
-
-    /** 更新人 */
-    @ApiModelProperty(value = "更新人", position = 7)
-    private String updatedUser;
-
-    /** 更新时间 */
-    @ApiModelProperty(value = "更新时间", position = 8)
-    private Date updatedTime;
 }

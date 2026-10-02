@@ -42,17 +42,17 @@ public class SysTenantEditParam {
 
     /** 联系人 */
     @ApiModelProperty(value = "联系人", required = true, position = 6)
-    @NotBlank(message = "contactsUser不能为空")
-    private String contactsUser;
+    @NotBlank(message = "contactName不能为空")
+    private String contactName;
 
     /** 联系电话 */
     @ApiModelProperty(value = "联系电话", required = true, position = 7)
-    @NotBlank(message = "contactsPhone不能为空")
-    private String contactsPhone;
+    @NotBlank(message = "contactTel不能为空")
+    private String contactTel;
 
     /** 地址 */
     @ApiModelProperty(value = "地址", position = 8)
-    private String contactsAddress;
+    private String contactAddress;
 
     /** 系统名称 */
     @ApiModelProperty(value = "系统名称", required = true, position = 9)

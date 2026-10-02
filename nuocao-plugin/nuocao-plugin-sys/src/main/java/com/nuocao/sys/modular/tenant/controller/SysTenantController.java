@@ -62,7 +62,7 @@ public class SysTenantController {
      * @date  2025/06/20 14:26
      */
     @ApiOperation("获取客户机构分页")
-    @SaCheckPermission("/sys/tenant/page")
+    @SaCheckPermission("sys:tenant:query")
     @Get
     @Mapping("/sys/tenant/page")
     public CommonResult<PageResult<SysTenantPageResult>> page(SysTenantPageParam sysTenantPageParam) {
@@ -76,6 +76,7 @@ public class SysTenantController {
      * @date  2025/06/20 14:26
      */
     @ApiOperation("添加客户机构")
+    @SaCheckPermission("sys:tenant:add")
     @Post@Mapping("/sys/tenant/add")
     @CrossOrigin(origins = "*")
     public CommonResult<String> add( SysTenantAddParam sysTenantAddParam) {
@@ -91,7 +92,7 @@ public class SysTenantController {
      */
     @ApiOperation("编辑客户机构")
     @CommonLog("编辑客户机构")
-    @SaCheckPermission("/sys/tenant/edit")
+    @SaCheckPermission("sys:tenant:edit")
     @Post
     @Mapping("/sys/tenant/edit")
     public CommonResult<String> edit(@Validated SysTenantEditParam sysTenantEditParam) {
@@ -107,7 +108,7 @@ public class SysTenantController {
      */
     @ApiOperation("删除客户机构")
     @CommonLog("删除客户机构")
-    @SaCheckPermission("/sys/tenant/delete")
+    @SaCheckPermission("sys:tenant:delete")
     @Post
     @Mapping("/sys/tenant/delete")
     public CommonResult<String> delete(@Validated @NotEmpty
@@ -123,7 +124,7 @@ public class SysTenantController {
      * @date  2025/06/20 14:26
      */
     @ApiOperation("获取客户机构详情")
-    @SaCheckPermission("/sys/tenant/detail")
+    @SaCheckPermission("sys:tenant:query")
     @Get
     @Mapping("/sys/tenant/detail")
     public CommonResult<SysTenant> detail(SysTenantIdParam sysTenantIdParam) {
@@ -137,7 +138,7 @@ public class SysTenantController {
      * @date  2025/06/20 14:26
      */
     @ApiOperation("获得客户展示信息")
-    @SaCheckPermission("/sys/tenant/detail")
+    @SaCheckPermission("sys:tenant:detail")
     @Get
     @Mapping("/sys/tenant/view")
     public CommonResult<SysTenantViewResult> view(SysTenantIdParam sysTenantIdParam) {
@@ -149,7 +150,7 @@ public class SysTenantController {
     /**
      * 获取套餐选择器
      */
-    @ApiOperation("获取用户选择器")
+    @ApiOperation("获取租户选择器")
     @Get@Mapping("/sys/tenant/get-selector")
     @TenantIgnore
     public CommonResult<List<SysTenantPageResult>> getSelector(SysTenantPageParam pageParam) {

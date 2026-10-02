@@ -36,9 +36,9 @@ public class SysTenantPackageController {
      * 获取租户套餐分页
      */
     @ApiOperation("获取租户套餐分页")
-    @SaCheckPermission("/sys/tenantpackage/page")
+    @SaCheckPermission("sys:tenant:package:query")
     @Get
-    @Mapping("/sys/tenantpackage/page")
+    @Mapping("/sys/tenant/package/page")
     public CommonResult<PageResult<SysTenantPackage>> page(SysTenantPackagePageParam sysTenantPackagePageParam) {
         return CommonResult.data(sysTenantPackageService.page(sysTenantPackagePageParam));
     }
@@ -48,7 +48,7 @@ public class SysTenantPackageController {
      */
     @ApiOperation("添加租户套餐")
     @CommonLog("添加租户套餐")
-    @SaCheckPermission("/sys/tenantpackage/add")
+    @SaCheckPermission("sys:tenant:package:add")
     @Post
     @Mapping("/sys/tenantpackage/add")
     public CommonResult<String> add(SysTenantPackageAddParam sysTenantPackageAddParam) {
@@ -61,9 +61,9 @@ public class SysTenantPackageController {
      */
     @ApiOperation("编辑租户套餐")
     @CommonLog("编辑租户套餐")
-    @SaCheckPermission("/sys/tenantpackage/edit")
+    @SaCheckPermission("sys:tenant:package:edit")
     @Post
-    @Mapping("/sys/tenantpackage/edit")
+    @Mapping("/sys/tenant/package/edit")
     public CommonResult<String> edit(SysTenantPackageEditParam sysTenantPackageEditParam) {
         sysTenantPackageService.edit(sysTenantPackageEditParam);
         return CommonResult.ok();
@@ -76,7 +76,7 @@ public class SysTenantPackageController {
     @CommonLog("删除租户套餐")
     @SaCheckPermission("sys:tenant:package:delete")
     @Post
-    @Mapping("/sys/tenantpackage/delete")
+    @Mapping("/sys/tenant/package/delete")
     public CommonResult<String> delete(@Validated @NotEmpty(message = "集合不能为空")
                                        List<SysTenantPackageIdParam> sysTenantPackageIdParamList) {
         sysTenantPackageService.delete(sysTenantPackageIdParamList);
@@ -87,9 +87,9 @@ public class SysTenantPackageController {
      * 获取租户套餐详情
      */
     @ApiOperation("获取租户套餐详情")
-    @SaCheckPermission("/sys/tenantpackage/detail")
+    @SaCheckPermission("sys:tenant:package:query")
     @Get
-    @Mapping("/sys/tenantpackage/detail")
+    @Mapping("/sys/tenant/package/detail")
     public CommonResult<SysTenantPackage> detail(@Validated SysTenantPackageIdParam sysTenantPackageIdParam) {
         return CommonResult.data(sysTenantPackageService.detail(sysTenantPackageIdParam));
     }
@@ -100,7 +100,7 @@ public class SysTenantPackageController {
      * 获取套餐选择器
      */
     @ApiOperation("获取用户选择器")
-    @Get@Mapping("/sys/tenantpackage/selector")
+    @Get@Mapping("/sys/tenant/package/selector")
     public CommonResult<List<SysTenantPackage>> selector() {
         return CommonResult.data(sysTenantPackageService.getSelector());
     }

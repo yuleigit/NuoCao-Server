@@ -1,6 +1,7 @@
 package com.nuocao.sys.modular.user.service;
 
 import com.nuocao.common.page.PageResult;
+import com.nuocao.sys.api.dto.SysAccountDTO;
 import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.api.dto.SysUserDTO;
 import com.nuocao.sys.modular.user.entity.SysUser;
@@ -161,17 +162,23 @@ public interface SysUserService  {
 
     Integer getCountByRoleId(Long roleId);
 
-    /**
-     * 根据账号密码创建用户
-     **/
-    SysUser createUserWithAccount(String account, String password);
-    /**
-     * 根据账号密码创建用户
-     **/
-    SysUser createUserWithAccount(String account,String name,String phone, String password,Long defaultRoleId,boolean passwordIsHashValue);
 
-    default SysUser createUserWithAccount(String account,String name,String phone, String password,Long defaultRoleId){
-        return  createUserWithAccount(account,name,phone,password,defaultRoleId,false);
+    /**
+     * 根据账号信息创建用户
+     * @param accountDto
+     * @param defaultRoleId
+     * @return
+     */
+    SysUser createUserWithAccount(SysAccountDTO accountDto,  Long defaultRoleId);
+
+
+    /**
+     * 根据账号密码创建用户
+     **/
+    SysUser createUserWithAccount(String username,String name,String phone, String password,Long defaultRoleId,boolean passwordIsHashValue);
+
+    default SysUser createUserWithAccount(String username,String name,String phone, String password,Long defaultRoleId){
+        return  createUserWithAccount(username,name,phone,password,defaultRoleId,false);
     }
 
 

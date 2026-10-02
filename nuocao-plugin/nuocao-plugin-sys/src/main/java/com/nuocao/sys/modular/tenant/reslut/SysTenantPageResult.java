@@ -45,15 +45,15 @@ public class SysTenantPageResult {
 
     /** 联系人 */
     @ApiModelProperty(value = "联系人", position = 6)
-    private String contactsUser;
+    private String contactName;
 
     /** 联系电话 */
     @ApiModelProperty(value = "联系电话", position = 7)
-    private String contactsPhone;
+    private String contactTel;
 
     /** 地址 */
     @ApiModelProperty(value = "地址", position = 8)
-    private String contactsAddress;
+    private String contactAddress;
 
     /** 系统名称 */
     @ApiModelProperty(value = "系统名称", position = 9)

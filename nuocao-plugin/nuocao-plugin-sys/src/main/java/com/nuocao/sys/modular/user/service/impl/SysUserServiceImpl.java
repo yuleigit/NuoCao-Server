@@ -49,6 +49,7 @@ import com.nuocao.sys.modular.role.service.SysRoleService;
 import com.nuocao.sys.modular.user.convert.SysUserConvert;
 import com.nuocao.sys.modular.user.entity.SysUser;
 import com.nuocao.sys.modular.user.entity.SysUserIdentity;
+import com.nuocao.sys.modular.user.enums.SysUserSourceFromTypeEnum;
 import com.nuocao.sys.modular.user.mapper.SysUserMapper;
 import com.nuocao.sys.modular.user.pojo.param.*;
 import com.nuocao.sys.modular.user.pojo.result.*;
@@ -385,14 +386,44 @@ public class SysUserServiceImpl implements SysUserService {
         return userIdentityService.selectUserCountByRoleId(roleId);
     }
 
-    @Override
-    public SysUser createUserWithAccount(String account, String password) {
-        return null;
+    private SysUser CreateUserWithAccountDo(SysUserAddParam sysUserAddParam,Long defaultRoleId, boolean passwordIsHashValue){
+        // 保存用户
+        this.add(sysUserAddParam, SysUserSourceFromTypeEnum.SYSTEM_REGISTER.getValue(),passwordIsHashValue);
+        // 获取用户信息
+        SysUser sysUser = mapper.selectOne(SysUser::getUsername,sysUserAddParam.getUsername());
+        // 授权默认角色
+        setUserRoleIds(sysUser.getId(),CollectionUtils.toList(defaultRoleId));
+        return sysUser;
     }
 
+    @Transaction
     @Override
-    public SysUser createUserWithAccount(String account, String name, String phone, String password, Long defaultRoleId, boolean passwordIsHashValue) {
-        return null;
+    public SysUser createUserWithAccount(SysAccountDTO accountDto,Long defaultRoleId) {
+        SysUserAddParam sysUserAddParam = new SysUserAddParam();
+        sysUserAddParam.setUsername(accountDto.getUsername());
+        sysUserAddParam.setName(accountDto.getNickname());
+        sysUserAddParam.setNickname(accountDto.getNickname());
+        sysUserAddParam.setPassword(accountDto.getPassword());
+        sysUserAddParam.setPhone(accountDto.getPhone());
+        sysUserAddParam.setOrgId(0L);
+
+        // 返回用户
+        return CreateUserWithAccountDo(sysUserAddParam,defaultRoleId,true);
+    }
+
+    @Transaction
+    @Override
+    public SysUser createUserWithAccount(String username, String name, String phone, String password, Long defaultRoleId, boolean passwordIsHashValue) {
+        SysUserAddParam sysUserAddParam = new SysUserAddParam();
+        sysUserAddParam.setUsername(username);
+        sysUserAddParam.setName(name);
+        sysUserAddParam.setNickname(name);
+        sysUserAddParam.setPassword(password);
+        sysUserAddParam.setPhone(phone);
+        sysUserAddParam.setGender(0);
+        sysUserAddParam.setOrgId(0L);
+        return CreateUserWithAccountDo(sysUserAddParam,defaultRoleId,passwordIsHashValue);
+
     }
 
     @Override
@@ -727,6 +758,6 @@ public class SysUserServiceImpl implements SysUserService {
     public void syncPasswordByUsername(String username, String password, boolean passwordHashValue) {
         String pwd = passwordHashValue?password:CommonCryptogramUtils.doHashValue(password);
         UpdateChain.of(SysUser.class).eq(SysUser::getUsername,username)
-                .set(SysUser::getPassword,pwd);
+                .set(SysUser::getPassword,pwd).update();
     }
 }

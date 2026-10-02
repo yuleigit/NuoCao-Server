@@ -2,6 +2,7 @@ package com.nuocao.sys.modular.tenant.entity;
 
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
+import com.nuocao.common.pojo.CommonEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(value = "sys_tenant")
-public class SysTenant {
+public class SysTenant extends CommonEntity {
 
     /** 租户ID */
     @Id
@@ -48,15 +49,15 @@ public class SysTenant {
 
     /** 联系人 */
     @ApiModelProperty(value = "联系人", position = 6)
-    private String contactsUser;
+    private String contactName;
 
     /** 联系电话 */
     @ApiModelProperty(value = "联系电话", position = 7)
-    private String contactsPhone;
+    private String contactTel;
 
     /** 地址 */
     @ApiModelProperty(value = "地址", position = 8)
-    private String contactsAddress;
+    private String contactAddress;
 
     /** 系统名称 */
     @ApiModelProperty(value = "系统名称", position = 9)
@@ -74,23 +75,4 @@ public class SysTenant {
     @ApiModelProperty(value = "可用状态", position = 12)
     private String enableStatus;
 
-    /** 乐观锁 */
-    @ApiModelProperty(value = "乐观锁", position = 13)
-    private Integer deleteFlag;
-
-    /** 创建人 */
-    @ApiModelProperty(value = "创建人", position = 14)
-    private Long createdUser;
-
-    /** 创建时间 */
-    @ApiModelProperty(value = "创建时间", position = 15)
-    private Date createdTime;
-
-    /** 更新人 */
-    @ApiModelProperty(value = "更新人", position = 16)
-    private Long updatedUser;
-
-    /** 更新时间 */
-    @ApiModelProperty(value = "更新时间", position = 17)
-    private Date updatedTime;
 }

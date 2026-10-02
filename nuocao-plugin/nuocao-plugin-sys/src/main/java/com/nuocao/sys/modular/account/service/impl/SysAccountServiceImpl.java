@@ -523,7 +523,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
     public void syncPasswordByUsername(String username, String password, boolean passwordHashValue) {
         String pwd = passwordHashValue?password:CommonCryptogramUtils.doHashValue(password);
         UpdateChain.of(SysAccount.class).eq(SysAccount::getUsername,username)
-                .set(SysAccount::getPassword,pwd);
+                .set(SysAccount::getPassword,pwd).update();
     }
 
     /**

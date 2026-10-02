@@ -6,8 +6,10 @@ import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.UpdateChain;
 import com.nuocao.common.cache.CacheUtils;
+import com.nuocao.common.enums.CommonEnableStatusEnum;
 import com.nuocao.common.exception.CommonException;
 import com.nuocao.common.exception.CommonExceptionI18n;
+import com.nuocao.common.language.LanguageUtils;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.utils.ConvertUtils;
 import com.nuocao.common.utils.LocalDateTimeUtils;
@@ -114,6 +116,7 @@ public class SysTenantServiceImpl implements SysTenantService {
         }
         SysAccountDTO accountDto = accountService.getAccountDtoByCache(sysTenantAddParam.getAdminAccount());
         CommonExceptionI18n.notNull(accountDto,"sys.tenant.admin.accountNotExists",sysTenantAddParam.getAdminAccount());
+        sysTenant.setTenantAdminId(0L); //默认为0
         sysTenantMapper.insert(sysTenant,true);
         TenantUtils.execute(sysTenant.getId(),()->{
             //创建租户默认菜单和授权（默认创建一个管理员角色和授权资源）
@@ -138,8 +141,10 @@ public class SysTenantServiceImpl implements SysTenantService {
         TenantUtils.execute(tenant.getId(),()->{
             SysOrgAddParam orgAddParam = new SysOrgAddParam();
             orgAddParam.setParentId(0L);
-            orgAddParam.setOrgCode(tenant.getSysName());
+            orgAddParam.setOrgCode(tenant.getTenantCode());
+            orgAddParam.setOrgName(tenant.getTenantName());
             orgAddParam.setSortCode(99);
+            orgAddParam.setStatus(CommonEnableStatusEnum.ENABLE.getValue());
             orgAddParam.setDirectorUserId(tenant.getTenantAdminId());
             sysOrgService.add(orgAddParam);
         });
@@ -176,9 +181,10 @@ public class SysTenantServiceImpl implements SysTenantService {
         return TenantUtils.execute(tenant.getId(),()->{
             SysRoleAddParam defaultRole = new SysRoleAddParam();
             defaultRole.setCategory("");
-            defaultRole.setName("系统管理员");
+            defaultRole.setName(LanguageUtils.getMessage("sys.tenant.default.roleName"));
             defaultRole.setCode(SysRoleCodeEnum.SUPER_ADMIN.getValue());
             defaultRole.setSortCode(0);
+            defaultRole.setWeight(99);
             return ConvertUtils.toLong(roleService.add(defaultRole));
         });
     }
@@ -354,8 +360,8 @@ public class SysTenantServiceImpl implements SysTenantService {
         if(ObjectUtil.isNotEmpty(sysTenantPageParam.getTenantName())) {
             queryWrapper.like(SysTenant::getTenantName, sysTenantPageParam.getTenantName());
         }
-        if(ObjectUtil.isNotEmpty(sysTenantPageParam.getContactsUser())) {
-            queryWrapper.like(SysTenant::getContactsUser, sysTenantPageParam.getContactsUser());
+        if(ObjectUtil.isNotEmpty(sysTenantPageParam.getContactName())) {
+            queryWrapper.like(SysTenant::getContactName, sysTenantPageParam.getContactName());
         }
         if(ObjectUtil.isNotEmpty(sysTenantPageParam.getSysName())) {
             queryWrapper.like(SysTenant::getSysName, sysTenantPageParam.getSysName());

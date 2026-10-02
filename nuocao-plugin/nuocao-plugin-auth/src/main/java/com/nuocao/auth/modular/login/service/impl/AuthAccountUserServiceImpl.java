@@ -33,6 +33,7 @@ import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.pojo.KeyValue;
 import com.nuocao.common.utils.CommonCryptogramUtils;
+import com.nuocao.common.utils.NumberUtils;
 import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.ValidationUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
@@ -273,9 +274,18 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
 
     private void fillLoginUserBaseInfo(AuthLoginUserDTO realLoginUser)
     {
-        SaUserLoginInfoDTO loginUser = userLoginApi.getUserByUsername(realLoginUser.getUsername());
-        // 缓存用户信息，此处使用TokenSession为了指定时间内无操作则自动下线
-        StpLoginUserUtils.setLoginUser(loginUser);
+        if(NumberUtils.isLeZero(realLoginUser.getTenantId())) {
+            SaUserLoginInfoDTO loginUser = userLoginApi.getUserByUsername(realLoginUser.getUsername());
+            // 缓存用户信息，此处使用TokenSession为了指定时间内无操作则自动下线
+            StpLoginUserUtils.setLoginUser(loginUser);
+        }else{
+            TenantUtils.execute(realLoginUser.getTenantId(),()->{
+                SaUserLoginInfoDTO loginUser = userLoginApi.getUserByUsername(realLoginUser.getUsername());
+                // 缓存用户信息，此处使用TokenSession为了指定时间内无操作则自动下线
+                StpLoginUserUtils.setLoginUser(loginUser);
+            });
+
+        }
 
     }
 

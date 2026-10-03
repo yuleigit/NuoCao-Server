@@ -85,4 +85,11 @@ public interface DevFileApi {
 
     void storeDeleteFileByUrl(List<String> urlList);
 
+
+    /**
+     * 获取当前引擎
+     * @return
+     */
+    DevFileEngineTypeEnum getCurrentEngine();
+
 }

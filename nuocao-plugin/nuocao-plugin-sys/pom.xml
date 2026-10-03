@@ -25,11 +25,15 @@
             <groupId>com.nuocao</groupId>
             <artifactId>nuocao-plugin-auth-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-dev-api</artifactId>
+        </dependency>
         <!-- 数据权限模块 -->
         <dependency>
             <groupId>com.nuocao</groupId>
             <artifactId>nuocao-data-access</artifactId>
         </dependency>
+
     </dependencies>
 </project>

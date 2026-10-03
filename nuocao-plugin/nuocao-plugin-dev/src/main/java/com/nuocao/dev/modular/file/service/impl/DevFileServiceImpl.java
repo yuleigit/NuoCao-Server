@@ -80,23 +80,23 @@ public class DevFileServiceImpl  implements DevFileService {
 
     @Override
     public String uploadReturnId(String engine, String businessDir,String fileName, InputStream inputStream) {
-        return this.storageFile(engine,businessDir, fileName,inputStream, true);
+        return this.storageFileByInputStream(engine,businessDir, fileName,inputStream, true);
 
     }
 
     @Override
     public String uploadReturnUrl(String engine, String businessDir,String fileName, InputStream inputStream) {
-        return this.storageFile(engine,businessDir, fileName,inputStream, false);
+        return this.storageFileByInputStream(engine,businessDir, fileName,inputStream, false);
     }
 
     @Override
     public String uploadReturnId(String engine,String fileName, InputStream inputStream) {
-        return this.storageFile(engine,null, fileName,inputStream, true);
+        return this.storageFileByInputStream(engine,null, fileName,inputStream, true);
     }
 
     @Override
     public String uploadReturnUrl(String engine,String fileName, InputStream inputStream) {
-        return this.storageFile(engine,null, fileName,inputStream, false);
+        return this.storageFileByInputStream(engine,null, fileName,inputStream, false);
     }
 
 
@@ -164,7 +164,7 @@ public class DevFileServiceImpl  implements DevFileService {
     }
 
     /**
-     * 存储文件
+     * 存储文件,基于UploadedFile
      *
      * @param engine 存储引擎 {@like DevFileEngineTypeEnum.class}
      * @param businessDir 业务目录
@@ -173,6 +173,18 @@ public class DevFileServiceImpl  implements DevFileService {
      **/
     private String storageFile(String engine,String businessDir, UploadedFile file, boolean returnFileId) {
 
+        DevFile devFile = storageFileDo(engine,businessDir,file);
+        // 如果是返回id则返回文件id
+        if (returnFileId) {
+            return devFile.getFileId();
+        } else {
+            // 否则返回下载地址
+            return devFile.getFileUrl();
+        }
+    }
+
+
+    private DevFile storageFileDo(String engine,String businessDir, UploadedFile file){
         // 如果引擎为空，默认使用本地
         if (ObjectUtil.isEmpty(engine)) {
             engine = DevFileEngineTypeEnum.LOCAL.getValue();
@@ -191,13 +203,8 @@ public class DevFileServiceImpl  implements DevFileService {
 
 
         DevFile devFile = genDevFile(engine,fileId,bucketName, file.getName(), file.getContentSize(),storageUrl);
-        // 如果是返回id则返回文件id
-        if (returnFileId) {
-            return fileId;
-        } else {
-            // 否则返回下载地址
-            return devFile.getFileUrl();
-        }
+
+        return devFile;
     }
 
 
@@ -208,20 +215,32 @@ public class DevFileServiceImpl  implements DevFileService {
      * @param returnFileId
      * @return
      */
-    private String storageFile(String engine, String fileName,InputStream inputStream, boolean returnFileId){
-        return storageFile(engine,"",fileName,inputStream,returnFileId);
+    private String storageFileByInputStream(String engine, String fileName,InputStream inputStream, boolean returnFileId){
+        return storageFileByInputStream(engine,"",fileName,inputStream,returnFileId);
     }
 
     /**
-     * 存储文件
+     * 存储文件，基于inputStream；
      *
      * @param engine 存储引擎
      * @param businessDir 业务目录
      * @param inputStream 存储位置
      * @param returnFileId 是否返回ID，true=fileId,false=url
      **/
-    private String storageFile(String engine,String businessDir,String fileName,InputStream inputStream, boolean returnFileId) {
+    private String storageFileByInputStream(String engine,String businessDir,String fileName,InputStream inputStream, boolean returnFileId) {
 
+        DevFile devFile =storageFileByInputStreamDo(engine,businessDir,fileName,inputStream);
+        // 如果是返回id则返回文件id
+        if (returnFileId) {
+            return devFile.getFileId();
+        } else {
+            // 否则返回下载地址
+            return devFile.getFileUrl();
+        }
+    }
+
+
+    private DevFile storageFileByInputStreamDo(String engine,String businessDir,String fileName,InputStream inputStream){
         // 如果引擎为空，默认使用本地
         if (ObjectUtil.isEmpty(engine)) {
             engine = DevFileEngineTypeEnum.LOCAL.getValue();
@@ -241,15 +260,9 @@ public class DevFileServiceImpl  implements DevFileService {
 
 
         DevFile devFile = genDevFile(engine,fileId,bucketName, fileName, DevFileUtils.getInputStreamSize(inputStream),storageUrl);
-        // 如果是返回id则返回文件id
-        if (returnFileId) {
-            return fileId;
-        } else {
-            // 否则返回下载地址
-            return devFile.getFileUrl();
-        }
-    }
 
+        return devFile;
+    }
 
 
 
@@ -321,7 +334,9 @@ public class DevFileServiceImpl  implements DevFileService {
      * @param businessDir 业务目录
      **/
     public String genFileKey(String fileId,String businessDir, UploadedFile file) {
-
+        if(file==null){
+            throw new CommonException("UploadFile is null");
+        }
         // 获取文件原始名称
         return getFileKeyByFileName(fileId,businessDir,file.getName());
     }

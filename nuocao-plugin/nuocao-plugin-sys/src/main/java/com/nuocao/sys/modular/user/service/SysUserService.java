@@ -138,7 +138,10 @@ public interface SysUserService  {
      * 修改用户头像返回base64
      **/
     String updateAvatar(UploadedFile file);
-
+    /**
+     * 修改用户头像返回base64
+     **/
+    String updateAvatarByBase64(String base64);
 
     /**
      * 更新用户的登录时间和登录ip等信息
@@ -277,4 +280,9 @@ public interface SysUserService  {
      * @param passwordHashValue
      */
     public void syncPasswordByUsername(String username, String password, boolean passwordHashValue);
+
+    /**
+     * 编辑个人信息，由会员你自己发起,仅修改在当前租户的信息
+     */
+    void updateUserProfileInfo(SysUserUpdateInfoParam sysUserUpdateInfoParam);
 }

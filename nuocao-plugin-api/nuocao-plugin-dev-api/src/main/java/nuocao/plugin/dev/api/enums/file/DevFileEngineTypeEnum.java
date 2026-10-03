@@ -1,5 +1,6 @@
 package nuocao.plugin.dev.api.enums.file;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.nuocao.common.enums.StrArrayValuable;
 import lombok.Getter;
 
@@ -30,6 +31,12 @@ public enum DevFileEngineTypeEnum implements StrArrayValuable {
     DevFileEngineTypeEnum(String value) {
         this.value = value;
     }
+
+
+    public static DevFileEngineTypeEnum ofValue(String value) {
+        return ArrayUtil.firstMatch(o -> o.getValue().equals(value), DevFileEngineTypeEnum.values());
+    }
+
 
     @Override
     public String[] array() {

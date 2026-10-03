@@ -1,5 +1,6 @@
 package com.nuocao.dev.modular.file.provider;
 
+import com.nuocao.common.exception.CommonExceptionI18n;
 import nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
 import com.nuocao.dev.modular.file.service.DevFileService;
 import nuocao.plugin.dev.api.DevConfigApi;
@@ -59,5 +60,15 @@ public class DevFileApiProvider implements DevFileApi {
     @Override
     public void storeDeleteFileByUrl(List<String> urlList) {
          devFileService.storeDeleteFileByUrl(urlList);
+    }
+
+    public DevFileEngineTypeEnum getCurrentEngine(){
+        String engine = devConfigApi.getValueByKey(DEFAULT_FILE_ENGINE_KEY);
+        DevFileEngineTypeEnum e = DevFileEngineTypeEnum.ofValue(engine);
+        if(e==null){
+            //throw new CommonExceptionI18n("dev.file.engine.notSetting");
+            e=DevFileEngineTypeEnum.LOCAL;
+        }
+        return e;
     }
 }

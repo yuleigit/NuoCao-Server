@@ -70,4 +70,7 @@ public interface AuthUserLoginApi {
      */
     List<AuthLoginUserDTO> getAllTenantUserByAccount(String account);
 
+
+
+
 }

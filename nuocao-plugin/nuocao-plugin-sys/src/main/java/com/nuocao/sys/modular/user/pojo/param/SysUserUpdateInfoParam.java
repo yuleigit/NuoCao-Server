@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.noear.solon.validation.annotation.NotBlank;
+import org.noear.solon.validation.annotation.NotNull;
 
 /**
  * 编辑个人信息参数
@@ -15,8 +16,8 @@ public class SysUserUpdateInfoParam {
 
     /** id */
     @ApiModelProperty(value = "id", required = true, position = 1)
-    @NotBlank(message = "id不能为空")
-    private String id;
+    @NotNull(message = "id不能为空")
+    private Long id;
 
     /** 姓名 */
     @ApiModelProperty(value = "姓名", required = true, position = 2)

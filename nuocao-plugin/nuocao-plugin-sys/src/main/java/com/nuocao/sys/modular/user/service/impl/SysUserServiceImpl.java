@@ -1,10 +1,15 @@
 package com.nuocao.sys.modular.user.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.write.handler.CellWriteHandler;
@@ -56,6 +61,7 @@ import com.nuocao.sys.modular.user.pojo.result.*;
 import com.nuocao.sys.modular.user.service.SysUserIdentityService;
 import com.nuocao.sys.modular.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
+import nuocao.plugin.dev.api.DevFileApi;
 import org.apache.poi.ss.usermodel.*;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -63,9 +69,12 @@ import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.UploadedFile;
 import org.noear.solon.data.annotation.Transaction;
 
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +89,9 @@ public class SysUserServiceImpl implements SysUserService {
     private static final String USER_DTO_CACHE_KEY="sys:user:{}:pojo";
 
     private static final String SELECTOR_ALL_PERMISSION_FLAG="sys:user:selector-all";
+
+    private static final String AVATAR_BUSINESS_DIR="avatar";
+
     @Inject
     private CacheUtils cacheUtils;
 
@@ -101,6 +113,9 @@ public class SysUserServiceImpl implements SysUserService {
     @Inject
     private TenantConfig tenantConfig;
 
+
+    @Inject
+    private DevFileApi fileApi;
 
 
     @Override
@@ -334,8 +349,103 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public String updateAvatar(UploadedFile file) {
-        return null;
+        String suffix = Objects.requireNonNull(FileUtil.getSuffix(file.getName())).toLowerCase();
+        byte[] bytes = IoUtil.readBytes(file.getContent());
+        return processAndSaveAvatar(bytes, suffix);
     }
+
+
+    @Override
+    public String updateAvatarByBase64(String base64) {
+        // 1. 非空与合法性校验
+        if (StrUtil.isBlank(base64)) {
+            throw new CommonException("头像数据不能为空");
+        }
+        if (!isValidImageBase64(base64)) {
+            throw new CommonException("非法图片格式");
+        }
+
+        try {
+            // 2. 去除 Base64 前缀（如 "data:image/png;base64,"）并解码为字节数组
+            String pureBase64 = StrUtil.subAfter(base64, "base64,", false);
+            if (StrUtil.isBlank(pureBase64)) {
+                pureBase64 = base64; // 若无前缀则使用原字符串
+            }
+            byte[] bytes = Base64.decode(pureBase64);
+
+            // 3. 提取图片后缀（若已知格式可写死或从 Base64 头部解析，通常默认 png 或 jpg）
+            String suffix = "png";
+            if (base64.startsWith("data:image/")) {
+                suffix = StrUtil.subBetween(base64, "data:image/", ";base64");
+            }
+
+            // 4. 调用公共方法处理图片并存储
+            return processAndSaveAvatar(bytes, suffix);
+
+        } catch (Exception e) {
+            log.error(">>> Base64 头像解析或修改失败：", e);
+            throw new CommonException("头像修改失败");
+        }
+    }
+
+    private boolean isValidImageBase64(String base64) {
+        // 1. 去掉 Data URI 前缀
+        String pureBase64 = base64.contains(",") ? base64.split(",")[1] : base64;
+
+        try {
+            byte[] bytes = Base64.decode(pureBase64);
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+
+            // 2. 使用 ImageIO 读取图片流
+            BufferedImage bi = ImageIO.read(bais);
+
+            // 如果 bi 不为空，说明确实是图片格式（且 ImageIO 能解析）
+            return bi != null;
+        } catch (Exception e) {
+            log.warn(">>> Base64 图片校验异常: {}", e.getMessage());
+            return false;
+        }
+    }
+    /**
+     * 3. 抽离出的公共图片处理与保存逻辑
+     */
+    private String processAndSaveAvatar(byte[] bytes, String suffix) {
+        SysUser sysUser = this.queryEntity(StpLoginUserUtils.getLoginUserId());
+        try {
+            // 1. 读取并缩放图片
+            BufferedImage image = ImgUtil.toImage(bytes);
+            InputStream inputStream;
+            if (image.getWidth() <= 200 && image.getHeight() <= 200) {
+                inputStream = IoUtil.toStream(bytes);
+            } else {
+                // ImgUtil.scale 缩放后转为流（Hutool 的 scale 返回的是 Image 对象，转为 InputStream 存储）
+                // 超过 200x200，进行缩放并写入内存输出流
+                Image scaledImg = ImgUtil.scale(image, 200, 200);
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                ImgUtil.write(scaledImg, suffix, out);
+                inputStream = new ByteArrayInputStream(out.toByteArray());
+            }
+
+            // 2. 存储文件并获取 URL
+            String fileName = sysUser.getId() + "_" + System.currentTimeMillis() + "." + suffix;
+            String avatarUrl = fileApi.storageFileReturnUrlDynamic(AVATAR_BUSINESS_DIR, fileName, inputStream);
+
+            // 3. 更新数据库中的 Avatar 字段为 URL
+            UpdateChain.of(SysUser.class)
+                    .eq(SysUser::getId, sysUser.getId())
+                    .set(SysUser::getAvatar, avatarUrl)
+                    .update();
+            //删除旧图
+            fileApi.storeDeleteFileByUrl(CollectionUtils.toList(sysUser.getAvatar()));
+            return avatarUrl;
+
+        } catch (Exception e) {
+            log.error(">>> 头像修改失败，用户id: {}", sysUser.getId(), e);
+            throw new CommonException("头像修改失败，用户id值为：{}", sysUser.getId());
+        }
+    }
+
+
 
     @Override
     @DataScopeIgnore
@@ -362,7 +472,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void updatePasswordByOld(SysUserUpdatePwdByOldParam param) {
-        SysUser sysUser = this.queryEntity(StpUtil.getLoginIdAsLong());
+        SysUser sysUser = this.queryEntity(StpLoginUserUtils.getLoginUserId());
         String password = param.getPassword();
         String newPassword = param.getNewPassword();
         if (!CommonCryptogramUtils.doHashValue(password).equals(sysUser.getPassword())) {
@@ -760,4 +870,26 @@ public class SysUserServiceImpl implements SysUserService {
         UpdateChain.of(SysUser.class).eq(SysUser::getUsername,username)
                 .set(SysUser::getPassword,pwd).update();
     }
+
+    @Override
+    public void updateUserProfileInfo(SysUserUpdateInfoParam sysUserUpdateInfoParam) {
+        Long userId = StpLoginUserUtils.getLoginUserId();
+        if (!userId.equals(sysUserUpdateInfoParam.getId())) {
+            throw new CommonException("禁止修改他人信息");
+        }
+        SysUser sysUser = this.queryEntity(sysUserUpdateInfoParam.getId());
+        // 更新指定字段
+        UpdateChain.of(SysUser.class).eq(SysUser::getId, sysUser.getId())
+                .set(SysUser::getName, sysUserUpdateInfoParam.getName(), ObjectUtil.isNotEmpty(sysUserUpdateInfoParam.getName()))
+                .set(SysUser::getNickname, sysUserUpdateInfoParam.getNickname(), ObjectUtil.isNotEmpty(sysUserUpdateInfoParam.getNickname()))
+                .set(SysUser::getGender, sysUserUpdateInfoParam.getGender(), ObjectUtil.isNotEmpty(sysUserUpdateInfoParam.getGender()))
+                .set(SysUser::getBirthday, sysUserUpdateInfoParam.getBirthday(), ObjectUtil.isNotEmpty(sysUserUpdateInfoParam.getBirthday()))
+                .set(SysUser::getEmail, sysUserUpdateInfoParam.getEmail(), ObjectUtil.isNotEmpty(sysUserUpdateInfoParam.getEmail()))
+                .update();
+        //同步更新自己的登录信息
+        StpLoginUserUtils.setLoginUser(getLoginUserById(sysUser.getId()));
+
+    }
+
+
 }

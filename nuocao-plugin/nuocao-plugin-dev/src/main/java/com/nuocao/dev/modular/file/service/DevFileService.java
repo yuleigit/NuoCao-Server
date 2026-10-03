@@ -107,4 +107,5 @@ public interface DevFileService  {
     /**根据url删除文件
      */
     void storeDeleteFileByUrl(List<String> urlList);
+
 }

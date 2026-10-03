@@ -12,10 +12,7 @@ import com.nuocao.sys.modular.user.pojo.param.SysUserAddParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserEditParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserExportParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserPageParam;
-import com.nuocao.sys.modular.user.pojo.result.SaSysLoginUser;
-import com.nuocao.sys.modular.user.pojo.result.SysUserExportResult;
-import com.nuocao.sys.modular.user.pojo.result.SysUserPageResult;
-import com.nuocao.sys.modular.user.pojo.result.UserSelectorResult;
+import com.nuocao.sys.modular.user.pojo.result.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -40,6 +37,8 @@ public interface SysUserConvert {
 
     SysUser convert(SysUserAddParam param);
     SysUser convert(SysUserEditParam param);
+
+    SysUserResult convert(SysUser user);
 
     SysUserPageParam convertQueryParam(SysUserExportParam param);
 

@@ -4,6 +4,7 @@ import com.nuocao.common.page.PageResult;
 import com.nuocao.sys.api.dto.SysAccountDTO;
 import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.api.dto.SysUserDTO;
+import com.nuocao.sys.api.dto.SysUserSampleResultDTO;
 import com.nuocao.sys.modular.user.entity.SysUser;
 import com.nuocao.sys.modular.user.pojo.param.*;
 import com.nuocao.sys.modular.user.pojo.result.SaSysLoginUser;
@@ -15,6 +16,7 @@ import org.noear.solon.core.handle.UploadedFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户Service接口
@@ -285,4 +287,8 @@ public interface SysUserService  {
      * 编辑个人信息，由会员你自己发起,仅修改在当前租户的信息
      */
     void updateUserProfileInfo(SysUserUpdateInfoParam sysUserUpdateInfoParam);
+
+    Map<Long,String> getUserNameMapByIds(List<Long> userIds);
+
+    List<SysUserSampleResultDTO> getUserSampleListByIds(List<Long> userIds);
 }

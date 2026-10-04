@@ -1,30 +1,32 @@
 package com.nuocao.sys.modular.user.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.lang.tree.Tree;
+import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.common.annotation.CommonLog;
+import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
-import com.nuocao.common.pojo.CommonValidList;
-import com.nuocao.sys.api.dto.menu.SysMenuTreeResultDTO;
-import com.nuocao.sys.modular.user.entity.SysUser;
-import com.nuocao.sys.modular.user.enums.SysUserSourceFromTypeEnum;
+import com.nuocao.common.utils.NumberUtils;
+import com.nuocao.common.utils.bean.BeanUtils;
+import com.nuocao.common.utils.collection.CollectionUtils;
+import com.nuocao.sys.modular.user.pojo.param.SysUserMessagePageParam;
+import com.nuocao.sys.modular.user.pojo.param.SysUserMessageSendParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdateInfoParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdatePwdByOldParam;
-import com.nuocao.sys.modular.user.pojo.param.SysUserUpdateWorkbenchParam;
 import com.nuocao.sys.modular.user.pojo.result.SysUserResult;
 import com.nuocao.sys.modular.user.service.SysUserCenterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import nuocao.plugin.dev.api.DevMessageApi;
+import nuocao.plugin.dev.api.dto.message.DevMessagePageParamDTO;
+import nuocao.plugin.dev.api.dto.message.DevMessageResultDTO;
+import nuocao.plugin.dev.api.dto.message.DevMessageSendParamDTO;
+import nuocao.plugin.dev.api.enums.message.DevMessageCategoryEnum;
 import org.noear.solon.annotation.*;
-import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.UploadedFile;
-import org.noear.solon.validation.annotation.NotEmpty;
 import org.noear.solon.validation.annotation.Valid;
 import org.noear.solon.validation.annotation.Validated;
+import org.noear.solon.web.sse.SseEmitter;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,7 +39,8 @@ public class SysUserCenterController {
 
     @Inject
     private SysUserCenterService sysUserCenterService;
-
+    @Inject
+    private DevMessageApi devMessageApi;
 
     @ApiOperation("获取用户信息")
     @Get@Mapping("/sys/userCenter/getProfile")
@@ -83,5 +86,58 @@ public class SysUserCenterController {
         return CommonResult.ok();
     }
 
+    @ApiOperation("站内消息列表")
+    @Get
+    @Mapping("/sys/userCenter/message/page")
+    public CommonResult<PageResult<DevMessageResultDTO>> messagePage(@Validated SysUserMessagePageParam pageParam) {
+        DevMessagePageParamDTO paramDto = BeanUtils.toBean(pageParam, DevMessagePageParamDTO.class);
+        return CommonResult.data(devMessageApi.page(paramDto));
+    }
+
+
+    @ApiOperation("获取站内信详情")
+    @Get
+    @Mapping("/sys/userCenter/message/detail/{id}")
+    public CommonResult<DevMessageResultDTO> messageDetail(Long id) {
+        return CommonResult.data(devMessageApi.detail(id));
+    }
+
+    @ApiOperation("将自己信息全部设为已读")
+    @Post
+    @Mapping("/sys/userCenter/message/allRead")
+    public CommonResult<Void> allRead() {
+        devMessageApi.allMessageMarkRead(StpLoginUserUtils.getLoginUserId());
+        return CommonResult.ok();
+    }
+
+
+    @ApiOperation("获取未读消息列表（最新多少个）")
+    @Get
+    @Mapping("/sys/userCenter/message/list")
+    public CommonResult<List<DevMessageResultDTO>> messageList( Integer limit) {
+        if(NumberUtils.isLeZero(limit)) limit=10;
+        return CommonResult.data(devMessageApi.list(StpLoginUserUtils.getLoginUserId(),limit));
+    }
+
+    @ApiOperation("创建sse连接")
+    @Get
+    @Mapping("/sys/userCenter/message/createSseConnect")
+    public SseEmitter createSseConnect(String clientId){
+        return sysUserCenterService.createSseConnect(clientId);
+    }
+
+
+    @ApiOperation("将自己信息全部设为已读")
+    @Post
+    @Mapping("/sys/userCenter/message/send")
+    public CommonResult<Void> send(@Validated SysUserMessageSendParam sendParam) {
+        DevMessageSendParamDTO param = DevMessageSendParamDTO.builder().title(sendParam.getTitle())
+                        .content(sendParam.getContent())
+                                .senderUserId(StpLoginUserUtils.getLoginUserId())
+                                        .receiverIdList(sendParam.getReceiverIdList())
+                                                .category(DevMessageCategoryEnum.MSG).build();
+        devMessageApi.sendMessage(param);
+        return CommonResult.ok();
+    }
 
 }

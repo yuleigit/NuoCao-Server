@@ -1,9 +1,12 @@
 package com.nuocao.sys.api;
 
 import com.nuocao.common.page.PageResult;
+import com.nuocao.common.utils.collection.CollectionUtils;
 import com.nuocao.sys.api.dto.SysUserDTO;
+import com.nuocao.sys.api.dto.SysUserSampleResultDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户Api
@@ -85,5 +88,15 @@ public interface SysUserApi {
      * @param passwordHashValue 是否经过hashValue加密
      */
     void syncPasswordByUsername(String username,String password,boolean  passwordHashValue);
+
+
+    Map<Long,String> getUserNameMapByIds(List<Long> userIds);
+
+    List<SysUserSampleResultDTO> getUserSampleListByIds(List<Long> userIds);
+
+    default SysUserSampleResultDTO getUserSampleListById(Long userId){
+        List<SysUserSampleResultDTO> list = getUserSampleListByIds(CollectionUtils.toList(userId));
+        return CollectionUtils.isEmpty(list)?null:list.get(0);
+    }
 
 }

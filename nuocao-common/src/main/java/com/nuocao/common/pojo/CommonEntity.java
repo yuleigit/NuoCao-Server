@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -25,7 +26,7 @@ public class CommonEntity implements Serializable {
 
     /** 创建时间 */
     @ApiModelProperty(value = "创建时间", position = 1000)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /** 创建人 */
     @ApiModelProperty(value = "创建人", position = 1001)
@@ -33,7 +34,7 @@ public class CommonEntity implements Serializable {
 
     /** 更新时间 */
     @ApiModelProperty(value = "更新时间", position = 1002)
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /** 更新人 */
     @ApiModelProperty(value = "更新人", position = 1003)

@@ -5,9 +5,11 @@ import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.nuocao.common.enums.CommonDeleteFlagEnum;
 import com.nuocao.common.pojo.CommonEntity;
+import com.nuocao.common.utils.LocalDateTimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.function.Supplier;
 
@@ -25,8 +27,8 @@ public class CustomMetaObjectListener implements UpdateListener, InsertListener 
         try {
             if (ObjectUtil.isNotNull(entity) && entity instanceof CommonEntity) {
                 CommonEntity commonEntity = (CommonEntity) entity;
-                Date current = ObjectUtil.isNotNull(commonEntity.getCreateTime())
-                        ? commonEntity.getCreateTime() : new Date();
+                LocalDateTime current = ObjectUtil.isNotNull(commonEntity.getCreateTime())
+                        ? commonEntity.getCreateTime() : LocalDateTimeUtils.now();
                 commonEntity.setCreateTime(current);
                 // 当前已登录 且 创建人为空 则填充
                 if (ObjectUtil.isNull(commonEntity.getCreateUser())) {
@@ -47,8 +49,8 @@ public class CustomMetaObjectListener implements UpdateListener, InsertListener 
         try {
             if (ObjectUtil.isNotNull(entity) && entity instanceof CommonEntity) {
                 CommonEntity commonEntity = (CommonEntity) entity;
-                Date current = ObjectUtil.isNotNull(commonEntity.getUpdateTime())
-                        ? commonEntity.getUpdateTime() : new Date();
+                LocalDateTime current = ObjectUtil.isNotNull(commonEntity.getUpdateTime())
+                        ? commonEntity.getUpdateTime() : LocalDateTimeUtils.now();
                 commonEntity.setUpdateTime(current);
 
                 // 当前已登录 且 更新人为空 则填充

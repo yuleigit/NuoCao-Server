@@ -14,7 +14,8 @@ public enum DevMessageCategoryEnum implements StrArrayValuable {
 
     /** 系统通知 */
     SYS("sys"),
-
+    /** 审核信息 */
+    AUDIT("audit"),
     /** 用户消息  */
     MSG("msg"),
 ;

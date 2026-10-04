@@ -1,6 +1,7 @@
 package com.nuocao.sys.modular.user.service.impl;
 
 import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
+import com.nuocao.common.sse.CommonSseParam;
 import com.nuocao.sys.api.dto.menu.SysMenuTreeResultDTO;
 import com.nuocao.sys.modular.permission.service.SysUserPermissionService;
 import com.nuocao.sys.modular.user.convert.SysUserConvert;
@@ -9,11 +10,15 @@ import com.nuocao.sys.modular.user.pojo.param.SysUserUpdatePwdByOldParam;
 import com.nuocao.sys.modular.user.pojo.result.SysUserResult;
 import com.nuocao.sys.modular.user.service.SysUserCenterService;
 import com.nuocao.sys.modular.user.service.SysUserService;
+import nuocao.plugin.dev.api.DevMessageApi;
+import nuocao.plugin.dev.api.DevSseApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.handle.UploadedFile;
+import org.noear.solon.web.sse.SseEmitter;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 用户中心Servic 实现
@@ -27,7 +32,10 @@ public class SysUserCenterServiceImpl implements SysUserCenterService {
     @Inject
     private SysUserPermissionService sysUserPermissionService;
 
-
+    @Inject
+    private DevMessageApi devMessageApi;
+    @Inject
+    private DevSseApi devSseApi;
     @Override
     public SysUserResult getProfile() {
         return SysUserConvert.INSTANCE.convert(sysUserService.getById(StpLoginUserUtils.getLoginUserId()));
@@ -56,5 +64,16 @@ public class SysUserCenterServiceImpl implements SysUserCenterService {
     @Override
     public void updateUserProfileInfo(SysUserUpdateInfoParam sysUserUpdateInfoParam) {
         sysUserService.updateUserProfileInfo(sysUserUpdateInfoParam);
+    }
+
+    @Override
+    public SseEmitter createSseConnect(String clientId) {
+        Consumer<CommonSseParam> consumer = m -> {
+            //获取用户未读消息
+            long unreadMessageNum = devMessageApi.unreadCount(m.getUserIdToLong());
+            //发送消息
+            devSseApi.sendMessageToOneClient(m.getClientId(), String.valueOf(unreadMessageNum));
+        };
+        return devSseApi.createSseConnect(clientId,true,false,consumer);
     }
 }

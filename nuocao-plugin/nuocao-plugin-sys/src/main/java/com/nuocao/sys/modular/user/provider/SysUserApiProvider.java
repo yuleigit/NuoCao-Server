@@ -6,6 +6,7 @@ import com.nuocao.common.utils.StringUtils;
 import com.nuocao.sys.api.SysUserApi;
 import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.api.dto.SysUserDTO;
+import com.nuocao.sys.api.dto.SysUserSampleResultDTO;
 import com.nuocao.sys.modular.permission.service.SysUserPermissionService;
 import com.nuocao.sys.modular.role.service.SysRoleService;
 import com.nuocao.sys.modular.user.convert.SysUserConvert;
@@ -14,6 +15,7 @@ import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -86,5 +88,15 @@ public class SysUserApiProvider implements SysUserApi {
     public void syncPasswordByUsername(String username, String password, boolean passwordHashValue) {
         //这里修改后同步用户端密码是为了方便兼容两种登录模式，可根据自己业务需求更新为只在account中存储或去掉account这个表
         sysUserService.syncPasswordByUsername(username,password,passwordHashValue);
+    }
+
+    @Override
+    public Map<Long, String> getUserNameMapByIds(List<Long> userIds) {
+        return sysUserService.getUserNameMapByIds(userIds);
+    }
+
+    @Override
+    public List<SysUserSampleResultDTO> getUserSampleListByIds(List<Long> userIds) {
+        return sysUserService.getUserSampleListByIds(userIds);
     }
 }

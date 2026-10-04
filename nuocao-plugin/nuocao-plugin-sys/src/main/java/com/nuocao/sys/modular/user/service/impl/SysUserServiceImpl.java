@@ -1,12 +1,10 @@
 package com.nuocao.sys.modular.user.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -45,9 +43,9 @@ import com.nuocao.sys.api.SysTenantApi;
 import com.nuocao.sys.api.dto.SysAccountDTO;
 import com.nuocao.sys.api.dto.SysRoleDTO;
 import com.nuocao.sys.api.dto.SysUserDTO;
+import com.nuocao.sys.api.dto.SysUserSampleResultDTO;
 import com.nuocao.sys.api.enums.SysUserIdentityTypeEnum;
 import com.nuocao.sys.core.pass.AccountPasswordUtils;
-import com.nuocao.sys.modular.account.entity.SysAccount;
 import com.nuocao.sys.modular.org.entity.SysOrg;
 import com.nuocao.sys.modular.org.service.SysOrgService;
 import com.nuocao.sys.modular.role.service.SysRoleService;
@@ -891,5 +889,28 @@ public class SysUserServiceImpl implements SysUserService {
 
     }
 
+    @Override
+    public Map<Long, String> getUserNameMapByIds(List<Long> userIds) {
+        if(CollectionUtils.isEmpty(userIds)) return new HashMap<>();
+        LambdaQueryWrapperX<SysUser> query = new LambdaQueryWrapperX<>();
+        query.inX(SysUser::getId,userIds).selectX(SysUser::getId,SysUser::getName,SysUser::getNickname,SysUser::getUsername);
+        List<SysUser> list = mapper.selectListByQuery(query);
+        if(CollectionUtils.isEmpty(list)) return new HashMap<>();
+        Map<Long,String> map = new HashMap<>();
+        for (SysUser u :list){
+            map.put(u.getId(),(StringUtils.firstNotBlank(u.getName(),u.getNickname(),u.getUsername())));
+        }
+        return map;
+    }
 
+    @Override
+    public List<SysUserSampleResultDTO> getUserSampleListByIds(List<Long> userIds) {
+        if(CollectionUtils.isEmpty(userIds)) return new ArrayList<>();
+        LambdaQueryWrapperX<SysUser> query = new LambdaQueryWrapperX<>();
+        query.inX(SysUser::getId,userIds).selectX(SysUser::getId,SysUser::getName,
+                SysUser::getNickname,SysUser::getUsername,
+                SysUser::getAvatar
+        );
+        return mapper.selectListByQueryAs(query, SysUserSampleResultDTO.class);
+    }
 }

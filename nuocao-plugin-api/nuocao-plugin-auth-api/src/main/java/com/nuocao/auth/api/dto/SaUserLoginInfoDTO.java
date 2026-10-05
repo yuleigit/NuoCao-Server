@@ -1,5 +1,6 @@
 package com.nuocao.auth.api.dto;
 
+import cn.dev33.satoken.json.SaJsonType;
 import cn.hutool.core.map.MapUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public abstract class SaUserLoginInfoDTO implements Serializable {
+public abstract class SaUserLoginInfoDTO implements SaJsonType,Serializable {
 
     /** id */
     @ApiModelProperty(value = "用户ID", position = 1)

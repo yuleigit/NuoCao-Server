@@ -119,6 +119,9 @@ public class DevMessageServiceImpl  implements DevMessageService {
             }
         }
 
+        if(ObjectUtil.isEmpty(devMessagePageParam.getSortingFields())) {
+            queryWrapper.orderBy(DevMessage::getId,false);
+        }
         return queryWrapper;
     }
 
@@ -128,9 +131,6 @@ public class DevMessageServiceImpl  implements DevMessageService {
         QueryWrapper queryWrapper = initQueryWrapper(devMessagePageParam);
 
 
-        if(ObjectUtil.isEmpty(devMessagePageParam.getSortingFields())) {
-            queryWrapper.orderBy(DevMessage::getId,false);
-        }
 
         return mapper.selectPage(devMessagePageParam, queryWrapper);
     }
@@ -160,6 +160,7 @@ public class DevMessageServiceImpl  implements DevMessageService {
         if(devMessageListParam.getRead()!=null){
             query.eq(DevMessageReceiver::getRead,devMessageListParam.getRead());
         }
+        query.orderBy(DevMessage::getId,false);
         query.limit(ConvertUtils.toInt(devMessageListParam.getLimit(),10));
 
         return builderSendUser(mapper.selectListByQueryAs(query, DevMessageReceiverResult.class));

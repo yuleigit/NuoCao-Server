@@ -50,7 +50,7 @@ public class GlobalConfigure {
      **/
     @Bean
     public void addInterceptors() {
-        Solon.app().routerInterceptor((ctx, mainHandler, chain) -> {
+        Solon.app().router().routerInterceptor((ctx, mainHandler, chain) -> {
             Action action = ctx.action();
             if (action != null) {
                 Method method = action.method().getMethod();

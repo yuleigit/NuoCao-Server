@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import nuocao.plugin.dev.api.enums.message.DevMessageCategoryEnum;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Component;
-import org.noear.solon.data.annotation.Tran;
 import org.noear.solon.data.annotation.Transaction;
 
 
@@ -194,7 +193,7 @@ public class DevMessageServiceImpl  implements DevMessageService {
         return devMessageReceiverService.countByUserId(userId);
     }
 
-    @Tran
+    @Transaction
     @Override
     public void delete(List<DevMessageIdParam> devMessageIdParamList) {
         List<Long> devMessageIdList = CollStreamUtil.toList(devMessageIdParamList, DevMessageIdParam::getId);

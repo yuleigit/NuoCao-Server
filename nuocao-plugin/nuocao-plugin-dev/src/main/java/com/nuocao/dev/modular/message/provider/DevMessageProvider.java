@@ -84,7 +84,7 @@ public class DevMessageProvider implements DevMessageApi {
     @Override
     public PageResult<DevMessageResultDTO> page(DevMessagePageParamDTO pageParam) {
         if(NumberUtils.isLeZero(pageParam.getReceiverUserId())){
-            return new PageResult<>();
+            return new PageResult<>(0L);
         }
         DevMessagePageParam param = DevMessageConvert.INSTANCE.convertPageParam(pageParam);
         param.setReceiveUserId(pageParam.getReceiverUserId());

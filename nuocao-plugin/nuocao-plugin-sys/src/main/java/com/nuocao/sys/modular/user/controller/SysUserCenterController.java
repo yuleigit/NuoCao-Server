@@ -91,6 +91,7 @@ public class SysUserCenterController {
     @Mapping("/sys/userCenter/message/page")
     public CommonResult<PageResult<DevMessageResultDTO>> messagePage(@Validated SysUserMessagePageParam pageParam) {
         DevMessagePageParamDTO paramDto = BeanUtils.toBean(pageParam, DevMessagePageParamDTO.class);
+        paramDto.setReceiverUserId(StpLoginUserUtils.getLoginUserId());
         return CommonResult.data(devMessageApi.page(paramDto));
     }
 

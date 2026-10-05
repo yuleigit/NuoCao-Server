@@ -16,14 +16,14 @@
     <parent>
         <groupId>org.noear</groupId>
         <artifactId>solon-parent</artifactId>
-        <version>3.9.0</version>
+        <version>4.1.1</version>
         <relativePath />
     </parent>
 
     <properties>
         <java.version>11</java.version>
         <nuocao.version>1.0.0</nuocao.version>
-        <solon.version>3.9.0</solon.version>
+        <solon.version>4.1.1</solon.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -57,11 +57,11 @@
         <tomcat.embed.core.version>9.0.72</tomcat.embed.core.version>
         <hikaricp.version>5.1.0</hikaricp.version>
         <nashorn.version>15.4</nashorn.version>
-        <mybatis-flex.version>1.11.1</mybatis-flex.version>
+        <mybatis-flex.version>1.11.8</mybatis-flex.version>
         <protobuf.java.version>3.21.12</protobuf.java.version>
         <fastjson2.version>2.0.51</fastjson2.version>
         <jsqlparser.version>4.7</jsqlparser.version>
-        <sa-token.version>1.44.0</sa-token.version>
+        <sa-token.version>1.46.0</sa-token.version>
         <!-- 其他暂时不支持的服务组件版本 -->
         <rocketmq.version>5.3.3</rocketmq.version>
         <mica.solon.version>2.3.9</mica.solon.version>
@@ -254,9 +254,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.noear</groupId>
+                <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-solon-plugin</artifactId>
-                <version>${solon.version}</version>
+                <version>${sa-token.version}</version>
             </dependency>
 
             <!-- JustAuth 第三方登录 -->

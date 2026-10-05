@@ -22,7 +22,7 @@
 
         <!-- sa-token -->
         <dependency>
-            <groupId>org.noear</groupId>
+            <groupId>cn.dev33</groupId>
             <artifactId>sa-token-solon-plugin</artifactId>
         </dependency>
     </dependencies>

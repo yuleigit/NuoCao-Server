@@ -1,4 +1,4 @@
-package com.nuocao.common.config;
+package com.nuocao.common.validation;
 
 
 import com.nuocao.common.language.LanguageUtils;

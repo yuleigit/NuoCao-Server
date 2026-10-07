@@ -45,6 +45,4 @@ public interface SysUserCenterService {
 
 
 
-    SseEmitter createSseConnect(String clientId);
-
 }

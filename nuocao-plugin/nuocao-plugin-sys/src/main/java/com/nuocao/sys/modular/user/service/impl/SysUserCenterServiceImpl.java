@@ -66,14 +66,5 @@ public class SysUserCenterServiceImpl implements SysUserCenterService {
         sysUserService.updateUserProfileInfo(sysUserUpdateInfoParam);
     }
 
-    @Override
-    public SseEmitter createSseConnect(String clientId) {
-        Consumer<CommonSseParam> consumer = m -> {
-            //获取用户未读消息
-            long unreadMessageNum = devMessageApi.unreadCount(m.getUserIdToLong());
-            //发送消息
-            devSseApi.sendMessageToOneClient(m.getClientId(), String.valueOf(unreadMessageNum));
-        };
-        return devSseApi.createSseConnect(clientId,true,false,consumer);
-    }
+
 }

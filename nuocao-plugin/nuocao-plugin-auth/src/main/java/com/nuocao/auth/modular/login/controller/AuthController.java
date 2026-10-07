@@ -23,6 +23,8 @@ import org.noear.solon.validation.annotation.Validated;
 
 /**
  * 账号登录 控制器
+ * 目前系统中时基于account登录+user使用的模式，
+ * 关于密码为了方便用户改为只有user一层用户登录模式， * 所以所以在设计时将密码存了两份，实际使用中自行扩展，是删除还是保留
  */
 @Api(tags = "账号登录 控制器")
 @Controller

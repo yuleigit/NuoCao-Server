@@ -5,7 +5,9 @@ import com.nuocao.dev.modular.message.entity.DevMessage;
 import com.nuocao.dev.modular.message.entity.DevMessageReceiver;
 import com.nuocao.dev.modular.message.pojo.param.DevMessagePageParam;
 import com.nuocao.dev.modular.message.pojo.param.DevMessageSendParam;
+import com.nuocao.dev.modular.message.pojo.result.DevMessageDetailResult;
 import com.nuocao.dev.modular.message.pojo.result.DevMessageReceiverResult;
+import com.nuocao.dev.modular.message.pojo.result.DevMessageSenderResult;
 import com.nuocao.sys.api.dto.SysUserSampleResultDTO;
 import nuocao.plugin.dev.api.dto.message.DevMessagePageParamDTO;
 import nuocao.plugin.dev.api.dto.message.DevMessageResultDTO;
@@ -49,5 +51,8 @@ public interface DevMessageConvert {
     DevMessageResultDTO convertResultDto(DevMessageReceiverResult bean);
 
     DevMessageUserResultDTO convertUser(SysUserSampleResultDTO bean);
+
+    DevMessageSenderResult convertSenderResult(DevMessageDetailResult bean);
+
 
 }

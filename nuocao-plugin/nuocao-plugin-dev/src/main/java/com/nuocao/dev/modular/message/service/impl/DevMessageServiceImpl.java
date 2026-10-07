@@ -12,6 +12,7 @@ import com.nuocao.common.exception.CommonException;
 import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.mapper.LambdaQueryWrapperX;
 import com.nuocao.common.page.PageResult;
+import com.nuocao.common.sse.CommonSseParam;
 import com.nuocao.common.utils.ConvertUtils;
 import com.nuocao.common.utils.NumberUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
@@ -19,25 +20,27 @@ import com.nuocao.dev.modular.message.convert.DevMessageConvert;
 import com.nuocao.dev.modular.message.entity.DevMessage;
 import com.nuocao.dev.modular.message.entity.DevMessageReceiver;
 import com.nuocao.dev.modular.message.mapper.DevMessageMapper;
-import com.nuocao.dev.modular.message.pojo.param.DevMessageIdParam;
-import com.nuocao.dev.modular.message.pojo.param.DevMessageListParam;
-import com.nuocao.dev.modular.message.pojo.param.DevMessagePageParam;
-import com.nuocao.dev.modular.message.pojo.param.DevMessageSendParam;
+import com.nuocao.dev.modular.message.pojo.param.*;
 import com.nuocao.dev.modular.message.pojo.result.DevMessageDetailResult;
 import com.nuocao.dev.modular.message.pojo.result.DevMessageReceiverResult;
+import com.nuocao.dev.modular.message.pojo.result.DevMessageSenderResult;
 import com.nuocao.dev.modular.message.service.DevMessageReceiverService;
 import com.nuocao.dev.modular.message.service.DevMessageService;
 import com.nuocao.sys.api.SysUserApi;
 import com.nuocao.sys.api.dto.SysUserSampleResultDTO;
 import lombok.extern.slf4j.Slf4j;
+import nuocao.plugin.dev.api.DevSseApi;
+import nuocao.plugin.dev.api.dto.message.DevMessageReceiverInfoDTO;
 import nuocao.plugin.dev.api.enums.message.DevMessageCategoryEnum;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.data.annotation.Transaction;
+import org.noear.solon.web.sse.SseEmitter;
 
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -55,7 +58,8 @@ public class DevMessageServiceImpl  implements DevMessageService {
     @Inject
     private SysUserApi sysUserApi;
 
-
+    @Inject
+    private DevSseApi devSseApi;
     @Inject
     private DevMessageReceiverService devMessageReceiverService;
 
@@ -78,9 +82,10 @@ public class DevMessageServiceImpl  implements DevMessageService {
 
     /**
      * 初始化查询语句，如果之传入一个userId或则返回leftjson的
+     * @param isReceiver 是否接收人模式 ，否则以发送人角度查询
      * @return
      */
-    private QueryWrapper initQueryWrapper(DevMessagePageParam devMessagePageParam){
+    private QueryWrapper initQueryWrapper(DevMessagePageParam devMessagePageParam,boolean isReceiver){
         LambdaQueryWrapperX<DevMessage> queryWrapper = new LambdaQueryWrapperX<>();
 
         queryWrapper.selectX(DevMessage::getId,DevMessage::getCategory,DevMessage::getSenderUserId,
@@ -90,21 +95,23 @@ public class DevMessageServiceImpl  implements DevMessageService {
         if (StringUtils.isNotBlank(devMessagePageParam.getSearchKey())) {
             queryWrapper.likeX(DevMessage::getTitle, devMessagePageParam.getSearchKey());
         }
-        if(devMessagePageParam.getReceiveUserId()!=null && CollectionUtils.isNotEmpty(devMessagePageParam.getReceiveUserIds())){
+        if(devMessagePageParam.getReceiverUserId()!=null && CollectionUtils.isNotEmpty(devMessagePageParam.getReceiverUserIds())){
             CommonException.throwException("接收用户userId和userIdList只能选择其一");
         }
 
         if (StringUtils.isNotBlank(devMessagePageParam.getCategory())) {
             queryWrapper.eqX(DevMessage::getCategory, devMessagePageParam.getCategory());
         }
-        Long userId=devMessagePageParam.getReceiveUserId();
-        if(CollectionUtils.isNotEmpty(devMessagePageParam.getReceiveUserIds())){
+        Long userId=devMessagePageParam.getReceiverUserId();
+        if(CollectionUtils.isNotEmpty(devMessagePageParam.getReceiverUserIds()) && isReceiver){
             //如果只有一个，就按userId处理
-            if(devMessagePageParam.getReceiveUserIds().size()==1 && userId==null){
-                userId=devMessagePageParam.getReceiveUserIds().get(0);
+            if(devMessagePageParam.getReceiverUserIds().size()==1 && userId==null){
+                userId=devMessagePageParam.getReceiverUserIds().get(0);
             }
         }
-
+        if(NumberUtils.isGtZero(devMessagePageParam.getSenderUserId())){
+            queryWrapper.eq(DevMessage::getSenderUserId,devMessagePageParam.getSenderUserId());
+        }
         //如果指定单user，则只查询这个user的
         if (NumberUtils.isGtZero(userId)) {
             //单个使用联合查询
@@ -113,8 +120,8 @@ public class DevMessageServiceImpl  implements DevMessageService {
             queryWrapper.eq(DevMessageReceiver::getReceiverUserId,userId);
 
         }else{
-            if(CollectionUtils.isNotEmpty(devMessagePageParam.getReceiveUserIds())) {
-                queryWrapper.in(DevMessage::getId,QueryWrapper.create().select(DevMessageReceiver::getMessageId).in(DevMessageReceiver::getReceiverUserId,devMessagePageParam.getReceiveUserIds()));
+            if(CollectionUtils.isNotEmpty(devMessagePageParam.getReceiverUserIds())) {
+                queryWrapper.in(DevMessage::getId,QueryWrapper.create().select(DevMessageReceiver::getMessageId).in(DevMessageReceiver::getReceiverUserId,devMessagePageParam.getReceiverUserIds()));
             }
         }
 
@@ -127,7 +134,7 @@ public class DevMessageServiceImpl  implements DevMessageService {
 
     @Override
     public PageResult<DevMessage> page(DevMessagePageParam devMessagePageParam) {
-        QueryWrapper queryWrapper = initQueryWrapper(devMessagePageParam);
+        QueryWrapper queryWrapper = initQueryWrapper(devMessagePageParam,false);
 
 
 
@@ -136,13 +143,24 @@ public class DevMessageServiceImpl  implements DevMessageService {
 
     @Override
     public PageResult<DevMessageReceiverResult> pageResult(DevMessagePageParam devMessagePageParam) {
-        if(NumberUtils.isLeZero(devMessagePageParam.getReceiveUserId())){
+        if(NumberUtils.isLeZero(devMessagePageParam.getReceiverUserId())){
             return PageResult.empty();
         }
-        QueryWrapper queryWrapper = initQueryWrapper(devMessagePageParam);
+        QueryWrapper queryWrapper = initQueryWrapper(devMessagePageParam,true);
         queryWrapper.orderBy(DevMessage::getId,false);
         PageResult<DevMessageReceiverResult> page= mapper.selectJoinPage(devMessagePageParam, DevMessageReceiverResult.class, queryWrapper);
         page.setRecords(builderSendUser(page.getRecords()));
+        return page;
+    }
+
+    @Override
+    public PageResult<DevMessageSenderResult> userSendPage(DevMessagePageParam devMessagePageParam) {
+        if(NumberUtils.isLeZero(devMessagePageParam.getSenderUserId())){
+            throw new CommonException("senderUserId not null");
+        }
+        QueryWrapper queryWrapper = initQueryWrapper(devMessagePageParam,false);
+        queryWrapper.orderBy(DevMessage::getId,false);
+        PageResult<DevMessageSenderResult> page= mapper.selectJoinPage(devMessagePageParam, DevMessageSenderResult.class, queryWrapper);
         return page;
     }
 
@@ -153,9 +171,9 @@ public class DevMessageServiceImpl  implements DevMessageService {
         }
 
         DevMessagePageParam pageParam = new DevMessagePageParam();
-        pageParam.setReceiveUserId(devMessageListParam.getReceiverId());
+        pageParam.setReceiverUserId(devMessageListParam.getReceiverId());
 
-        QueryWrapper query =initQueryWrapper(pageParam);
+        QueryWrapper query =initQueryWrapper(pageParam,true);
         if(devMessageListParam.getRead()!=null){
             query.eq(DevMessageReceiver::getRead,devMessageListParam.getRead());
         }
@@ -206,9 +224,9 @@ public class DevMessageServiceImpl  implements DevMessageService {
     }
 
     @Override
-    public DevMessageDetailResult detail(DevMessageIdParam devMessageIdParam) {
+    public DevMessageDetailResult detail(Long id) {
         DevMessageDetailResult devMessageResult = new DevMessageDetailResult();
-        DevMessage devMessage = this.queryEntity(devMessageIdParam.getId());
+        DevMessage devMessage = this.queryEntity(id);
         BeanUtil.copyProperties(devMessage, devMessageResult);
 
         //得到所有接受者信息
@@ -217,15 +235,16 @@ public class DevMessageServiceImpl  implements DevMessageService {
             return devMessageResult;
         }
 
-        Map<Long,String> nameMap = sysUserApi.getUserNameMapByIds(messageUserList.stream().map(DevMessageReceiver::getReceiverUserId).collect(Collectors.toList()));
+        List<SysUserSampleResultDTO> userList = sysUserApi.getUserSampleListByIds(messageUserList.stream().map(DevMessageReceiver::getReceiverUserId).collect(Collectors.toList()));
+        Map<Long,SysUserSampleResultDTO> userMap = CollectionUtils.convertMap(userList,SysUserSampleResultDTO::getId);
 
         //生成阅读状态集合
-        List<DevMessageDetailResult.DevReceiverInfo> receiveInfoList = messageUserList.stream().map(msgUser->{
-            DevMessageDetailResult.DevReceiverInfo devReceiveInfo = new DevMessageDetailResult.DevReceiverInfo();
+        List<DevMessageReceiverInfoDTO> receiveInfoList = messageUserList.stream().map(msgUser->{
+            DevMessageReceiverInfoDTO devReceiveInfo = new DevMessageReceiverInfoDTO();
             String userName = null;
             try {
                 //这里需要优化，加入缓存机制或什么的，因为如果这样查询，需要每次遍历所有用户数据
-                userName = nameMap.getOrDefault(msgUser.getReceiverUserId(),"--");
+                devReceiveInfo.setReceiver( DevMessageConvert.INSTANCE.convertUser(userMap.get(msgUser.getReceiverUserId())));
             }
             catch (Exception e) {
                 // 收件人中包含删除用户 在此处做处理
@@ -234,20 +253,20 @@ public class DevMessageServiceImpl  implements DevMessageService {
                 return null;
             }
             devReceiveInfo.setReceiverUserId(msgUser.getReceiverUserId());
-            devReceiveInfo.setReceiverUserName(userName);
             devReceiveInfo.setRead(ConvertUtils.toBool(msgUser.getRead(),false));
+            devReceiveInfo.setReadTime(msgUser.getReadTime());
             return devReceiveInfo;
         }).collect(Collectors.toList());
 
-        devMessageResult.setReceiveInfoList(receiveInfoList.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        devMessageResult.setReceiverInfoList(receiveInfoList);
         return devMessageResult;
     }
 
     @Transaction
     @Override
-    public DevMessageReceiverResult detailReader(DevMessageIdParam devMessageIdParam) {
+    public DevMessageReceiverResult detailReader(Long id) {
 
-        DevMessage message = queryEntity(devMessageIdParam.getId());
+        DevMessage message = queryEntity(id);
         List<DevMessageReceiver> messageUserList = devMessageReceiverService.getMessageUserList(message.getId());
         DevMessageReceiver user = messageUserList.stream().filter(o->o.getReceiverUserId().equals(StpLoginUserUtils.getLoginUserId())).findFirst().orElse(null);
         if(user==null){
@@ -265,7 +284,14 @@ public class DevMessageServiceImpl  implements DevMessageService {
     }
 
 
-
+    @Override
+    public DevMessageSenderResult detailSender(Long id) {
+        DevMessageDetailResult detail = detail(id);
+        if(!StpLoginUserUtils.getLoginUserId().equals(detail.getSenderUserId())){
+            throw new CommonExceptionI18n("dev.message.notSender");
+        }
+        return DevMessageConvert.INSTANCE.convertSenderResult(detail);
+    }
 
     @Override
     public DevMessage queryEntity(Long id) {
@@ -279,5 +305,16 @@ public class DevMessageServiceImpl  implements DevMessageService {
     @Override
     public Long count() {
         return mapper.selectCount();
+    }
+
+    @Override
+    public SseEmitter createSseConnect(String clientId) {
+        Consumer<CommonSseParam> consumer = m -> {
+            //获取用户未读消息
+            long unreadMessageNum = unreadCount(m.getUserIdToLong());
+            //发送消息
+            devSseApi.sendMessageToOneClient(m.getClientId(), String.valueOf(unreadMessageNum));
+        };
+        return devSseApi.createSseConnect(clientId,true,false,consumer);
     }
 }

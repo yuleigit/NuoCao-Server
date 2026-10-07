@@ -1,8 +1,5 @@
 package com.nuocao.dev.modular.message.provider;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.nuocao.common.enums.CommonYesNoEnum;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.utils.NumberUtils;
@@ -23,7 +20,6 @@ import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 站内信API接口提供者
@@ -87,15 +83,13 @@ public class DevMessageProvider implements DevMessageApi {
             return new PageResult<>(0L);
         }
         DevMessagePageParam param = DevMessageConvert.INSTANCE.convertPageParam(pageParam);
-        param.setReceiveUserId(pageParam.getReceiverUserId());
+        param.setReceiverUserId(pageParam.getReceiverUserId());
         return DevMessageConvert.INSTANCE.convertDtoResultPage(devMessageService.pageResult(param));
     }
 
     @Override
     public DevMessageResultDTO detail(Long id) {
-        DevMessageIdParam devMessageIdParam = new DevMessageIdParam();
-        devMessageIdParam.setId(id);
-        return DevMessageConvert.INSTANCE.convertResultDto(devMessageService.detailReader(devMessageIdParam));
+        return DevMessageConvert.INSTANCE.convertResultDto(devMessageService.detailReader(id));
     }
 
     @Override

@@ -22,12 +22,14 @@ public class DevMessagePageParam extends SortPageParam {
     /** 主题关键词 */
     @ApiModelProperty(value = "搜索关键词")
     private String searchKey;
+    /** 发送人ID */
+    @ApiModelProperty(value = "发送人ID")
+    private Long senderUserId;
+    /** 接收用户id */
+    @ApiModelProperty(value = "接收用户id")
+    private Long receiverUserId;
 
     /** 接收用户id */
     @ApiModelProperty(value = "接收用户id")
-    private Long receiveUserId;
-
-    /** 接收用户id */
-    @ApiModelProperty(value = "接收用户id")
-    private List<Long> receiveUserIds;
+    private List<Long> receiverUserIds;
 }

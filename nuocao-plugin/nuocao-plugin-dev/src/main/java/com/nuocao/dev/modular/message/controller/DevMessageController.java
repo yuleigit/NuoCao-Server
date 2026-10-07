@@ -20,9 +20,9 @@ import org.noear.solon.validation.annotation.Validated;
 
 
 /**
- * 站内信控制器
+ * 站内信控制器[管理员用]
  **/
-@Api(tags = "站内信控制器")
+@Api(tags = "站内信控制器[管理员用]")
 @Controller
 @Valid
 public class DevMessageController {
@@ -75,6 +75,6 @@ public class DevMessageController {
     @SaCheckPermission("dev:message:query")
     @Get@Mapping("/dev/message/detail")
     public CommonResult<DevMessageDetailResult> detail(@Validated DevMessageIdParam devMessageIdParam) {
-        return CommonResult.data(devMessageService.detail(devMessageIdParam));
+        return CommonResult.data(devMessageService.detail(devMessageIdParam.getId()));
     }
 }

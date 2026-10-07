@@ -86,59 +86,5 @@ public class SysUserCenterController {
         return CommonResult.ok();
     }
 
-    @ApiOperation("站内消息列表")
-    @Get
-    @Mapping("/sys/userCenter/message/page")
-    public CommonResult<PageResult<DevMessageResultDTO>> messagePage(@Validated SysUserMessagePageParam pageParam) {
-        DevMessagePageParamDTO paramDto = BeanUtils.toBean(pageParam, DevMessagePageParamDTO.class);
-        paramDto.setReceiverUserId(StpLoginUserUtils.getLoginUserId());
-        return CommonResult.data(devMessageApi.page(paramDto));
-    }
-
-
-    @ApiOperation("获取站内信详情")
-    @Get
-    @Mapping("/sys/userCenter/message/detail/{id}")
-    public CommonResult<DevMessageResultDTO> messageDetail(Long id) {
-        return CommonResult.data(devMessageApi.detail(id));
-    }
-
-    @ApiOperation("将自己信息全部设为已读")
-    @Post
-    @Mapping("/sys/userCenter/message/allRead")
-    public CommonResult<Void> allRead() {
-        devMessageApi.allMessageMarkRead(StpLoginUserUtils.getLoginUserId());
-        return CommonResult.ok();
-    }
-
-
-    @ApiOperation("获取未读消息列表（最新多少个）")
-    @Get
-    @Mapping("/sys/userCenter/message/list")
-    public CommonResult<List<DevMessageResultDTO>> messageList( Integer limit) {
-        if(NumberUtils.isLeZero(limit)) limit=10;
-        return CommonResult.data(devMessageApi.list(StpLoginUserUtils.getLoginUserId(),limit));
-    }
-
-    @ApiOperation("创建sse连接")
-    @Get
-    @Mapping("/sys/userCenter/message/createSseConnect")
-    public SseEmitter createSseConnect(String clientId){
-        return sysUserCenterService.createSseConnect(clientId);
-    }
-
-
-    @ApiOperation("将自己信息全部设为已读")
-    @Post
-    @Mapping("/sys/userCenter/message/send")
-    public CommonResult<Void> send(@Validated SysUserMessageSendParam sendParam) {
-        DevMessageSendParamDTO param = DevMessageSendParamDTO.builder().title(sendParam.getTitle())
-                        .content(sendParam.getContent())
-                                .senderUserId(StpLoginUserUtils.getLoginUserId())
-                                        .receiverIdList(sendParam.getReceiverIdList())
-                                                .category(DevMessageCategoryEnum.MSG).build();
-        devMessageApi.sendMessage(param);
-        return CommonResult.ok();
-    }
 
 }

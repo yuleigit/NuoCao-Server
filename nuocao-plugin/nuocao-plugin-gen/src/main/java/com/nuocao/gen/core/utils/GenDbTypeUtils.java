@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  **/
 @Slf4j
-public class GenDbTypeUtil {
+public class GenDbTypeUtils {
 
     /**
      * 根据数据库字段类型获取Java类型

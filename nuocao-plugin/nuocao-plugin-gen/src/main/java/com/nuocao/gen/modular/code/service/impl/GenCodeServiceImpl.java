@@ -53,6 +53,8 @@ public class GenCodeServiceImpl implements GenCodeService {
     //后端目录
     private static final String GEN_JAVA_PATH_KEY="nuocao-plugin";
 
+    private static final String TEMPLATE_PATH_ROOT="template/";
+
     @Inject
     private GenTableService tableService;
     @Inject
@@ -199,7 +201,7 @@ public class GenCodeServiceImpl implements GenCodeService {
 
             for(String group : groupList){
                 //模板组
-                GroupTemplate groupTemplate = new GroupTemplate(new ClasspathResourceLoader(group),
+                GroupTemplate groupTemplate = new GroupTemplate(new ClasspathResourceLoader(TEMPLATE_PATH_ROOT+group),
                         Configuration.defaultConfiguration());
                 //模板文件列表
 
@@ -248,11 +250,13 @@ public class GenCodeServiceImpl implements GenCodeService {
         // 类首字母小写名
         jsonParams.set("classNameFirstLower", StringUtils.lowerFirst(table.getClassName()));
         // 权限字符前缀
-        jsonParams.set("permissionCodeAdd", PermissionCodeBuildUtils.codeAdd(table.getModuleName(),table.getBusinessName()));
-        jsonParams.set("permissionCodeEdit", PermissionCodeBuildUtils.codeEdit(table.getModuleName(),table.getBusinessName()));
-        jsonParams.set("permissionCodeDelete", PermissionCodeBuildUtils.codeDelete(table.getModuleName(),table.getBusinessName()));
-        jsonParams.set("permissionCodeQuery", PermissionCodeBuildUtils.codeQuery(table.getModuleName(),table.getBusinessName()));
-        jsonParams.set("permissionCodeExport", PermissionCodeBuildUtils.codeExport(table.getModuleName(),table.getBusinessName()));
+        jsonParams.set("permissionCodePrefix", String.format("%s:%s",table.getModuleName(),table.getBusinessName()));
+
+//        jsonParams.set("permissionCodeAdd", PermissionCodeBuildUtils.codeAdd(table.getModuleName(),table.getBusinessName()));
+//        jsonParams.set("permissionCodeEdit", PermissionCodeBuildUtils.codeEdit(table.getModuleName(),table.getBusinessName()));
+//        jsonParams.set("permissionCodeDelete", PermissionCodeBuildUtils.codeDelete(table.getModuleName(),table.getBusinessName()));
+//        jsonParams.set("permissionCodeQuery", PermissionCodeBuildUtils.codeQuery(table.getModuleName(),table.getBusinessName()));
+//        jsonParams.set("permissionCodeExport", PermissionCodeBuildUtils.codeExport(table.getModuleName(),table.getBusinessName()));
         // 类小写且以横线分割
         jsonParams.set("classNameLowerLine", StrUtil.toSymbolCase(table.getClassName(), '-'));
         // 主键名

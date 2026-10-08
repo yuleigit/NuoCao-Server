@@ -1,0 +1,116 @@
+package ${packageName}.${moduleName}.modular.${businessName}.controller;
+
+
+import java.util.List;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.config.SaTokenConfig;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.noear.solon.annotation.*;
+import org.noear.solon.validation.annotation.NotEmpty;
+import org.noear.solon.validation.annotation.Valid;
+import org.noear.solon.validation.annotation.Validated;
+import org.noear.solon.web.cors.annotation.CrossOrigin;
+
+import ${packageName}.common.annotation.CommonLog;
+import ${packageName}.common.page.PageResult;
+import ${packageName}.common.pojo.CommonResult;
+import ${packageName}.common.pojo.CommonValidList;
+import ${packageName}.data.access.tenant.annotation.TenantIgnore;
+
+import ${packageName}.${moduleName}.modular.${businessName}.service.${className}Service;
+
+import ${packageName}.${moduleName}.modular.${businessName}.entity.${className};
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}AddParam;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}EditParam;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}IdParam;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}PageParam;
+import ${packageName}.${moduleName}.modular.${businessName}.result.${className}PageResult;
+import ${packageName}.${moduleName}.modular.${businessName}.result.${className}ViewResult;
+
+/**
+ * ${functionName} 控制器
+ *
+ * @author ${authorName}
+ * @date  ${genTime}
+ */
+@Api(tags = "${functionName}控制器")
+@Controller
+@Valid
+public class ${className}Controller {
+
+    @Inject
+    private ${className}Service ${classNameFirstLower}Service;
+
+     /**
+     * 获取${functionName}分页
+     *
+     * @author ${authorName}
+     * @date ${genTime}
+     */
+    @ApiOperation("获取${functionName}分页")
+    @SaCheckPermission("${permissionCodePrefix}:query")
+    @Get@Mapping("${moduleName}/${businessName}/page")
+    public CommonResult<PageResult<${className}PageResult>> page(${functionName}PageParam ${classNameFirstLower}PageParam) {
+        return CommonResult.data(${classNameFirstLower}Service.page(${classNameFirstLower}PageParam));
+    }
+
+    /**
+     * 添加${functionName}
+     *
+     * @author ${authorName}
+     * @date ${genTime}
+     */
+    @ApiOperation("添加${functionName}")
+    @SaCheckPermission("${permissionCodePrefix}:add")
+    @Post@Mapping("${moduleName}/${businessName}/add")
+    public CommonResult<String> add( ${className}AddParam ${classNameFirstLower}AddParam) {
+        ${classNameFirstLower}Service.add(${classNameFirstLower}AddParam);
+        return CommonResult.ok();
+    }
+
+    /**
+     * 编辑${functionName}
+     *
+     * @author ${authorName}
+     * @date ${genTime}
+     */
+    @ApiOperation("编辑${functionName}")
+    @CommonLog("编辑${functionName}")
+    @SaCheckPermission("${permissionCodePrefix}:edit")
+    @Post7@Mapping("${moduleName}/${businessName}/edit")
+    public CommonResult<String> edit(@Validated ${className}EditParam ${classNameFirstLower}EditParam) {
+        ${classNameFirstLower}Service.edit(${classNameFirstLower}EditParam);
+        return CommonResult.ok();
+    }
+
+    /**
+     * 删除${functionName}
+     *
+     * @author ${authorName}
+     * @date ${genTime}
+     */
+    @ApiOperation("删除${functionName}")
+    @CommonLog("删除${functionName}")
+    @SaCheckPermission("${permissionCodePrefix}:delete")
+    @Post@Mapping("${moduleName}/${businessName}/delete")
+    public CommonResult<String> delete(@Validated @NotEmpty
+                                       List<${className}IdParam> ${classNameFirstLower}IdParamList) {
+        ${classNameFirstLower}Service.delete(${classNameFirstLower}IdParamList);
+        return CommonResult.ok();
+    }
+
+    /**
+     * 获取${functionName}详情
+     *
+     * @author ${authorName}
+     * @date ${genTime}
+     */
+    @ApiOperation("获取${functionName}详情")
+    @SaCheckPermission("${permissionCodePrefix}:query")
+    @Get@Mapping("${moduleName}/${businessName}/detail")
+    public CommonResult<${className}> detail(@Validated @NotNull Long ${classNameFirstLower}Id) {
+        return CommonResult.data(${classNameFirstLower}Service.detail(${classNameFirstLower}Id));
+    }
+
+}

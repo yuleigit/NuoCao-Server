@@ -1,11 +1,8 @@
-package com.nuocao.sys.modular.tenant.reslut;
+package com.nuocao.sys.modular.tenant.result;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nuocao.sys.api.dto.SysTenantDTO;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Data

@@ -2,6 +2,7 @@ package com.nuocao.common.validation;
 
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
+import org.noear.solon.validation.ValidatorFailureHandler;
 import org.noear.solon.validation.ValidatorManager;
 
 /**
@@ -19,4 +20,11 @@ public class ValidationConfigure {
         ValidatorManager.register(InEnum.class, new InEnumCollectionValidator());
         ValidatorManager.register(Mobile.class, new MobileValidator());
     }
-}
+
+    /**
+     * 支持：message="{aaa} bb {ccc.ddd}"
+     * */
+    @Bean
+    public ValidatorFailureHandler validatorFailureHandler() {
+        return new NuoCaoValidatorFailureHandler(2048);
+    }}

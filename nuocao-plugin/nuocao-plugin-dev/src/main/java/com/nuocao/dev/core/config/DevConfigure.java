@@ -23,7 +23,6 @@ public class DevConfigure {
 
     /**
      * API文档分组配置
-     *
      **/
     @Bean("devDocApi")
     public DocDocket sysDocApi() {
@@ -47,10 +46,6 @@ public class DevConfigure {
         if (clients != null) {
             clients.forEach(factory::registerEngine);
         }
-        // 订阅 AppLoadEndEvent 事件（应用启动完成后执行）
-//        context.onEvent(AppLoadEndEvent.class, event -> {
-//            factory.reloadAllConfigs();
-//        });
         return factory;
     }
 
@@ -64,11 +59,6 @@ public class DevConfigure {
         if (clients != null) {
             clients.forEach(factory::registerChannel);
         }
-
-        // 订阅 AppLoadEndEvent 事件（应用启动完成后执行）
-//        context.onEvent(AppLoadEndEvent.class, event -> {
-//            factory.reloadAllConfigs();
-//        });
         return factory;
     }
 }

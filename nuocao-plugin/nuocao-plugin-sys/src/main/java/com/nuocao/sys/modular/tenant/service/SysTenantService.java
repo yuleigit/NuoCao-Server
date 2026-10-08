@@ -8,8 +8,8 @@ import com.nuocao.sys.modular.tenant.param.SysTenantAddParam;
 import com.nuocao.sys.modular.tenant.param.SysTenantEditParam;
 import com.nuocao.sys.modular.tenant.param.SysTenantIdParam;
 import com.nuocao.sys.modular.tenant.param.SysTenantPageParam;
-import com.nuocao.sys.modular.tenant.reslut.SysTenantPageResult;
-import com.nuocao.sys.modular.tenant.reslut.SysTenantViewResult;
+import com.nuocao.sys.modular.tenant.result.SysTenantPageResult;
+import com.nuocao.sys.modular.tenant.result.SysTenantViewResult;
 
 import java.util.List;
 

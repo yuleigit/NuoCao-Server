@@ -4,7 +4,7 @@ package com.nuocao.sys.modular.tenant.convert;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.sys.api.dto.SysTenantDTO;
 import com.nuocao.sys.modular.tenant.entity.SysTenant;
-import com.nuocao.sys.modular.tenant.reslut.SysTenantPageResult;
+import com.nuocao.sys.modular.tenant.result.SysTenantPageResult;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

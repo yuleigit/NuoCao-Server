@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.tenant.reslut;
+package com.nuocao.sys.modular.tenant.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nuocao.common.utils.bean.BeanUtils;
@@ -7,15 +7,14 @@ import com.nuocao.sys.api.utils.SysTenantPackageApiUtils;
 import com.nuocao.sys.modular.user.pojo.result.SaSysLoginUser;
 import com.nuocao.sys.modular.user.service.SysUserService;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
-@Data
-public class SysTenantViewResult {
-
-
-
+@Getter
+@Setter
+public class SysTenantBaseResult {
 
     /** 租户ID */
     @ApiModelProperty(value = "租户ID", position = 1)
@@ -35,27 +34,36 @@ public class SysTenantViewResult {
 
     private String packageName;
 
+    /** 数据规则形式 */
+    @ApiModelProperty(value = "数据规则形式", position = 4)
+    private String dataRule;
+
     /** 租户编码;不重复，数字字母组合、主要生成数据库用 */
     @ApiModelProperty(value = "租户编码;不重复，数字字母组合、主要生成数据库用", position = 5)
     private String tenantCode;
 
     /** 联系人 */
     @ApiModelProperty(value = "联系人", position = 6)
-    private String contactsUser;
+    private String contactName;
 
     /** 联系电话 */
     @ApiModelProperty(value = "联系电话", position = 7)
-    private String contactsPhone;
+    private String contactTel;
 
     /** 地址 */
     @ApiModelProperty(value = "地址", position = 8)
-    private String contactsAddress;
+    private String contactAddress;
+
+    /** 系统名称 */
+    @ApiModelProperty(value = "系统名称", position = 9)
+    private String sysName;
 
     /** 租户管理用户ID */
     @ApiModelProperty(value = "租户管理用户ID", position = 10)
     private Long tenantAdminId;
 
     private String tenantAdminName;
+
 
     /** 到期时间 */
     @ApiModelProperty(value = "到期时间", position = 11)
@@ -65,9 +73,13 @@ public class SysTenantViewResult {
     @ApiModelProperty(value = "可用状态", position = 12)
     private String enableStatus;
 
-    @ApiModelProperty("账号个数统计")
-    private Integer accountCount=0;
+    /** 创建人 */
+    @ApiModelProperty(value = "创建人", position = 14)
+    private Long createdUser;
 
+    /** 创建时间 */
+    @ApiModelProperty(value = "创建时间", position = 15)
+    private Date createdTime;
 
 
     @JsonProperty
@@ -80,13 +92,8 @@ public class SysTenantViewResult {
         SaSysLoginUser user= BeanUtils.getBean(SysUserService.class).getLoginUserById(this.tenantAdminId);
         return user==null?"":user.getName()+"("+user.getUsername()+")";
     }
-
     @JsonProperty
     public String getOrgName(){
         return SysOrgApiUtils.getName(this.orgId);
     }
-
-
-
-
 }

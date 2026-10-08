@@ -13,7 +13,7 @@ import com.nuocao.common.page.PageResult;
 import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.bean.BeanUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
-import com.nuocao.gen.core.utils.GenDbTypeUtil;
+import com.nuocao.gen.core.utils.GenDbTypeUtils;
 import com.nuocao.gen.modular.table.core.DbTableHelper;
 import com.nuocao.gen.modular.table.entity.GenTable;
 import com.nuocao.gen.modular.table.entity.GenTableColumn;
@@ -241,7 +241,7 @@ public class GenTableServiceImpl implements GenTableService {
         addParam.setColumnName(item.getColumnName());
         addParam.setColumnType(item.getColumnType());
         addParam.setColumnRemark(item.getColumnRemark());
-        addParam.setJavaType(GenDbTypeUtil.getJavaTypeBySqlType(item.getColumnType()));
+        addParam.setJavaType(GenDbTypeUtils.getJavaTypeBySqlType(item.getColumnType()));
         addParam.setHtmlType(GenHtmlTypeEnum.INPUT.getValue().toLowerCase());
 
         // 除主键、删除标志、租户ID、创建人、创建时间、修改人和修改时间外，所有默认在列表显示、在增改显示、非列省略、非必填，非查询

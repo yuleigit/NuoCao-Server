@@ -15,7 +15,6 @@ public class GenConfigure {
 
     /**
      * API文档分组配置
-     *
      **/
     @Bean("genDocApi")
     public DocDocket genDocApi() {

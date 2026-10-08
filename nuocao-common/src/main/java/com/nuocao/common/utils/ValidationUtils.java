@@ -3,6 +3,7 @@ package com.nuocao.common.utils;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import com.nuocao.common.exception.CommonException;
 import org.noear.solon.validation.ValidUtils;
 
 import javax.validation.ConstraintViolation;
@@ -20,6 +21,10 @@ public class ValidationUtils {
     private static final Pattern PATTERN_XML_NCNAME = Pattern.compile("[a-zA-Z_][\\-_.0-9_a-zA-Z$]*");
 
     private static final Pattern PATTERN_LOWER_NUMBER = Pattern.compile("[a-z][_a-z0-9]*");
+    /**
+     * 用户名正则表达式：字母开头，数字、字母、下划线组合，长度4-20位A-Z
+     */
+    private static final String USERNAME_REGEX = "^[a-z][a-z0-9_]{3,19}$";
     /**
      * 邮箱正则表达式
      * 规则：名称允许字母、数字、下划线、中划线、点，域名允许字母、数字、中划线
@@ -73,5 +78,34 @@ public class ValidationUtils {
     public static boolean isLowerNumber(String str){
         return StrUtil.isNotBlank(str)
                 && PATTERN_LOWER_NUMBER.matcher(str).matches();
+    }
+
+    /**
+     * 判断是否用户名
+     *
+     **/
+    public static boolean isUsername(String username) {
+        if (StrUtil.isBlank(username)) {
+            return false;
+        }
+        return username.matches(USERNAME_REGEX);
+    }
+
+    /**
+     * 不是用户名
+     *
+     **/
+    public static boolean notUsername(String username) {
+        return !isUsername(username);
+    }
+
+
+    /**
+     * 校验邮箱格式
+     **/
+    public static void validUsername(String username) {
+        if(notUsername(username)) {
+            CommonException.throwException("common.username.error", username);
+        }
     }
 }

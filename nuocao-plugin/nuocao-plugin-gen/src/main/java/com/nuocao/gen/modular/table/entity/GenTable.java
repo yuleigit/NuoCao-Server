@@ -10,7 +10,6 @@ import lombok.Setter;
 
 /**
  * 代码生成 表格实体
- *
  **/
 @Getter
 @Setter

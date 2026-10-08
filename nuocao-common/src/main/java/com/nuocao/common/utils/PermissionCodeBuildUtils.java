@@ -11,7 +11,7 @@ public class PermissionCodeBuildUtils {
     public static final String OPERATION_EDIT="edit";
     public static final String OPERATION_DELETE="delete";
     public static final String OPERATION_QUERY="query";
-    public static final String OPERATION_EXPORT="query";
+    public static final String OPERATION_EXPORT="export";
 
     /**
      * 获取权限字符串默认格式

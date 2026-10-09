@@ -1,7 +1,8 @@
-package nuocao.plugin.dev.api.enums.sms;
+package com.nuocao.plugin.dev.api.enums.sms;
 
 
 import com.nuocao.common.enums.StrArrayValuable;
+import com.nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public enum DevSmsTemplateCodeEnum implements StrArrayValuable {
 
     private final String value;
 
-    private static String[] ARRAYS = Arrays.stream(nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum.values()).map(nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum::getValue).toArray(String[]::new);
+    private static String[] ARRAYS = Arrays.stream(DevFileEngineTypeEnum.values()).map(DevFileEngineTypeEnum::getValue).toArray(String[]::new);
 
     DevSmsTemplateCodeEnum(String value) {
         this.value = value;

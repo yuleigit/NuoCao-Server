@@ -3,7 +3,7 @@ package com.nuocao.dev.modular.sms.template.param;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
+import com.nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
 
 
 /**

@@ -16,7 +16,7 @@ import com.nuocao.dev.modular.sms.template.param.DevSmsTemplatePageParam;
 import com.nuocao.dev.modular.sms.template.service.DevSmsTemplateService;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateIdParam;
 import lombok.extern.slf4j.Slf4j;
-import nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 

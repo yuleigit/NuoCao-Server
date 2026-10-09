@@ -1,7 +1,7 @@
 package com.nuocao.dev.modular.email.provider;
 
 import cn.hutool.json.JSONObject;
-import nuocao.plugin.dev.api.DevEmailApi;
+import com.nuocao.plugin.dev.api.DevEmailApi;
 import org.noear.solon.annotation.Component;
 
 import java.io.File;

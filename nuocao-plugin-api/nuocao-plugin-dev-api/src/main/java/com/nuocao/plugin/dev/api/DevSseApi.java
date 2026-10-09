@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api;
+package com.nuocao.plugin.dev.api;
 
 import com.nuocao.common.sse.CommonSseParam;
 import org.noear.solon.web.sse.SseEmitter;

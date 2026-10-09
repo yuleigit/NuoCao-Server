@@ -2,7 +2,6 @@ package com.nuocao.dev.modular.log.util;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.thread.ThreadUtil;
-import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.common.annotation.CommonLog;
 import com.nuocao.common.utils.*;
 import com.nuocao.common.utils.http.IpUtils;
@@ -13,7 +12,7 @@ import com.nuocao.dev.modular.log.entity.DevLog;
 import com.nuocao.dev.modular.log.enums.DevLogCategoryEnum;
 import com.nuocao.dev.modular.log.enums.DevLogExeStatusEnum;
 import com.nuocao.dev.modular.log.service.DevLogService;
-import nuocao.plugin.dev.api.dto.log.DevLogAddDTO;
+import com.nuocao.plugin.dev.api.dto.log.DevLogAddDTO;
 import org.noear.solon.Solon;
 import org.noear.solon.core.aspect.Invocation;
 import org.noear.solon.core.handle.Context;
@@ -148,7 +147,7 @@ public class DevLogUtils {
      */
     private static void creatLogSignValue (DevLog devLog) {
         String logStr = devLog.toString().replaceAll(" +","");
-        devLog.setSignData(CommonCryptogramUtils.doSignature(logStr));
+        devLog.setSignData(CryptUtils.signature(logStr));
     }
 
     private static final String MODULAR_MARKER = ".modular.";

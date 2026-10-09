@@ -10,15 +10,13 @@ import com.nuocao.common.utils.bean.BeanUtils;
 import com.nuocao.dev.core.client.sms.SmsChannelClient;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import nuocao.plugin.dev.api.DevConfigApi;
-import nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
-import org.dromara.sms4j.aliyun.config.AlibabaConfig;
+import com.nuocao.plugin.dev.api.DevConfigApi;
+import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.sms4j.core.factory.SmsFactory;
 import org.dromara.sms4j.javase.config.SEInitializer;
 import org.dromara.sms4j.provider.config.SmsConfig;
-import org.dromara.sms4j.tencent.config.TencentConfig;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Init;
 

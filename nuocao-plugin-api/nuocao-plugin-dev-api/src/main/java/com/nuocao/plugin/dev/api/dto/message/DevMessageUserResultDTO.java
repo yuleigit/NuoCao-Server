@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api.dto.message;
+package com.nuocao.plugin.dev.api.dto.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;

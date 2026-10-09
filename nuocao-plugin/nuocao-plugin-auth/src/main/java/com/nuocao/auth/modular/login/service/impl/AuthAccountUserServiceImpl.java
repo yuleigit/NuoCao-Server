@@ -32,16 +32,16 @@ import com.nuocao.common.exception.CommonException;
 import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.pojo.KeyValue;
-import com.nuocao.common.utils.CommonCryptogramUtils;
+import com.nuocao.common.utils.CryptUtils;
 import com.nuocao.common.utils.NumberUtils;
 import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.ValidationUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
 import com.nuocao.data.access.tenant.util.TenantUtils;
 import com.nuocao.sys.api.SysTenantApi;
-import nuocao.plugin.dev.api.DevConfigApi;
-import nuocao.plugin.dev.api.DevEmailApi;
-import nuocao.plugin.dev.api.DevSmsApi;
+import com.nuocao.plugin.dev.api.DevConfigApi;
+import com.nuocao.plugin.dev.api.DevEmailApi;
+import com.nuocao.plugin.dev.api.DevSmsApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 
@@ -164,13 +164,13 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         try
         {
             //解密密码
-            passwordHash = CommonCryptogramUtils.doSm2Decrypt(password);
+            passwordHash = CryptUtils.sm2Decrypt(password);
         }catch (Exception ex){
             throw new CommonExceptionI18n(AuthExceptionEnum.PWD_DECRYPT_ERROR.getI18nKey(),ex);
         }
         try {
             // 解密哈希值
-            passwordHash = CommonCryptogramUtils.doHashValue(passwordHash);
+            passwordHash = CryptUtils.hashValue(passwordHash);
         } catch (Exception e) {
         }
         // 根据账号获取用户信息，根据B端或C端判断

@@ -1,12 +1,9 @@
-package nuocao.plugin.dev.api.dto.message;
+package com.nuocao.plugin.dev.api.dto.message;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Data;
-import nuocao.plugin.dev.api.enums.message.DevMessageCategoryEnum;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 public class DevMessageReceiverInfoDTO {

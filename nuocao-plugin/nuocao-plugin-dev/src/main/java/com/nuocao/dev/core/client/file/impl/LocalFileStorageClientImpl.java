@@ -7,9 +7,9 @@ import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.bean.BeanUtils;
 import com.nuocao.dev.core.client.file.FileStorageClient;
 import lombok.extern.slf4j.Slf4j;
-import nuocao.plugin.dev.api.enums.file.DevFileBucketAuthEnum;
-import nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
-import nuocao.plugin.dev.api.DevConfigApi;
+import com.nuocao.plugin.dev.api.enums.file.DevFileBucketAuthEnum;
+import com.nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
+import com.nuocao.plugin.dev.api.DevConfigApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.core.handle.UploadedFile;
 

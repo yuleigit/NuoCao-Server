@@ -102,7 +102,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
         if (ObjectUtils.isNotEmpty(sysAccount)) {
             AccountLoginInfoDTO loginInfo = SysAccountConvert.INSTANCE.convertLoginInfoDto(sysAccount);
             if (StringUtils.isNotBlank(loginInfo.getUsername())) {
-                loginInfo.setPhone(CommonCryptogramUtils.doSm4CbcDecrypt(loginInfo.getPhone()));
+                loginInfo.setPhone(CryptUtils.sm4CbcDecrypt(loginInfo.getPhone()));
             }
             return loginInfo;
         }
@@ -126,7 +126,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
         SysAccount sysAccount = SysAccountConvert.INSTANCE.convert(addParam);
 
         String addLockKey = getAddLockKey(addParam);
-        String password_de = passwordIsSm2?CommonCryptogramUtils.doSm2Decrypt(addParam.getPassword()):addParam.getPassword();
+        String password_de = passwordIsSm2? CryptUtils.sm2Decrypt(addParam.getPassword()):addParam.getPassword();
         if(!StringUtils.isEmpty(password_de)){ //输入了密码，验证密码
             AccountPasswordUtils.validNewPassword(password_de);
         }
@@ -134,10 +134,10 @@ public class SysAccountServiceImpl  implements SysAccountService {
             validInfo(sysAccount);
             if(StringUtils.isEmpty(password_de)) {
                 // 设置默认密码
-                sysAccount.setPassword(CommonCryptogramUtils.doHashValue(AccountPasswordUtils.getDefaultPassword()));
+                sysAccount.setPassword(CryptUtils.hashValue(AccountPasswordUtils.getDefaultPassword()));
             } else {
                 // 设置传入的密码
-                sysAccount.setPassword(CommonCryptogramUtils.doHashValue(password_de));
+                sysAccount.setPassword(CryptUtils.hashValue(password_de));
             }
             // 设置状态
             sysAccount.setStatus(CommonEnableStatusEnum.ENABLE.getValue());
@@ -182,7 +182,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
         //生成随机新密码
         AccountPasswordUtils.validNewPassword(newPassword);
         //String newPassword = AccountPasswordUtils.genPassword(8);
-        String password= CommonCryptogramUtils.doHashValue(newPassword);
+        String password= CryptUtils.hashValue(newPassword);
         syncPasswordByUsername(account.getUsername(),password,true);
         //这里修改后同步用户端密码是为了方便兼容两种登录模式，可根据自己业务需求更新为只在account中存储或去掉account这个表
         sysUserApi.syncPasswordByUsername(account.getUsername(),password,true);
@@ -521,7 +521,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
 
     @Override
     public void syncPasswordByUsername(String username, String password, boolean passwordHashValue) {
-        String pwd = passwordHashValue?password:CommonCryptogramUtils.doHashValue(password);
+        String pwd = passwordHashValue?password: CryptUtils.hashValue(password);
         UpdateChain.of(SysAccount.class).eq(SysAccount::getUsername,username)
                 .set(SysAccount::getPassword,pwd).update();
     }

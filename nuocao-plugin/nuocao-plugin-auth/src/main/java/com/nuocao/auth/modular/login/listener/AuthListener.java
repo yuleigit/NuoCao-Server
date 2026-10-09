@@ -10,7 +10,7 @@ import com.nuocao.auth.core.enums.SaLoginTypeEnum;
 import com.nuocao.common.ObjectUtils;
 import com.nuocao.common.utils.ConvertUtils;
 import com.nuocao.common.utils.StringUtils;
-import nuocao.plugin.dev.api.DevLogApi;
+import com.nuocao.plugin.dev.api.DevLogApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 

@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api.enums.file;
+package com.nuocao.plugin.dev.api.enums.file;
 
 /**
  * 文件存储桶的权限策略枚举

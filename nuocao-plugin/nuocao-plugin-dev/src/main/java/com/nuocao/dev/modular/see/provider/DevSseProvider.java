@@ -2,7 +2,7 @@ package com.nuocao.dev.modular.see.provider;
 
 import com.nuocao.common.sse.CommonSseParam;
 import com.nuocao.dev.modular.see.service.DevSseEmitterService;
-import nuocao.plugin.dev.api.DevSseApi;
+import com.nuocao.plugin.dev.api.DevSseApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.web.sse.SseEmitter;

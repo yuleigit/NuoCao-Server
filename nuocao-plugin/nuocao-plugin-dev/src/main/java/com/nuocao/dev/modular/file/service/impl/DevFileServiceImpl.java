@@ -20,7 +20,7 @@ import com.nuocao.dev.core.client.file.DevFileUtils;
 import com.nuocao.dev.core.client.file.FileStorageClient;
 import com.nuocao.dev.core.client.file.FileStorageFactory;
 import com.nuocao.dev.modular.file.entity.DevFile;
-import nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
+import com.nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
 import com.nuocao.dev.modular.file.mapper.DevFileMapper;
 import com.nuocao.dev.modular.file.param.DevFileIdParam;
 import com.nuocao.dev.modular.file.param.DevFileListParam;

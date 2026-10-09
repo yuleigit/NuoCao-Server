@@ -2,10 +2,8 @@ package com.nuocao;
 
 
 import com.nuocao.common.config.NuocaoConfig;
-import com.nuocao.common.utils.CommonCryptogramUtils;
 import com.nuocao.common.utils.StrFormatUtils;
 import com.nuocao.common.utils.license.LicenseVerifyUtils;
-import com.nuocao.data.access.tenant.annotation.TenantIgnore;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.Controller;

@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api.dto.log;
+package com.nuocao.plugin.dev.api.dto.log;
 
 import com.nuocao.common.utils.LocalDateTimeUtils;
 import lombok.Builder;

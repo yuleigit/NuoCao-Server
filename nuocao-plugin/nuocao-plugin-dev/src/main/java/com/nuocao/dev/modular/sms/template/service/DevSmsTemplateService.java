@@ -6,7 +6,7 @@ import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateEditParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplatePageParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateAddParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateIdParam;
-import nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
 
 import java.util.LinkedHashMap;
 import java.util.List;

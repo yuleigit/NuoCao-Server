@@ -1,10 +1,11 @@
 package com.nuocao.dev.modular.sms.log.param;
 
 import com.nuocao.common.validation.InEnum;
+import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
+import com.nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
 import org.noear.solon.validation.annotation.NotBlank;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 public class DevSmsLogAddParam {
     /** 短信通道编码
-     * {@link nuocao.plugin.dev.api.enums.sms.SmsChannelEnum}
+     * {@link SmsChannelEnum}
      * */
     @ApiModelProperty(value = "短信通道编码", position = 2)
     @NotBlank
@@ -36,7 +37,7 @@ public class DevSmsLogAddParam {
     private Integer type;
 
     /** 手机号
-     * {@link nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum}
+     * {@link DevSmsTypeEnum}
      * */
     @ApiModelProperty(value = "手机号码", position = 3)
     @NotBlank

@@ -1,10 +1,9 @@
 package com.nuocao.dev.modular.file.provider;
 
-import com.nuocao.common.exception.CommonExceptionI18n;
-import nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
+import com.nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
 import com.nuocao.dev.modular.file.service.DevFileService;
-import nuocao.plugin.dev.api.DevConfigApi;
-import nuocao.plugin.dev.api.DevFileApi;
+import com.nuocao.plugin.dev.api.DevConfigApi;
+import com.nuocao.plugin.dev.api.DevFileApi;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.core.handle.UploadedFile;

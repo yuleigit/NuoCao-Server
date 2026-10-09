@@ -5,7 +5,7 @@ import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateEditParam;
 import com.nuocao.dev.modular.sms.template.entity.DevSmsTemplate;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateAddParam;
 import com.nuocao.dev.modular.sms.template.result.DevSmsTemplateResult;
-import nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

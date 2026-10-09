@@ -11,14 +11,13 @@ import com.nuocao.common.utils.NumberUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
 import com.nuocao.dev.modular.dict.convert.DevDictConvert;
 import com.nuocao.dev.modular.dict.entity.DevDict;
-import com.nuocao.dev.modular.dict.enums.DevDictCategoryEnum;
 import com.nuocao.dev.modular.dict.enums.DevDictValueTypeEnum;
 import com.nuocao.dev.modular.dict.mapper.DevDictMapper;
 import com.nuocao.dev.modular.dict.param.*;
 import com.nuocao.dev.modular.dict.result.DevDictTreeResult;
 import com.nuocao.dev.modular.dict.service.DevDictService;
 import lombok.extern.slf4j.Slf4j;
-import nuocao.plugin.dev.api.DevDictApi;
+import com.nuocao.plugin.dev.api.DevDictApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 

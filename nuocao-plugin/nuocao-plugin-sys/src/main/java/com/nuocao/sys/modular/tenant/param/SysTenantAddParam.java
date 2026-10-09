@@ -23,6 +23,15 @@ public class SysTenantAddParam extends SysTenantBaseParam {
     @NotNull(message = "tenantAdminId不能为空")
     private Long tenantAdminId;
 
+    /** 数据规则形式 */
+    @ApiModelProperty(value = "数据规则形式", position = 4)
+    private String dataRule;
+
+    /** 租户编码;不重复，数字字母组合、主要生成数据库用 */
+    @ApiModelProperty(value = "租户编码;不重复，数字字母组合、主要生成数据库用", required = true, position = 5)
+    @NotBlank(message = "tenantCode不能为空")
+    private String tenantCode;
+
     /** 租户管理员用户名 */
     @ApiModelProperty(value = "租户管理员用户名", required = true, position = 10)
     @NotNull(message = "管理员用户名不能为空")

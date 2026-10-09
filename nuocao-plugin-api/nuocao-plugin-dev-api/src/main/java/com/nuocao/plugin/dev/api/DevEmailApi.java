@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api;
+package com.nuocao.plugin.dev.api;
 
 import cn.hutool.json.JSONObject;
 

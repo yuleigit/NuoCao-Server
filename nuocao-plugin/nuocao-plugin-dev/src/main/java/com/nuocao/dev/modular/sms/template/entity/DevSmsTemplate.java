@@ -9,7 +9,7 @@ import com.nuocao.common.pojo.CommonEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
+import com.nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
 
 import java.util.List;
 

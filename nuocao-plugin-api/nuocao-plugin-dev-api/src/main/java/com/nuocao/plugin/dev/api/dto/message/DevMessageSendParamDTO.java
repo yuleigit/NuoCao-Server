@@ -1,10 +1,9 @@
-package nuocao.plugin.dev.api.dto.message;
+package com.nuocao.plugin.dev.api.dto.message;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nuocao.plugin.dev.api.enums.message.DevMessageCategoryEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
-import nuocao.plugin.dev.api.enums.message.DevMessageCategoryEnum;
 
 import java.util.List;
 

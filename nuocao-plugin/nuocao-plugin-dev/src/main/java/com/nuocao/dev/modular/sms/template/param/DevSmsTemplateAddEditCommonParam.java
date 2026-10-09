@@ -6,13 +6,12 @@ import com.nuocao.common.validation.InStrEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
+import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
 import org.noear.solon.validation.annotation.Length;
 import org.noear.solon.validation.annotation.NotBlank;
 import org.noear.solon.validation.annotation.NotNull;
 
 import java.io.Serializable;
-import java.nio.channels.Channel;
 
 
 /**

@@ -1,16 +1,14 @@
 package com.nuocao.dev.modular.dict.provider;
 
-import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nuocao.common.cache.CacheUtils;
 import com.nuocao.common.constants.Constants;
 import com.nuocao.common.pojo.KeyValue;
 import com.nuocao.common.utils.ConvertUtils;
 import com.nuocao.dev.modular.dict.service.DevDictService;
-import nuocao.plugin.dev.api.DevDictApi;
+import com.nuocao.plugin.dev.api.DevDictApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.data.cache.CacheService;
 
 import java.util.Arrays;
 import java.util.List;

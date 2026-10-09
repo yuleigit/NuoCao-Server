@@ -1,9 +1,9 @@
-package nuocao.plugin.dev.api;
+package com.nuocao.plugin.dev.api;
 
 import com.nuocao.common.page.PageResult;
-import nuocao.plugin.dev.api.dto.message.DevMessagePageParamDTO;
-import nuocao.plugin.dev.api.dto.message.DevMessageResultDTO;
-import nuocao.plugin.dev.api.dto.message.DevMessageSendParamDTO;
+import com.nuocao.plugin.dev.api.dto.message.DevMessagePageParamDTO;
+import com.nuocao.plugin.dev.api.dto.message.DevMessageResultDTO;
+import com.nuocao.plugin.dev.api.dto.message.DevMessageSendParamDTO;
 
 import java.util.List;
 

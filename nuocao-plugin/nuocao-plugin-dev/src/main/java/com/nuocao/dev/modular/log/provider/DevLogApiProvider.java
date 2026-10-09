@@ -10,7 +10,7 @@ import com.nuocao.dev.modular.log.enums.DevLogCategoryEnum;
 import com.nuocao.dev.modular.log.param.DevLogPageParam;
 import com.nuocao.dev.modular.log.service.DevLogService;
 import com.nuocao.dev.modular.log.util.DevLogUtils;
-import nuocao.plugin.dev.api.DevLogApi;
+import com.nuocao.plugin.dev.api.DevLogApi;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 

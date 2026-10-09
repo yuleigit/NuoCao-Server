@@ -19,9 +19,10 @@ import com.nuocao.dev.modular.sms.constants.SmsConstants;
 import com.nuocao.dev.modular.sms.log.param.DevSmsLogAddParam;
 import com.nuocao.dev.modular.sms.log.service.DevSmsLogService;
 import com.nuocao.dev.modular.sms.template.service.DevSmsTemplateService;
-import nuocao.plugin.dev.api.DevConfigApi;
-import nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
-import nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
+import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
+import com.nuocao.plugin.dev.api.DevConfigApi;
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
+import com.nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 
@@ -64,7 +65,7 @@ public class DevSmsHelper {
      * @param userId 发送给的用户
      * @param userType 发送给的用户类型{@link CommonUserTypeEnum}
      * @param templateCode 模板编码
-     * @param useChannelCode 使用通道 {@link nuocao.plugin.dev.api.enums.sms.SmsChannelEnum}
+     * @param useChannelCode 使用通道 {@link SmsChannelEnum}
      * @param extParams 扩展模板参数，用于自定义短信验证码环境，一般不用传入
      * @return reqId，请求号，使用验证码时需要携带
      */
@@ -166,7 +167,7 @@ public class DevSmsHelper {
      * @param userId 发送给的用户
      * @param userType 发送给的用户类型 {@link CommonUserTypeEnum}
      * @param templateCode 模板编码
-     * @param useChannelCode 使用通道 {@link nuocao.plugin.dev.api.enums.sms.SmsChannelEnum}
+     * @param useChannelCode 使用通道 {@link SmsChannelEnum}
      * @param templateParams 扩展模板参数，用于自定义短信验证码环境，一般不用传入
      * @return reqId，请求号，使用验证码时需要携带
      */
@@ -215,7 +216,7 @@ public class DevSmsHelper {
      * @param phoneNumber 手机号码
      * @param userId 发送给的用户
      * @param userType 发送给的用户类型
-     * @param useChannelCode 使用通道 {@link nuocao.plugin.dev.api.enums.sms.SmsChannelEnum}
+     * @param useChannelCode 使用通道 {@link SmsChannelEnum}
      * @param templateCode 模板编码
      * @param templateParams 扩展模板参数，用于自定义短信验证码环境，一般不用传入
      * @return reqId，请求号，使用验证码时需要携带

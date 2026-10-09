@@ -2,8 +2,8 @@ package com.nuocao.dev.modular.sms.provider;
 
 import com.nuocao.common.utils.json.JsonUtils;
 import com.nuocao.dev.modular.sms.DevSmsHelper;
-import nuocao.plugin.dev.api.DevSmsApi;
-import nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
+import com.nuocao.plugin.dev.api.DevSmsApi;
+import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 

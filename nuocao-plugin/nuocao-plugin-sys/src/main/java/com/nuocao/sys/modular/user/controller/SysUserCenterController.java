@@ -1,14 +1,7 @@
 package com.nuocao.sys.modular.user.controller;
 
-import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.common.annotation.CommonLog;
-import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
-import com.nuocao.common.utils.NumberUtils;
-import com.nuocao.common.utils.bean.BeanUtils;
-import com.nuocao.common.utils.collection.CollectionUtils;
-import com.nuocao.sys.modular.user.pojo.param.SysUserMessagePageParam;
-import com.nuocao.sys.modular.user.pojo.param.SysUserMessageSendParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdateInfoParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdatePwdByOldParam;
 import com.nuocao.sys.modular.user.pojo.result.SysUserResult;
@@ -16,18 +9,11 @@ import com.nuocao.sys.modular.user.service.SysUserCenterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import nuocao.plugin.dev.api.DevMessageApi;
-import nuocao.plugin.dev.api.dto.message.DevMessagePageParamDTO;
-import nuocao.plugin.dev.api.dto.message.DevMessageResultDTO;
-import nuocao.plugin.dev.api.dto.message.DevMessageSendParamDTO;
-import nuocao.plugin.dev.api.enums.message.DevMessageCategoryEnum;
+import com.nuocao.plugin.dev.api.DevMessageApi;
 import org.noear.solon.annotation.*;
 import org.noear.solon.core.handle.UploadedFile;
 import org.noear.solon.validation.annotation.Valid;
 import org.noear.solon.validation.annotation.Validated;
-import org.noear.solon.web.sse.SseEmitter;
-
-import java.util.List;
 
 /**
  * 用户中心控制器

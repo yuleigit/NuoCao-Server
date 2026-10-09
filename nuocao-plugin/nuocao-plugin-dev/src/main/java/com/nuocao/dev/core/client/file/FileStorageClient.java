@@ -1,6 +1,6 @@
 package com.nuocao.dev.core.client.file;
 
-import nuocao.plugin.dev.api.enums.file.DevFileBucketAuthEnum;
+import com.nuocao.plugin.dev.api.enums.file.DevFileBucketAuthEnum;
 import org.noear.solon.core.handle.UploadedFile;
 
 import java.io.File;

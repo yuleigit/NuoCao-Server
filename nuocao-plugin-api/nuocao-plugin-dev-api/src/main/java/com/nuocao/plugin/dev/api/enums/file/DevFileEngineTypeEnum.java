@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api.enums.file;
+package com.nuocao.plugin.dev.api.enums.file;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.nuocao.common.enums.StrArrayValuable;

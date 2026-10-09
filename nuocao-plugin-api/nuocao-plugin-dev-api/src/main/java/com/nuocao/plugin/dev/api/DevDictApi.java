@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api;
+package com.nuocao.plugin.dev.api;
 
 
 import com.nuocao.common.pojo.KeyValue;

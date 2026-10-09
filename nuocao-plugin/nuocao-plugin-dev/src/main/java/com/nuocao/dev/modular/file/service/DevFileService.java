@@ -1,14 +1,11 @@
 package com.nuocao.dev.modular.file.service;
 
-import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.service.IService;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.dev.modular.file.entity.DevFile;
 import com.nuocao.dev.modular.file.param.DevFileIdParam;
 import com.nuocao.dev.modular.file.param.DevFileListParam;
 import com.nuocao.dev.modular.file.param.DevFilePageParam;
 import com.nuocao.dev.modular.file.param.DevFileUrlListParam;
-import nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.UploadedFile;
 

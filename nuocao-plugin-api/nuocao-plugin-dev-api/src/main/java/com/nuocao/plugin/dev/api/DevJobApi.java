@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api;
+package com.nuocao.plugin.dev.api;
 
 /**
  * 定时任务API

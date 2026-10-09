@@ -59,7 +59,7 @@ import com.nuocao.sys.modular.user.pojo.result.*;
 import com.nuocao.sys.modular.user.service.SysUserIdentityService;
 import com.nuocao.sys.modular.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
-import nuocao.plugin.dev.api.DevFileApi;
+import com.nuocao.plugin.dev.api.DevFileApi;
 import org.apache.poi.ss.usermodel.*;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -336,7 +336,7 @@ public class SysUserServiceImpl implements SysUserService {
     public String updatePassword(Long userId, String newPassword) {
         SysUser user = queryEntity(userId);
         AccountPasswordUtils.validNewPassword(newPassword);
-        String newPasswordEn = CommonCryptogramUtils.doHashValue(newPassword);
+        String newPasswordEn = CryptUtils.hashValue(newPassword);
 
         syncPasswordByUsername(user.getUsername(),newPasswordEn,true);
         sysAccountApi.syncPassword(user.getUsername(),newPasswordEn,true);
@@ -473,10 +473,10 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = this.queryEntity(StpLoginUserUtils.getLoginUserId());
         String password = param.getPassword();
         String newPassword = param.getNewPassword();
-        if (!CommonCryptogramUtils.doHashValue(password).equals(sysUser.getPassword())) {
+        if (!CryptUtils.hashValue(password).equals(sysUser.getPassword())) {
             throw new CommonExceptionI18n("sys.user.password.oldError");
         }
-        String enPassword = CommonCryptogramUtils.doHashValue(newPassword);
+        String enPassword = CryptUtils.hashValue(newPassword);
         syncPasswordByUsername(sysUser.getUsername(),enPassword,true);
         sysAccountApi.syncPassword(sysUser.getUsername(),enPassword,true);
     }
@@ -743,7 +743,7 @@ public class SysUserServiceImpl implements SysUserService {
 
         //需要更新电话时候，则验证电话是否存在
         if(StringUtils.isNotBlank(info.getPhone())){
-            String phone = CommonCryptogramUtils.doSm4CbcEncrypt(info.getPhone());
+            String phone = CryptUtils.sm4CbcEncrypt(info.getPhone());
             SysUser temp = mapper.selectOne(SysUser::getPhone,phone);
             if(temp!=null && !temp.getId().equals(info.getId()))
             {
@@ -781,7 +781,7 @@ public class SysUserServiceImpl implements SysUserService {
             });
         }
         if(StringUtils.isNotBlank(param.getPhone())){
-            query.eq(SysUser::getPhone, CommonCryptogramUtils.doSm2Encrypt(param.getPhone()));
+            query.eq(SysUser::getPhone, CryptUtils.sm2Encrypt(param.getPhone()));
         }
 
         if(ObjectUtils.isNotNull(param.getRoleId())){
@@ -864,7 +864,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @TenantIgnore
     public void syncPasswordByUsername(String username, String password, boolean passwordHashValue) {
-        String pwd = passwordHashValue?password:CommonCryptogramUtils.doHashValue(password);
+        String pwd = passwordHashValue?password: CryptUtils.hashValue(password);
         UpdateChain.of(SysUser.class).eq(SysUser::getUsername,username)
                 .set(SysUser::getPassword,pwd).update();
     }

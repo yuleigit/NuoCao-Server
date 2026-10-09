@@ -3,8 +3,8 @@ package com.nuocao.dev.modular.message.pojo.result;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import nuocao.plugin.dev.api.dto.message.DevMessageReceiverInfoDTO;
-import nuocao.plugin.dev.api.dto.message.DevMessageUserResultDTO;
+import com.nuocao.plugin.dev.api.dto.message.DevMessageReceiverInfoDTO;
+import com.nuocao.plugin.dev.api.dto.message.DevMessageUserResultDTO;
 
 import java.util.List;
 

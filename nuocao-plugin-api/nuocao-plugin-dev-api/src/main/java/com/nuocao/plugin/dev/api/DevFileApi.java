@@ -1,6 +1,6 @@
-package nuocao.plugin.dev.api;
+package com.nuocao.plugin.dev.api;
 
-import nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
+import com.nuocao.plugin.dev.api.enums.file.DevFileEngineTypeEnum;
 import org.noear.solon.core.handle.UploadedFile;
 
 import java.io.InputStream;

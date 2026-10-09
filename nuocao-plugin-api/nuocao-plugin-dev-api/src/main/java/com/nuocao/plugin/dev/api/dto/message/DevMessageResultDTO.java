@@ -1,13 +1,11 @@
-package nuocao.plugin.dev.api.dto.message;
+package com.nuocao.plugin.dev.api.dto.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * 消息返回结果DTO

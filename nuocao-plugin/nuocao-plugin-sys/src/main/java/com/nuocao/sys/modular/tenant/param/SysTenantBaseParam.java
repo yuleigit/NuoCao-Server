@@ -1,5 +1,6 @@
 package com.nuocao.sys.modular.tenant.param;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,14 +30,7 @@ public class SysTenantBaseParam   {
     @NotNull(message = "套餐不能为空")
     private Long packageId;
 
-    /** 数据规则形式 */
-    @ApiModelProperty(value = "数据规则形式", position = 4)
-    private String dataRule;
 
-    /** 租户编码;不重复，数字字母组合、主要生成数据库用 */
-    @ApiModelProperty(value = "租户编码;不重复，数字字母组合、主要生成数据库用", required = true, position = 5)
-    @NotBlank(message = "tenantCode不能为空")
-    private String tenantCode;
 
     /** 联系人 */
     @ApiModelProperty(value = "联系人", required = true, position = 6)

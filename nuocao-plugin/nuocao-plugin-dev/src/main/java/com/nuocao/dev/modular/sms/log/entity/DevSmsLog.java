@@ -3,6 +3,8 @@ package com.nuocao.dev.modular.sms.log.entity;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 import com.nuocao.common.pojo.CommonEntity;
+import com.nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
+import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +25,7 @@ public class DevSmsLog extends CommonEntity {
     private Long id;
 
     /** 短信通道编码
-     * {@link nuocao.plugin.dev.api.enums.sms.SmsChannelEnum}
+     * {@link SmsChannelEnum}
      * */
     @ApiModelProperty(value = "短信通道编码", position = 2)
     private String channelCode;
@@ -36,13 +38,13 @@ public class DevSmsLog extends CommonEntity {
 
     /**
      * 短信类型
-     * {@link nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum}
+     * {@link DevSmsTypeEnum}
      */
     @ApiModelProperty(value = "短信类型", position = 2)
     private Integer type;
 
     /** 手机号
-     * {@link nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum}
+     * {@link DevSmsTypeEnum}
      * */
     @ApiModelProperty(value = "手机号码", position = 3)
     private String phone;

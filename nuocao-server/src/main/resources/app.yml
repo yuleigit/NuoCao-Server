@@ -145,6 +145,35 @@ nuocao.crypt:
   # 初始化向量 (IV): CBC 模式必须配置，长度同为 32 位十六进制，前后端必须一致
   sm4Iv: "a5008cd4ad6e50c02b38a36f7d661b77"
 
+#########################################
+# ip2region 离线 IP 归属地配置
+#########################################
+# 说明：ip2region_v4.xdb（约 11MB）+ ip2region_v6.xdb（约 37MB）合计约 48MB，不再打进 jar，
+#       改为部署时外部放置，通过下面的路径加载。路径写法：
+#         1) 绝对路径（生产推荐）：按部署机自身的平台书写
+#              Linux:   /data/nuocao/ip2region/ip2region_v4.xdb
+#              Windows: D:/nuocao/ip2region/ip2region_v4.xdb
+#            是不是绝对路径交给 JDK 按当前平台规则判断（File#isAbsolute），不用自己按斜杠猜
+#         2) 相对路径：先按进程工作目录解析，找不到再从工作目录逐级向上查找（最多 6 层），
+#            因此 ./data/ip2region/ip2region_v4.xdb 在仓库根目录、子模块目录下都能命中
+#         3) classpath: 前缀：按 jar 内资源读取（仅兼容/测试用，该方式强制全量内存缓存）
+#       注意：两平台规则不一致——Windows 盘符路径(D:/...)在 Linux 上会被当成相对路径（启动时会打 warn）；
+#             反之 Linux 的 /data/... 在 Windows 上会被解析成"当前盘符根"，同样不是预期位置。
+#             生产环境请在本文件或 app-pro.yml 中覆盖为部署机本平台的绝对路径。
+nuocao.ip2region:
+  # 是否启用；false 时归属地查询统一返回「未知」
+  enable: true
+  v4-path: ./data/ip2region/ip2region_v4.xdb
+  v6-path: ./data/ip2region/ip2region_v6.xdb
+  # 缓存策略：vector-index（默认，官方推荐，约 1MB 常驻 + 按需读盘）
+  #           buffer（全量约 48MB 常驻内存，零磁盘 IO）
+  #           file（不缓存，磁盘 IO 最多）
+  cache-policy: vector-index
+  # 查询器数量，仅 vector-index / file 策略生效（buffer 策略内部固定单实例）
+  searchers: 15
+  # 初始化失败时是否中断启动；false = 降级为「未知」并记录 error 日志，不影响主业务
+  fail-fast: false
+
 tenant:
   enable: true
   table-ignore:

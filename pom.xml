@@ -36,7 +36,7 @@
         <commons.pool2.version>2.11.1</commons.pool2.version>
         <easyexcel.version>3.2.1</easyexcel.version>
         <hutool.version>5.8.32</hutool.version>
-        <ip2region.version>2.6.3</ip2region.version>
+        <ip2region.version>3.3.7</ip2region.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <jettison.version>1.5.4</jettison.version>
         <junit.version>4.13.2</junit.version>

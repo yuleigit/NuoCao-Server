@@ -2,6 +2,7 @@ package com.nuocao.common.mapper;
 
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.nuocao.common.mybatis.MyBatisUtils;
@@ -181,8 +182,13 @@ public interface BaseMapperX<T> extends BaseMapper<T> {
     }
 
     default <R extends Number> R selectSum(String column, QueryWrapper lambdaQuery) {
+        // 列名白名单校验：只允许合法 SQL 标识符，杜绝拼接注入
+        if (column == null || !column.matches("[A-Za-z_][A-Za-z0-9_]*")) {
+            throw new IllegalArgumentException("非法的聚合列名: " + column);
+        }
         QueryWrapper query = lambdaQuery.clone();
-        query.select("SUM(" + column + ") as sumResult");
+        // 使用 mybatis-flex 聚合 API，避免手写 "SUM(" + column + ")" 字符串拼接
+        query.select(QueryMethods.sum(column).as("sumResult"));
 
         Map<String, Object> resultMap = this.selectObjectByQueryAs(query,Map.class);
 

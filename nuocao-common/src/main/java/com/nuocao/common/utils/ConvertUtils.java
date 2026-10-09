@@ -723,8 +723,15 @@ public class ConvertUtils {
 
             if (obj instanceof String) {
                 return (String) obj;
-            } else if (obj instanceof byte[] || obj instanceof Byte[]) {
-                return str((Byte[]) obj, charset);
+            } else if (obj instanceof byte[]) {
+                return str((byte[]) obj, charset);
+            } else if (obj instanceof Byte[]) {
+                Byte[] boxed = (Byte[]) obj;
+                byte[] bytes = new byte[boxed.length];
+                for (int i = 0; i < boxed.length; i++) {
+                    bytes[i] = boxed[i] == null ? (byte) 0 : boxed[i];
+                }
+                return str(bytes, charset);
             } else if (obj instanceof ByteBuffer) {
                 return str((ByteBuffer) obj, charset);
             }

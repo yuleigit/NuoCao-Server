@@ -1,8 +1,6 @@
 package com.nuocao.common.utils;
 
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 
 /**
@@ -57,7 +55,8 @@ public class NumberUtils {
      */
     public static boolean isZero(BigDecimal value)
     {
-        return value==null || value.equals(BigDecimal.ZERO);
+        // 使用 signum 比较数值大小，避免 scale 差异（如 0.00）被判为非 0
+        return value==null || value.signum()==0;
     }
     public static boolean isZero(Integer value)
     {

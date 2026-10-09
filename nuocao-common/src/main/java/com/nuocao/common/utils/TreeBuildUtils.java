@@ -54,32 +54,28 @@ public class TreeBuildUtils {
             nodeMap.put(idGetter.apply(node), node);
         }
 
-        // 第二遍遍历：构建树结构
+        // 第二遍遍历：构建树结构（先按父ID累积子节点，避免每个子节点都覆盖父节点的 children）
+        Map<R, List<T>> childrenMap = new HashMap<>(list.size());
         for (T node : list) {
             R parentId = parentIdGetter.apply(node);
             T parent = nodeMap.get(parentId);
 
             if (parent != null) {
-                // 确保父节点有children集合
-                List<T> children = getOrInitChildren(parent, childrenSetter);
-                children.add(node);
+                childrenMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(node);
             } else {
                 rootList.add(node);
             }
         }
 
+        // 统一回填 children，保证父节点下所有子节点都被保留
+        childrenMap.forEach((parentId, children) -> {
+            T parent = nodeMap.get(parentId);
+            if (parent != null) {
+                childrenSetter.accept(parent, children);
+            }
+        });
+
         return rootList;
-    }
-
-    private static <T> List<T> getOrInitChildren(
-            T node,
-            BiConsumer<T, List<T>> childrenSetter) {
-
-        // 这里需要通过反射获取children，或者要求节点有getChildren方法
-        // 更简单的做法：始终初始化新列表
-        List<T> children = new ArrayList<>();
-        childrenSetter.accept(node, children);
-        return children;
     }
 
     // 重载方法，不需要排序

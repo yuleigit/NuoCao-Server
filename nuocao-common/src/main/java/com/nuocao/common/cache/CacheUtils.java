@@ -91,7 +91,8 @@ public class CacheUtils {
     public <T> List<T> getList(String key,Class<T> classz) {
         Object cached= cacheService.get(key, List.class);
         if (cached instanceof List) {
-            if(classz==null) {
+            // 仅当指定了元素类型时才做类型检测
+            if(classz!=null) {
                 List<?> rawList = (List<?>) cached;
 
                 // 类型检查
@@ -172,7 +173,8 @@ public class CacheUtils {
      * @param <T> 列表元素类型
      */
     public <T> List<T> getOrSetList(String key,  Supplier<List<T>> supplier) {
-        return getOrSetList(key,supplier);
+        // 委托到带元素类型/过期时间的实现（不指定元素类型，走非类型检测路径），避免自调用死循环
+        return getOrSetList(key, null, supplier);
     }
 
     public void remove(String key){

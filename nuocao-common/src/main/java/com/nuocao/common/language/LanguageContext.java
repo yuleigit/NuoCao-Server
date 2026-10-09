@@ -8,17 +8,20 @@ import java.util.Map;
  */
 public class LanguageContext {
 
+    /** 默认语言标识（显式定义，避免依赖 Map 无序的“第一个 key”） */
+    private static final String DEFAULT_LOCALE_CODE = "cn";
+
     private static final ThreadLocal<String> CURRENT_LOCAlE_CODE = new ThreadLocal<>();
 
-    private static Map<String,Locale> LOCALE_MAP = Map.of("cn",Locale.CHINESE,"en",Locale.ENGLISH);
+    private static final Map<String,Locale> LOCALE_MAP = Map.of("cn",Locale.CHINESE,"en",Locale.ENGLISH);
     /**
      * 设置语言表示
      * @param localeCode
      */
     public static void setCurrentLocaleCode(String localeCode) {
-        //不存在则设为
+        //不存在则设为默认语言
         if(localeCode==null || !LOCALE_MAP.containsKey(localeCode)){
-            CURRENT_LOCAlE_CODE.set(LOCALE_MAP.keySet().iterator().next());
+            CURRENT_LOCAlE_CODE.set(DEFAULT_LOCALE_CODE);
         }
         else {
             CURRENT_LOCAlE_CODE.set(localeCode);

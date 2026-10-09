@@ -411,17 +411,20 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         return System.currentTimeMillis();
     }
     /**
-     * 获取毫秒级时间戳
-     * @return
+     * 获取秒级时间戳
+     * <p>
+     * 使用 {@code long} 返回，避免 {@code Integer}（秒）在 2038 年溢出。
+     * @return 秒级时间戳
      */
-    public static Integer getTimestamp(){
-        return (int)(System.currentTimeMillis()/1000L);
+    public static long getTimestamp(){
+        return System.currentTimeMillis()/1000L;
     }
 
     public static String timestampMillisToBeginTime(Long timestamp){
-        return parseDateToStr("yyyy-MM-dd HH:mm:ss.000",new Date(timestamp));
+        return parseDateToStr("yyyy-MM-dd HH:mm:ss.SSS",new Date(timestamp));
     }
     public static String timestampMillisToEndTime(Long timestamp){
-        return parseDateToStr("yyyy-MM-dd HH:mm:ss.9999",new Date(timestamp));
+        // 修正：9 不是日期模式字母，原 ".9999" 会按字面量输出；改为 ".SSS" 输出真实毫秒
+        return parseDateToStr("yyyy-MM-dd HH:mm:ss.SSS",new Date(timestamp));
     }
 }

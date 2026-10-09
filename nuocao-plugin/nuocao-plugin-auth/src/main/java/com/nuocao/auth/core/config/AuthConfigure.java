@@ -28,6 +28,18 @@ import java.util.function.Supplier;
 @Configuration
 public class AuthConfigure {
 
+    /** 文档分组名 */
+    private static final String GROUP_NAME = "认证授权";
+
+    /** 分组描述 */
+    private static final String GROUP_DESC = "认证授权模块接口文档";
+
+    /** 文档版本 */
+    private static final String DOC_VERSION = "1.0.0";
+
+    /** 该分组扫描的根包路径 */
+    private static final String SCAN_PACKAGE = "com.nuocao.auth";
+
     /**
      * 注册Sa-Token的注解拦截器，打开注解式鉴权功能
      * <p>
@@ -63,25 +75,22 @@ public class AuthConfigure {
         };
     }
 
-    @Inject
-    private OpenApiExtensionResolver openApiExtensionResolver;
-
     /**
      * API文档分组配置
      */
-    @Bean("authDocApi")
-    public DocDocket authDocApi() {
+    @Bean
+    public DocDocket authDocApi(@Inject OpenApiExtensionResolver extensionResolver) {
         return new DocDocket()
                 .info(new ApiInfo()
-                        .title("验证功能AUTH")
-                        .description("验证功能AUTH")
+                        .title(GROUP_NAME)
+                        .description(GROUP_DESC)
                         .termsOfService("https://www.nuocao.com")
                         .contact("NUOCAO_TREM", "https://www.nuocao.com", "yulei6@gamil.com")
-                        .version("1.0.0"))
+                        .version(DOC_VERSION))
                 .globalResponseCodes(new CommonHttpCodes())
-                .groupName("验证功能AUTH")
-                .apis("com.nuocao.auth")
-                .basicAuth(openApiExtensionResolver.getSetting().getBasic())
-                .vendorExtensions(openApiExtensionResolver.buildExtensions());
+                .groupName(GROUP_NAME)
+                .apis(SCAN_PACKAGE)
+                .basicAuth(extensionResolver.getSetting().getBasic())
+                .vendorExtensions(extensionResolver.buildExtensions());
     }
 }

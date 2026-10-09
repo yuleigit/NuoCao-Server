@@ -37,16 +37,16 @@ public class MobileValidator implements Validator<Mobile> {
             return Result.failure();
         }
         String realPhone = value;
-        // 如果注解中配置了需要解密，则进行 SM4 解密
+        // 如果注解中配置了需要解密，则先进行 SM2 解密
         if (anno.encrypted()) {
             try {
-                realPhone = CryptUtils.sm2Encrypt(value);
+                realPhone = CryptUtils.sm2Decrypt(value);
             } catch (Exception e) {
                 // 解密失败（如密文格式错误、解密密钥不匹配等），直接视为校验不通过
                 return Result.failure();
             }
         }
-        // 校验手机
-        return PhoneUtil.isMobile(value)?Result.succeed():Result.failure();
+        // 校验解密后的手机号
+        return PhoneUtil.isMobile(realPhone)?Result.succeed():Result.failure();
     }
 }

@@ -703,8 +703,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         if (cs == null || cs.length() == 0) {
             return false;
         }
+        // 至少包含一位数字，避免 ""、"+ "、"-"、"." 被判为数字
         String str = cs.toString();
-        return str.matches("[-+]?\\d*(\\.\\d+)?");
+        return str.matches("[-+]?(\\d+(\\.\\d+)?|\\.\\d+)");
     }
 
     public static boolean isBlankEq(String str1,String str2){

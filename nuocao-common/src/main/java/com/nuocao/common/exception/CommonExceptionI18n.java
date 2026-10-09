@@ -2,7 +2,6 @@ package com.nuocao.common.exception;
 
 import cn.hutool.core.util.StrUtil;
 import com.nuocao.common.language.LanguageUtils;
-import com.nuocao.common.utils.StrFormatUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +29,8 @@ public class CommonExceptionI18n extends CommonException{
     }
 
     public CommonExceptionI18n(Integer code, String i18nKey, Object... arguments) {
-        super(StrFormatUtils.doFormat(i18nKey, arguments));
+        // 与其余构造保持一致，统一走 i18n 资源
+        super(LanguageUtils.getMessage(i18nKey, arguments));
         super.setCode(code);
         super.setMsg(super.getMessage());
     }

@@ -1,17 +1,14 @@
 package com.nuocao.common.mybatis;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateTime;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.nuocao.common.page.SortingField;
-import com.nuocao.common.utils.LocalDateTimeUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * mybatis 工具类
@@ -22,7 +19,6 @@ public class MyBatisUtils {
         if (CollectionUtil.isEmpty(sortingFields)) {
             return query;
         }
-        Long startTime = LocalDateTimeUtils.currentTimestamp();
         List<String> allowedColumns = null;
         if (entityClass != null) {
             TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
@@ -30,7 +26,6 @@ public class MyBatisUtils {
                 allowedColumns = List.of(tableInfo.getAllColumns());
             }
         }
-        log.debug("获取可用字典列表-耗时：{}ms",LocalDateTimeUtils.currentTimestamp()-startTime);
         return buildQueryOrder(query, sortingFields, allowedColumns);
     }
 
@@ -42,8 +37,8 @@ public class MyBatisUtils {
         // 处理排序字段
         sortingFields.forEach(sortingField -> {
             String field = sortingField.getField();
-            // 校验字段是否在白名单内
-            if (allowedColumns.contains(field)) {
+            // 校验字段是否在白名单内；白名单为空（如无法解析实体表结构）时全部拒绝，避免 NPE
+            if (allowedColumns != null && allowedColumns.contains(field)) {
                 boolean isAsc = SortingField.ORDER_ASC.equals(sortingField.getOrder());
                 query.orderBy(field, isAsc);
             } else {

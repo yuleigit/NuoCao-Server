@@ -10,22 +10,28 @@ import org.noear.solon.docs.models.ApiInfo;
 @Configuration
 public class GenConfigure {
 
-    @Inject
-    private OpenApiExtensionResolver openApiExtensionResolver;
+    /** 文档分组名 */
+    private static final String GROUP_NAME = "代码生成";
 
-    /**
-     * API文档分组配置
-     **/
-    @Bean("genDocApi")
-    public DocDocket genDocApi() {
+    /** 分组描述 */
+    private static final String GROUP_DESC = "代码生成模块接口文档";
+
+    /** 文档版本 */
+    private static final String DOC_VERSION = "1.0.0";
+
+    /** 该分组扫描的根包路径 */
+    private static final String SCAN_PACKAGE = "com.nuocao.gen";
+
+    @Bean
+    public DocDocket genDocApi(@Inject OpenApiExtensionResolver extensionResolver) {
         return new DocDocket()
                 .info(new ApiInfo()
-                        .title("代码生成GEN")
-                        .description("代码生成GEN")
-                        .version("1.0.0"))
-                .groupName("代码生成GEN")
-                .apis("com.nuocao.gen")
-                .basicAuth(openApiExtensionResolver.getSetting().getBasic())
-                .vendorExtensions(openApiExtensionResolver.buildExtensions());
+                        .title(GROUP_NAME)
+                        .description(GROUP_DESC)
+                        .version(DOC_VERSION))
+                .groupName(GROUP_NAME)
+                .apis(SCAN_PACKAGE)
+                .basicAuth(extensionResolver.getSetting().getBasic())
+                .vendorExtensions(extensionResolver.buildExtensions());
     }
 }

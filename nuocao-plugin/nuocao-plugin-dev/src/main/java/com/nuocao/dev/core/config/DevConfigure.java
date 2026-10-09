@@ -18,23 +18,32 @@ import java.util.List;
 @Configuration
 public class DevConfigure {
 
-    @Inject
-    private OpenApiExtensionResolver openApiExtensionResolver;
+    /** 文档分组名 */
+    private static final String GROUP_NAME = "开发配置";
+
+    /** 分组描述 */
+    private static final String GROUP_DESC = "开发配置模块接口文档";
+
+    /** 文档版本 */
+    private static final String DOC_VERSION = "1.0.0";
+
+    /** 该分组扫描的根包路径 */
+    private static final String SCAN_PACKAGE = "com.nuocao.dev";
 
     /**
      * API文档分组配置
      **/
-    @Bean("devDocApi")
-    public DocDocket sysDocApi() {
+    @Bean
+    public DocDocket devDocApi(@Inject OpenApiExtensionResolver extensionResolver) {
         return new DocDocket()
                 .info(new ApiInfo()
-                        .title("开发配置")
-                        .description("开发配置接口")
-                        .version("1.0.0"))
-                .groupName("开发配置")
-                .apis("com.nuocao.dev")
-                .basicAuth(openApiExtensionResolver.getSetting().getBasic())
-                .vendorExtensions(openApiExtensionResolver.buildExtensions());
+                        .title(GROUP_NAME)
+                        .description(GROUP_DESC)
+                        .version(DOC_VERSION))
+                .groupName(GROUP_NAME)
+                .apis(SCAN_PACKAGE)
+                .basicAuth(extensionResolver.getSetting().getBasic())
+                .vendorExtensions(extensionResolver.buildExtensions());
     }
 
     /**

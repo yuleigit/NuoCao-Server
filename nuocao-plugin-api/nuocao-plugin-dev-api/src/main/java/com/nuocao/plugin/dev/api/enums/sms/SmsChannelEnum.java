@@ -1,4 +1,4 @@
-package nuocao.plugin.dev.api.enums.sms;
+package com.nuocao.plugin.dev.api.enums.sms;
 
 
 import com.nuocao.common.enums.StrArrayValuable;

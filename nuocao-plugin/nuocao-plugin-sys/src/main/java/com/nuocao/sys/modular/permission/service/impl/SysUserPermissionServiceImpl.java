@@ -79,11 +79,13 @@ public class SysUserPermissionServiceImpl implements SysUserPermissionService {
             }
 
         });
-        //更新的是用户权限
+        //更新的是用户权限：只清一个用户的缓存，轻量，同步发送
         if(data.getObjectType().equals(DataScopeObjectTypeEnum.USER.getType())){
             NuoCaoEventHelper.send(new UserPermissionUpdateEvent(data.getObjectId()));
-        }else if(data.getObjectType().equals(DataScopeObjectTypeEnum.ROLE.getType())){
-            NuoCaoEventHelper.send(new RolePermissionUpdateEvent(data.getObjectId()));
+        }
+        //更新的是角色权限：需查出角色下所有用户再逐个清缓存（N 次缓存访问），较重，异步发送避免拖慢接口
+        else if(data.getObjectType().equals(DataScopeObjectTypeEnum.ROLE.getType())){
+            NuoCaoEventHelper.sendAsync(new RolePermissionUpdateEvent(data.getObjectId()));
         }
     }
 

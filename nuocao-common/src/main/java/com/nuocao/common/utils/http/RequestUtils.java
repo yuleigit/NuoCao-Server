@@ -83,11 +83,29 @@ public class RequestUtils {
     public static UserAgent getCurrentUserAgent(){
         return getUserAgent(getCurrentRequest());
     }
+
+    /**
+     * 解析请求的 UserAgent，供多处复用。
+     *
+     * <p>UserAgent 解析是正则匹配，有一定开销；同时需要浏览器和操作系统信息时，
+     * 请解析一次后分别调用 {@link #getBrowser(UserAgent)} / {@link #getOs(UserAgent)}，
+     * 不要重复调用 {@link #getBrowser(Context)} 与 {@link #getOs(Context)}。</p>
+     */
+    public static UserAgent parseUserAgent(Context request) {
+        return getUserAgent(request);
+    }
+
     /**
      * 获取客户端浏览器
      */
     public static String getBrowser(Context request) {
-        UserAgent userAgent = getUserAgent(request);
+        return getBrowser(getUserAgent(request));
+    }
+
+    /**
+     * 获取客户端浏览器（复用已解析的 UserAgent）
+     */
+    public static String getBrowser(UserAgent userAgent) {
         if (ObjectUtil.isEmpty(userAgent)) {
             return StrUtil.DASHED;
         } else {
@@ -103,7 +121,13 @@ public class RequestUtils {
      * 获取客户端操作系统
      */
     public static String getOs(Context request) {
-        UserAgent userAgent = getUserAgent(request);
+        return getOs(getUserAgent(request));
+    }
+
+    /**
+     * 获取客户端操作系统（复用已解析的 UserAgent）
+     */
+    public static String getOs(UserAgent userAgent) {
         if (ObjectUtil.isEmpty(userAgent)) {
             return StrUtil.DASHED;
         } else {

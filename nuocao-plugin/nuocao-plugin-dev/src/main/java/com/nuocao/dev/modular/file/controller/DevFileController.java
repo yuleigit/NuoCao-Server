@@ -110,7 +110,6 @@ public class DevFileController {
      * 下载文件
      **/
     @ApiOperation("下载文件")
-    @CommonLog("下载文件")
     @Get
     @Mapping(value = "/dev/file/download", produces = MimeType.APPLICATION_OCTET_STREAM_VALUE)
     public void download(@Validated DevFileIdParam devFileIdParam, Context ctx) throws IOException {

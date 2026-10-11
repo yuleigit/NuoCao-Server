@@ -68,7 +68,8 @@ public class CacheUtils {
      * @return
      * @param <T>
      */
-    public <T> T getOrSetObject(String key, Class<T> clazz, Supplier<T> supplier){
+    public <T> T getOrSetObject(String key, Class<T> clazz,int expireSeconds, Supplier<T> supplier){
+
         T obj =  get(key,clazz);
         //存在直接返回
         if(obj!=null){
@@ -76,11 +77,18 @@ public class CacheUtils {
         }
         //不存在创建
         obj = supplier.get();
-        this.setObject(key,obj);
+        if(expireSeconds>0){
+            this.setObject(key,obj,expireSeconds);
+        }else{
+            this.setObject(key,obj);
+        }
         return obj;
     }
 
+    public <T> T getOrSetObject(String key, Class<T> clazz, Supplier<T> supplier){
+        return getOrSetObject(key,clazz,0,supplier);
 
+    }
     /**
      * 获取缓存列表，类型安全检测
      * @param key 缓存key

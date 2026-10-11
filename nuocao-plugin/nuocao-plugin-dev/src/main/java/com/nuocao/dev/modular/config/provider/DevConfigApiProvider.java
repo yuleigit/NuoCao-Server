@@ -9,6 +9,10 @@ import java.util.Map;
 
 /**
  * 配置API接口实现类
+ * TODO:关于多语言扩展的想法
+ * 目前所有值都以字符串存储，后续可以根据Context中的语言类型对应存储表中的值
+ * 方案1：将value改为键值对如{zh:"中文",en:"英文“}的形式存储
+ * 方案2：增加config_lang列，每种语言单独配置，缓存中增加
  **/
 @Component
 public class DevConfigApiProvider implements DevConfigApi {

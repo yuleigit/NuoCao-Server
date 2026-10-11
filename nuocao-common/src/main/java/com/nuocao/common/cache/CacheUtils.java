@@ -65,6 +65,7 @@ public class CacheUtils {
      * @param key
      * @param clazz
      * @param supplier
+     * @param expireSeconds 有效时间
      * @return
      * @param <T>
      */

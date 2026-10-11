@@ -21,6 +21,7 @@ public interface DevConfigApi {
      */
     Integer getIntegerValue(String key);
 
+
     /**
      * 获取数字值
      * @param key
@@ -37,12 +38,30 @@ public interface DevConfigApi {
      */
     Boolean getBooleanValue(String key,Boolean defaultValue);
 
+
+    /**
+     * 获取数字值
+     * @param key
+     * @return
+     */
+    Long getLongValue(String key);
+    /**
+     * 获取数字值
+     * @param key
+     * @param defaultValue 默认值
+     * @return
+     */
+    Long getLongValue(String key,Long defaultValue);
+
     /**
      * 获取值并转为map对象
      * @param key
      * @return
      */
     Map<String,Object> getValueToMap(String key);
+
+
+
 
     /**
      * 验证是否为true

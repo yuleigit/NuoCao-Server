@@ -40,6 +40,17 @@ public class DevConfigApiProvider implements DevConfigApi {
         return devConfigService.getBooleanValueByKey(key,defaultValue);
     }
 
+
+    @Override
+    public Long getLongValue(String key) {
+        return devConfigService.getLongValueByKey(key,null);
+    }
+
+    @Override
+    public Long getLongValue(String key, Long defaultValue) {
+        return devConfigService.getLongValueByKey(key,defaultValue);
+    }
+
     @Override
     public Map<String, Object> getValueToMap(String key) {
         return devConfigService.getValueToMap(key);

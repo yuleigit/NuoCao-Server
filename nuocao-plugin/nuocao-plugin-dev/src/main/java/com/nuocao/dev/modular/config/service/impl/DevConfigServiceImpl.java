@@ -200,7 +200,7 @@ public class DevConfigServiceImpl  implements DevConfigService {
 
         devConfigBatchParamList.forEach(item->{
             //2.1 是否存在
-            if(oldConfigMap.containsKey(item.getConfigKey())){
+            if(!oldConfigMap.containsKey(item.getConfigKey())){
                 throw new CommonExceptionI18n("dev.config.notExists",item.getConfigKey());
             }
             DevConfig config = oldConfigMap.get(item.getConfigKey());

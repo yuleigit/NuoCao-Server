@@ -2,6 +2,7 @@ package com.nuocao.dev.modular.sms.template.service.impl;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.nuocao.common.cache.CacheUtils;
+import com.nuocao.common.enums.CommonEnableStatusEnum;
 import com.nuocao.common.exception.CommonException;
 import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.mapper.LambdaQueryWrapperX;
@@ -15,6 +16,7 @@ import com.nuocao.dev.modular.sms.template.mapper.DevSmsTemplateMapper;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateAddParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateEditParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplatePageParam;
+import com.nuocao.dev.modular.sms.template.result.DevSmsTemplateSelectorResult;
 import com.nuocao.dev.modular.sms.template.service.DevSmsTemplateService;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateIdParam;
 import com.nuocao.plugin.dev.api.DevConfigApi;
@@ -53,6 +55,13 @@ public class DevSmsTemplateServiceImpl implements DevSmsTemplateService {
     public PageResult<DevSmsTemplate> page(DevSmsTemplatePageParam pageParams) {
 
         return devSmsTemplateMapper.selectPage(pageParams,buildQueryWrapper(pageParams));
+    }
+
+    @Override
+    public List<DevSmsTemplateSelectorResult> selectorList(DevSmsTemplatePageParam pageParams) {
+        QueryWrapper query = buildQueryWrapper(pageParams);
+        query.eq(DevSmsTemplate::getStatus, CommonEnableStatusEnum.ENABLE.getValue()); //只读取可用的
+        return DevSmsTemplateConvert.INSTANCE.convertSelectorResultList(devSmsTemplateMapper.selectListByQuery(query));
     }
 
     @Override

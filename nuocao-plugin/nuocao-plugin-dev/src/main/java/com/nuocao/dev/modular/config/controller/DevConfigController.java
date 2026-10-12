@@ -1,6 +1,7 @@
 package com.nuocao.dev.modular.config.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.nuocao.common.annotation.CommonLog;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
@@ -9,6 +10,9 @@ import com.nuocao.common.utils.collection.CollectionUtils;
 import com.nuocao.dev.modular.config.entity.DevConfig;
 import com.nuocao.dev.modular.config.param.*;
 import com.nuocao.dev.modular.config.service.DevConfigService;
+import com.nuocao.dev.modular.sms.template.param.DevSmsTemplatePageParam;
+import com.nuocao.dev.modular.sms.template.result.DevSmsTemplateSelectorResult;
+import com.nuocao.dev.modular.sms.template.service.DevSmsTemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.noear.solon.annotation.*;
@@ -31,11 +35,15 @@ public class DevConfigController {
     @Inject
     private DevConfigService devConfigService;
 
+    @Inject
+    private DevSmsTemplateService smsTemplateService;
+
     /**
      * 获取配置分页
      */
     @ApiOperation("获取配置分页")
     @Get
+    @SaCheckPermission("dev:config:query")
     @Mapping("/dev/config/page")
     public CommonResult<PageResult<DevConfig>> page(DevConfigPageParam devConfigPageParam) {
         return CommonResult.data(devConfigService.page(devConfigPageParam));
@@ -56,6 +64,7 @@ public class DevConfigController {
      */
     @ApiOperation("获取配置列表")
     @Get
+    @SaCheckPermission("dev:config:query")
     @Mapping("/dev/config/list")
     public CommonResult<List<DevConfig>> list(DevConfigListParam devConfigListParam) {
         return CommonResult.data(devConfigService.list(devConfigListParam));
@@ -67,6 +76,7 @@ public class DevConfigController {
     @ApiOperation("添加配置")
     @CommonLog("添加配置")
     @Post
+    @SaCheckPermission("dev:config:add")
     @Mapping("/dev/config/add")
     public CommonResult<String> add(@Validated DevConfigAddParam devConfigAddParam) {
         devConfigService.add(devConfigAddParam);
@@ -79,6 +89,7 @@ public class DevConfigController {
     @ApiOperation("编辑配置")
     @CommonLog("编辑配置")
     @Post
+    @SaCheckPermission("dev:config:edit")
     @Mapping("/dev/config/edit")
     public CommonResult<String> edit(@Validated DevConfigEditParam devConfigEditParam) {
         devConfigService.edit(devConfigEditParam);
@@ -91,6 +102,7 @@ public class DevConfigController {
     @ApiOperation("删除配置")
     @CommonLog("删除配置")
     @Post
+    @SaCheckPermission("dev:config:delete")
     @Mapping("/dev/config/delete")
     public CommonResult<String> delete(@Validated @NotEmpty(message = "集合不能为空")
                                        CommonValidList<DevConfigIdParam> devConfigIdParamList) {
@@ -103,6 +115,7 @@ public class DevConfigController {
      */
     @ApiOperation("获取配置详情")
     @Get
+    @SaCheckPermission("dev:config:query")
     @Mapping("/dev/config/detail")
     public CommonResult<DevConfig> detail(@Validated DevConfigIdParam devConfigIdParam) {
         return CommonResult.data(devConfigService.detail(devConfigIdParam));
@@ -114,11 +127,23 @@ public class DevConfigController {
     @ApiOperation("配置批量更新")
     @CommonLog("配置批量更新")
     @Post
+    @SaCheckPermission("dev:config:edit")
     @Mapping("/dev/config/editBatch")
     public CommonResult<String> editBatch(@Validated @NotEmpty(message = "集合不能为空")
                                           CommonValidList<DevConfigBatchParam> devConfigBatchParamList) {
         devConfigService.editBatch(devConfigBatchParamList);
         return CommonResult.ok();
+    }
+
+    /**
+     * 配置批量更新
+     */
+    @ApiOperation("配置可选短信通道")
+    @Post
+    @SaCheckPermission("dev:config:edit")
+    @Mapping("/dev/config/smsTemplateList")
+    public CommonResult<List<DevSmsTemplateSelectorResult>> smsTemplateList() {
+        return CommonResult.data(smsTemplateService.selectorList(new DevSmsTemplatePageParam()));
     }
 
 }

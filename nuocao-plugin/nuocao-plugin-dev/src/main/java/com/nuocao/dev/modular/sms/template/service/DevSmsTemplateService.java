@@ -6,6 +6,7 @@ import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateEditParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplatePageParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateAddParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateIdParam;
+import com.nuocao.dev.modular.sms.template.result.DevSmsTemplateSelectorResult;
 import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
 import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 
@@ -24,6 +25,10 @@ public interface DevSmsTemplateService {
     PageResult<DevSmsTemplate> page(DevSmsTemplatePageParam pageParams);
 
 
+    /**
+     * 获取短信模板分页
+     */
+    List<DevSmsTemplateSelectorResult> selectorList(DevSmsTemplatePageParam pageParams);
     /**
      * 添加短信模板
      */

@@ -1,4 +1,4 @@
-package com.nuocao.dev.modular.sms.send.params;
+package com.nuocao.dev.modular.sms.send.param;
 
 
 import io.swagger.annotations.ApiModelProperty;
@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.noear.solon.validation.annotation.NotBlank;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 短信发送控制器

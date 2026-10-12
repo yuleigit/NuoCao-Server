@@ -1,9 +1,11 @@
 package com.nuocao.plugin.dev.api;
 
+import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
 import org.noear.solon.annotation.Component;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * 短信API
@@ -16,9 +18,9 @@ public interface DevSmsApi {
      *
      * @param phoneNumbers 手机号
      * @param templateCodeOrId 模板id或编码
-     * @param paramMap 发送参数
+     * @param variables 发送参数
      */
-    void sendSms(String phoneNumbers, String templateCodeOrId, LinkedHashMap<String,String> paramMap);
+    void sendSms(String phoneNumbers, String templateCodeOrId, LinkedHashMap<String,String> variables);
 
     /* =========使用指定引擎发送短信========= */
 
@@ -50,6 +52,25 @@ public interface DevSmsApi {
      */
     String sendSmsCode(String group,String phoneNumber,String templateCode);
 
+
+    /**
+     * 根据场景发送短信
+     *
+     * @
+     * @param phoneNumbers 手机号
+     * @param sceneEnum 场景
+     * @param variables 发送参数
+     */
+    void sendSmsByScene(DevConfigSceneEnum sceneEnum,String phoneNumbers, LinkedHashMap<String,String> variables);
+
+    /**
+     * 根据场景发送短信验证码
+     * @param phoneNumber
+     * @param group 分組，为空则使用default
+     * @return 验证码请求id
+     */
+    String sendSmsCodeByScene(DevConfigSceneEnum sceneEnum,String group,String phoneNumber);
+
     /**
      * 验证短信验证码是否正确
      * @param group 分组，为空则为default
@@ -57,5 +78,13 @@ public interface DevSmsApi {
      * @param inputCode 用户输入的验证码
      */
     void validateSmsCode(String group,String phone, String reqId, String inputCode);
+
+    /**
+     * 验证模板可用性，不可用抛出异常
+     * @param templateId 模板编码
+     * @param variables 模板需要携带的变量
+     *
+     */
+    void availabilitySmsTemplate(Long templateId, Set<String> variables);
 
 }

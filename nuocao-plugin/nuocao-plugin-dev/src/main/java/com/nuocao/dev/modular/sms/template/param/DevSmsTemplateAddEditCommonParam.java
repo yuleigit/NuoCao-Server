@@ -3,6 +3,7 @@ package com.nuocao.dev.modular.sms.template.param;
 import com.nuocao.common.enums.CommonEnableStatusEnum;
 import com.nuocao.common.validation.InEnum;
 import com.nuocao.common.validation.InStrEnum;
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateVariableDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import org.noear.solon.validation.annotation.NotBlank;
 import org.noear.solon.validation.annotation.NotNull;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -24,17 +26,14 @@ public class DevSmsTemplateAddEditCommonParam implements Serializable {
 
 
 
+
+
+
     /** 模板使用短信通道 */
     @ApiModelProperty(value = "模板使用短信通道", position = 4)
     @NotBlank
     @InStrEnum(SmsChannelEnum.class)
     private String channelCode;
-
-    /** 模板编码 */
-    @ApiModelProperty(value = "模板编码",notes = "同一通道只能存在一个相同编码",position = 5)
-    @NotBlank
-    @Length(max = 50)
-    private String code;
 
     /** 模板名称 */
     @ApiModelProperty(value = "模板名称", position = 3)
@@ -59,5 +58,13 @@ public class DevSmsTemplateAddEditCommonParam implements Serializable {
     @Length(max = 200)
     private String remark;
 
+    /** 模板内容 */
+    @ApiModelProperty(value = "模板内容",position = 9)
+    @NotBlank
+    @Length(max = 4000)
+    private String content;
 
+    /** 模板中的参数 */
+    @ApiModelProperty(value = "模板变量集合",notes = "json表达的key value对",position = 9)
+    private List<DevSmsTemplateVariableEditParam> variables;
 }

@@ -1,6 +1,8 @@
 package com.nuocao.dev.modular.sms.template.service.impl;
 
 import com.mybatisflex.core.query.QueryWrapper;
+import com.nuocao.common.cache.CacheUtils;
+import com.nuocao.common.exception.CommonException;
 import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.mapper.LambdaQueryWrapperX;
 import com.nuocao.common.page.PageResult;
@@ -15,6 +17,9 @@ import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateEditParam;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplatePageParam;
 import com.nuocao.dev.modular.sms.template.service.DevSmsTemplateService;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplateIdParam;
+import com.nuocao.plugin.dev.api.DevConfigApi;
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateVariableDTO;
+import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import lombok.extern.slf4j.Slf4j;
 import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateDTO;
 import org.noear.solon.annotation.Component;
@@ -23,6 +28,7 @@ import org.noear.solon.annotation.Inject;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 短信模板 Service接口实现类
@@ -34,6 +40,13 @@ public class DevSmsTemplateServiceImpl implements DevSmsTemplateService {
     @Inject
     private DevSmsTemplateMapper devSmsTemplateMapper;
 
+    @Inject
+    private CacheUtils cacheUtils;
+
+    @Inject
+    private DevConfigApi devConfigApi;
+
+    private final String CONFIG_SCENE_SMS_TEMPLATE_CACHE_KEY = "sms-template:scene:{}";
 
 
     @Override
@@ -82,31 +95,63 @@ public class DevSmsTemplateServiceImpl implements DevSmsTemplateService {
     }
 
     @Override
-    public DevSmsTemplateDTO getAndValidDtoByChannelAndCode(String channelCode, String templateCode) {
+    public DevSmsTemplateDTO getAndValidateDtoByChannelAndCode(String channelCode, String templateCode) {
         DevSmsTemplateDTO template = getDtoByChannelAndCode(channelCode,templateCode);
         CommonExceptionI18n.notNull(template,"dev.sms.template.notExists",channelCode+"/"+templateCode);
         return template;
     }
 
     @Override
+    public DevSmsTemplateDTO getDtoByScene(DevConfigSceneEnum sceneEnum) {
+        DevConfigSceneEnum.MediumMeta meta =getAndValidateSceneMeta(sceneEnum);
+
+       //得到配置中选择的模板ID
+       Long templateId= devConfigApi.getLongValue(meta.getConfigKey(),0L);
+       if(templateId==null) return null;
+       DevSmsTemplate template = devSmsTemplateMapper.selectOneById(templateId);
+       return DevSmsTemplateConvert.INSTANCE.convertDto(template);
+    }
+
+    @Override
+    public DevSmsTemplateDTO getAndValidateDtoByScene(DevConfigSceneEnum sceneEnum) {
+        DevSmsTemplateDTO dto =getDtoByScene(sceneEnum);
+        if(dto==null){
+            throw new CommonExceptionI18n("场景{}短信模板不存在",sceneEnum.getScene());
+        }
+        return dto;
+    }
+
+    private DevConfigSceneEnum.MediumMeta getAndValidateSceneMeta(DevConfigSceneEnum sceneEnum){
+        if(sceneEnum==null){
+            throw new CommonException("sceneEnum is null");
+        }
+        DevConfigSceneEnum.MediumMeta meta = sceneEnum.getSmsMeta();
+        if(meta==null){
+            throw new CommonException("{} not supported SMS ");
+        }
+        return meta;
+    }
+
+    @Override
     public void validParams(DevSmsTemplateDTO dto, LinkedHashMap<String, String> inputTemplateParams) {
-        if(CollectionUtils.isEmpty(dto.getParams())){
+        if(CollectionUtils.isEmpty(dto.getVariables())){
             return;
         }
         if(inputTemplateParams==null){
             throw new CommonExceptionI18n("dev.sms.template.missParams",dto.getId(),"*");
         }
-        for (String key:
-                dto.getParams()) {
-            if(!inputTemplateParams.containsKey(key)){
+        for (DevSmsTemplateVariableDTO key:
+                dto.getVariables()) {
+            if(!inputTemplateParams.containsKey(key.getName())){
                 throw new CommonExceptionI18n("dev.sms.template.missParams",dto.getId(),key);
             }
+            //TODO:这里后续可能需要增加模板变量会否正确的验证
         }
     }
 
     @Override
     public String buildTemplateContent(DevSmsTemplateDTO dto, LinkedHashMap<String, String> templateParams) {
-        if(dto==null || CollectionUtils.isEmpty(dto.getParams()) || templateParams==null){
+        if(dto==null || CollectionUtils.isEmpty(dto.getVariables()) || templateParams==null){
             return ConvertUtils.toStr(dto.getContent(),"");
         }
         // 建议增加：如果 content 本身为空的处理
@@ -156,11 +201,12 @@ public class DevSmsTemplateServiceImpl implements DevSmsTemplateService {
     private void validInfo(DevSmsTemplate info){
         //验证的是否支持该类型
 
-        DevSmsTemplate temp = devSmsTemplateMapper.selectOne(DevSmsTemplate::getChannelCode,info.getChannelCode(),DevSmsTemplate::getCode,info.getCode());
+        DevSmsTemplate temp = devSmsTemplateMapper.selectOne(DevSmsTemplate::getCode,info.getCode());
         if(temp!=null && !temp.getId().equals(info.getId()))
         {
-            throw new CommonExceptionI18n("dev.sms.template.channleExistsCode", info.getChannelCode(),temp.getCode());
+            throw new CommonExceptionI18n("dev.sms.template.existsCode", info.getChannelCode(),temp.getCode());
         }
+
 
 
     }
@@ -197,4 +243,20 @@ public class DevSmsTemplateServiceImpl implements DevSmsTemplateService {
         return  queryWrapper;
     }
 
+    @Override
+    public void availabilitySmsTemplate(Long templateId, Set<String> variables) {
+        DevSmsTemplate smsTemplate = queryEntity(templateId);
+        if(CollectionUtils.isEmpty(variables)){
+            return;
+        }
+        if(CollectionUtils.isEmpty(smsTemplate.getVariables())){
+            throw new CommonExceptionI18n("dev.sms.template.notExistsVariable",smsTemplate.getName());
+        }
+        List<String> variableNames= smsTemplate.getVariables().stream().map(DevSmsTemplateVariableDTO::getName).collect(Collectors.toList());
+        variables.forEach(item->{
+            if(!variableNames.contains(item)){
+                throw new CommonExceptionI18n("dev.sms.template.notExistsVariable",smsTemplate.getName(),item);
+            }
+        });
+    }
 }

@@ -15,9 +15,11 @@ import com.nuocao.common.utils.json.JsonUtils;
 import com.nuocao.dev.modular.config.convert.DevConfigConvert;
 import com.nuocao.dev.modular.config.entity.DevConfig;
 import com.nuocao.dev.modular.config.enums.DevConfigCategoryEnum;
+import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import com.nuocao.dev.modular.config.mapper.DevConfigMapper;
 import com.nuocao.dev.modular.config.param.*;
 import com.nuocao.dev.modular.config.service.DevConfigService;
+import com.nuocao.plugin.dev.api.DevSmsApi;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -26,6 +28,7 @@ import org.noear.solon.data.annotation.Transaction;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 系统配置Service接口实现类
@@ -35,7 +38,7 @@ import java.util.Set;
 public class DevConfigServiceImpl  implements DevConfigService {
 
 
-
+    private static final String OTHER_CONFIG_GROUP="other";
 
     private static final String CONFIG_CACHE_KEY = "dev-config:";
     private static final String CONFIG_CACHE_MAP_KEY = "dev-config-map:";
@@ -47,6 +50,9 @@ public class DevConfigServiceImpl  implements DevConfigService {
 
     @Inject
     private CacheUtils cacheUtils;
+
+    @Inject
+    private DevSmsApi devSmsApi;
 
     @Override
     public String getValueByKey(String key) {
@@ -64,6 +70,11 @@ public class DevConfigServiceImpl  implements DevConfigService {
     @Override
     public Integer getIntegerValueByKey(String key, Integer defaultValue) {
         return ConvertUtils.toInt(this.getValueByKey(key),defaultValue);
+    }
+
+    @Override
+    public Long getLongValueByKey(String key, Long defaultValue) {
+        return ConvertUtils.toLong(this.getValueByKey(key),defaultValue);
     }
 
     @Override
@@ -125,6 +136,9 @@ public class DevConfigServiceImpl  implements DevConfigService {
     public void add(DevConfigAddParam devConfigAddParam) {
         DevConfig devConfig = DevConfigConvert.INSTANCE.convert(devConfigAddParam);
         validInfo(devConfig);
+        if(StringUtils.isBlank(devConfig.getConfigGroup())){
+            devConfig.setConfigKey(OTHER_CONFIG_GROUP);
+        }
         mapper.insert(devConfig);
     }
 
@@ -170,15 +184,38 @@ public class DevConfigServiceImpl  implements DevConfigService {
     @Override
     public void editBatch(List<DevConfigBatchParam> devConfigBatchParamList) {
 
+        //1. 得到所有key，一次性从数据库中拿到所有配置
+        List<String> configKeys = devConfigBatchParamList.stream().map(DevConfigBatchParam::getConfigKey).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(configKeys)){
+            throw new CommonExceptionI18n("dev.config.notExists");
+        }
+        List<DevConfig> configList = mapper.selectList(DevConfig::getConfigKey,configKeys);
+        if(CollectionUtils.isEmpty(configKeys)){
+            throw new CommonExceptionI18n("dev.config.notExists",configKeys.get(0));
+        }
+
+        Map<String,DevConfig> oldConfigMap = CollectionUtils.convertMap(configList,DevConfig::getConfigKey);
+
+        //2.验证填写准确性
+
         devConfigBatchParamList.forEach(item->{
-            if(! ALLOW_BLANK_KEY_SET.contains(item.getConfigKey())){
+            //2.1 是否存在
+            if(oldConfigMap.containsKey(item.getConfigKey())){
+                throw new CommonExceptionI18n("dev.config.notExists",item.getConfigKey());
+            }
+            DevConfig config = oldConfigMap.get(item.getConfigKey());
+            //2.2 得到是不是信息场景配置中的内容
+            DevConfigSceneEnum.ConfigKeyRef sceneConfigRef =  DevConfigSceneEnum.ofConfigKey(item.getConfigKey());
+            //2.2 是否为空，在允许为空白名单中、短信验证码类可以为空
+            if(! ALLOW_BLANK_KEY_SET.contains(item.getConfigKey()) || (sceneConfigRef==null || !sceneConfigRef.getMeta().isRequired())){
                 if(StringUtils.isBlank(item.getConfigValue())){
-                    QueryWrapper query = new QueryWrapper();
-                    query.select(DevConfig::getRemark);
-                    query.eq(DevConfig::getConfigKey,item.getConfigKey());
-                    String name = mapper.selectObjectByQueryAs(query,String.class);
-                    throw new CommonExceptionI18n("dev.config.value.notEmpty",name==null?"":name);
+                    throw new CommonExceptionI18n("dev.config.value.notEmpty",config.getRemark()==null?"":config.getRemark());
                 }
+            }
+            //2.3 看是不是
+            if(sceneConfigRef!=null){
+                //验证选中模板的可用性
+                devSmsApi.availabilitySmsTemplate(ConvertUtils.toLong(item.getConfigValue()),sceneConfigRef.getMeta().getVariables());
             }
         });
 

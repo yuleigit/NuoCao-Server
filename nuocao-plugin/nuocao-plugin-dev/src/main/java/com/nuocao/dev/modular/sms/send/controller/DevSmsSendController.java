@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.dev.modular.sms.DevSmsHelper;
 import com.nuocao.dev.modular.sms.log.service.DevSmsLogService;
-import com.nuocao.dev.modular.sms.send.params.DevSmsSendParam;
+import com.nuocao.dev.modular.sms.send.param.DevSmsSendParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.noear.solon.annotation.*;

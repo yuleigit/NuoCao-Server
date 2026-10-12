@@ -40,6 +40,14 @@ public interface DevConfigService {
      */
     Integer getIntegerValueByKey(String key,Integer defaultValue);
 
+    /**
+     * 获取长整数型数据
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    Long getLongValueByKey(String key,Long defaultValue);
+
 
     /**
      * 获取配置并转为map独享

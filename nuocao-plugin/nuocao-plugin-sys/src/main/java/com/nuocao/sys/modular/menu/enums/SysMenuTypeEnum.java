@@ -12,7 +12,7 @@ import java.util.Arrays;
 public enum SysMenuTypeEnum implements StrArrayValuable {
     MODULE("module","模块"),
     DIR("dir","目录"),
-    MENU("params","菜单"),
+    MENU("param","菜单"),
     IFRAME("iframe","框架"),
     LINK("link","外链"),
     BUTTON("button","功能按键");

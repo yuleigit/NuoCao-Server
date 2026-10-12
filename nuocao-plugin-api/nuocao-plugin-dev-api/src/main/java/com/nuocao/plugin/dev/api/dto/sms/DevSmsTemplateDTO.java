@@ -54,8 +54,7 @@ public class DevSmsTemplateDTO {
      * 模板参数目前仅支持[code,username,userAccount]等这个支持度需在templateService中配置
      * */
     @ApiModelProperty(value = "模板参数", position = 10)
-    @Column(typeHandler = JacksonTypeHandler.class)
-    private List<String> params;
+    private List<DevSmsTemplateVariableDTO> variables;
 
 
 }

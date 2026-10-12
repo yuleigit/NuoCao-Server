@@ -26,7 +26,7 @@ public class GenTableAddEditCommonParam {
 
     /** 插件名 */
     @ApiModelProperty(value = "插件名", required = true, position = 3)
-    @NotBlank(message = "sys.params.title.existsChar")
+    @NotBlank(message = "sys.param.title.existsChar")
     private String pluginName;
 
     /** 模块名 */

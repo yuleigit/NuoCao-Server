@@ -15,6 +15,7 @@ import com.nuocao.common.utils.json.JsonUtils;
 import com.nuocao.common.utils.uuid.IdUtils;
 import com.nuocao.dev.core.client.sms.SmsChannelClient;
 import com.nuocao.dev.core.client.sms.SmsChannelFactory;
+import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import com.nuocao.dev.modular.sms.constants.SmsConstants;
 import com.nuocao.dev.modular.sms.log.param.DevSmsLogAddParam;
 import com.nuocao.dev.modular.sms.log.service.DevSmsLogService;
@@ -58,6 +59,44 @@ public class DevSmsHelper {
      */
     private static final String SMS_CODE_CACHE_PREFIX= "sms-valid-code:{}:{}:{}";
 
+    private static final Integer SMS_CODE_EXPIRE=60*10; //短信验证码有效期10分钟
+
+    /**
+     * 通过场景发送短信
+     * @param sceneEnum
+     * @param userId
+     * @param userType
+     * @param group
+     * @param variables
+     * @return
+     */
+    private String doSendSmsCodeByScene(DevConfigSceneEnum sceneEnum,String phoneNumber,Long userId,String userType, String group, LinkedHashMap<String,String> variables){
+        DevSmsTemplateDTO smsTemplate = devSmsTemplateService.getAndValidateDtoByScene(sceneEnum);
+        return doSendSmsCode(phoneNumber,userId,userType,group,smsTemplate,variables);
+    }
+
+    public String sendSmsCodeByScene(DevConfigSceneEnum sceneEnum,String phoneNumber, String group, LinkedHashMap<String,String> variables)
+    {
+        return doSendSmsCodeByScene(sceneEnum,phoneNumber,null,null,group,variables);
+    }
+
+    public String sendSmsCodeByScene(DevConfigSceneEnum sceneEnum,String phoneNumber, String group)
+    {
+        return doSendSmsCodeByScene(sceneEnum,phoneNumber,null,null,group,null);
+    }
+
+    public String sendSmsCodeBySceneToUser(DevConfigSceneEnum sceneEnum,Long userId,String userType, String group, LinkedHashMap<String,String> variables)
+    {
+        return doSendSmsCodeByScene(sceneEnum,null,userId,userType,group,variables);
+    }
+
+    public String sendSmsCodeBySceneToUser(DevConfigSceneEnum sceneEnum,Long userId,String userType, String group)
+    {
+        return doSendSmsCodeByScene(sceneEnum,null,userId,userType,group,null);
+    }
+
+
+
     /**
      * 发送短信验证码
      * @param phoneNumber 手机号码
@@ -66,17 +105,33 @@ public class DevSmsHelper {
      * @param userType 发送给的用户类型{@link CommonUserTypeEnum}
      * @param templateCode 模板编码
      * @param useChannelCode 使用通道 {@link SmsChannelEnum}
-     * @param extParams 扩展模板参数，用于自定义短信验证码环境，一般不用传入
+     * @param variables 扩展模板参数，用于自定义短信验证码环境，一般不用传入
      * @return reqId，请求号，使用验证码时需要携带
      */
-    private String doSendSmsCode(String phoneNumber,Long userId,String userType, String group, String useChannelCode, String templateCode, LinkedHashMap<String,String> extParams){
+    private String doSendSmsCode(String phoneNumber,Long userId,String userType, String group, String useChannelCode, String templateCode, LinkedHashMap<String,String> variables){
 
-        useChannelCode = useChannel(useChannelCode);
+        DevSmsTemplateDTO smsTemplate = devSmsTemplateService.getAndValidateDtoByChannelAndCode(useChannelCode,templateCode);
+
+        return doSendSmsCode(phoneNumber,userId,userType,group,smsTemplate,variables);
+    }
+
+    /**
+     * 发送短信验证码
+     * @param phoneNumber 手机号码
+     * @param group 业务分组 {@link  CaptchaGroupEnum}
+     * @param userId 发送给的用户
+     * @param userType 发送给的用户类型{@link CommonUserTypeEnum}
+     * @param smsTemplate 模板实体
+     * @param variables 扩展模板参数，用于自定义短信验证码环境，一般不用传入
+     * @return reqId，请求号，使用验证码时需要携带
+     */
+    private String doSendSmsCode(String phoneNumber,Long userId,String userType, String group,  DevSmsTemplateDTO smsTemplate, LinkedHashMap<String,String> variables){
+
         if(StringUtils.isBlank(group)){
             group=DEFAULT_GROUP;
         }
         //获取发送客户端
-        SmsChannelClient client = smsChannelFactory.getClient(useChannelCode);
+        SmsChannelClient client = smsChannelFactory.getClient(smsTemplate.getChannelCode());
         //创建一个验证码
         String smsCode = RandomUtil.randomNumbers(6);
         //生成请求ID
@@ -84,13 +139,12 @@ public class DevSmsHelper {
 
         LinkedHashMap<String,String> paramsMap = new LinkedHashMap<>();
 
-        if(ObjectUtils.isNotEmpty(extParams)){
-            paramsMap.putAll(extParams);
+        if(ObjectUtils.isNotEmpty(variables)){
+            paramsMap.putAll(variables);
         }
         paramsMap.put("code",smsCode);
+        paramsMap.put("expire",SMS_CODE_EXPIRE.toString());
 
-
-        DevSmsTemplateDTO smsTemplate = devSmsTemplateService.getAndValidDtoByChannelAndCode(client.getChannelCode(),templateCode);
 
         //验证模板参数是否符合预期
         devSmsTemplateService.validParams(smsTemplate,paramsMap);
@@ -107,21 +161,22 @@ public class DevSmsHelper {
 
         //写入验证码缓存
         String cacheCodeKey = getCodeCacheKey(group,phoneNumber,smsReqId);
-        cacheUtils.setObject(cacheCodeKey,smsCode,60*10); //10分钟有效
+        cacheUtils.setObject(cacheCodeKey,smsCode,SMS_CODE_EXPIRE); //10分钟有效
 
-        createLog(DevSmsTypeEnum.CODE, client.getChannelCode(),templateCode,smsTemplate.getContent(),
+        createLog(DevSmsTypeEnum.CODE, client.getChannelCode(),smsTemplate.getCode(),smsTemplate.getContent(),
                 phoneNumber,JsonUtils.toJsonString(paramsMap),userType,userId,smsReqId,resultCode.toString(),resultMessage);
 
         return smsReqId;
     }
 
-    public String sendSmsCode(String phoneNumber, String group, String useChannelCode, String templateCode, LinkedHashMap<String,String> extParams)
+
+    public String sendSmsCode(String phoneNumber, String group, String useChannelCode, String templateCode, LinkedHashMap<String,String> variables)
     {
-        return doSendSmsCode(phoneNumber,null,null,group,useChannelCode,templateCode,extParams);
+        return doSendSmsCode(phoneNumber,null,null,group,useChannelCode,templateCode,variables);
     }
-    public String sendSmsCode(String phoneNumber, String group, String templateCode, LinkedHashMap<String,String> extParams)
+    public String sendSmsCode(String phoneNumber, String group, String templateCode, LinkedHashMap<String,String> variables)
     {
-        return doSendSmsCode(phoneNumber,null,null,group,null,templateCode,extParams);
+        return doSendSmsCode(phoneNumber,null,null,group,null,templateCode,variables);
     }
 
     public String sendSmsCode(String phoneNumber, String group, String templateCode)
@@ -129,11 +184,11 @@ public class DevSmsHelper {
         return doSendSmsCode(phoneNumber,null,null,group,null,templateCode,null);
     }
 
-    public String sendSmsCodeToUser(String phoneNumber,Long userId,String userType, String group, String useChannelCode, String templateCode, LinkedHashMap<String,String> extParams){
-        return doSendSmsCode(phoneNumber,userId,userType,group,useChannelCode,templateCode,extParams);
+    public String sendSmsCodeToUser(String phoneNumber,Long userId,String userType, String group, String useChannelCode, String templateCode, LinkedHashMap<String,String> variables){
+        return doSendSmsCode(phoneNumber,userId,userType,group,useChannelCode,templateCode,variables);
     }
-    public String sendSmsCodeToUser(String phoneNumber,Long userId,String userType, String group, String templateCode, LinkedHashMap<String,String> extParams){
-        return doSendSmsCode(phoneNumber,userId,userType,group,null,templateCode,extParams);
+    public String sendSmsCodeToUser(String phoneNumber,Long userId,String userType, String group, String templateCode, LinkedHashMap<String,String> variables){
+        return doSendSmsCode(phoneNumber,userId,userType,group,null,templateCode,variables);
     }
     public String sendSmsCodeToUser(String phoneNumber,Long userId,String userType, String group, String templateCode)
     {
@@ -178,7 +233,7 @@ public class DevSmsHelper {
         SmsChannelClient client = smsChannelFactory.getClient(useChannelCode);
         //生成请求ID
         String smsReqId = IdUtils.snowflakeIdStr();
-        DevSmsTemplateDTO smsTemplate = devSmsTemplateService.getAndValidDtoByChannelAndCode(client.getChannelCode(),templateCode);
+        DevSmsTemplateDTO smsTemplate = devSmsTemplateService.getAndValidateDtoByChannelAndCode(client.getChannelCode(),templateCode);
 
         //验证模板参数是否符合预期
         devSmsTemplateService.validParams(smsTemplate,templateParams);

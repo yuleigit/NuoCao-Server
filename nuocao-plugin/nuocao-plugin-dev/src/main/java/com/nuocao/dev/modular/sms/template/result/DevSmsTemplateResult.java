@@ -1,9 +1,12 @@
 package com.nuocao.dev.modular.sms.template.result;
 
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateVariableDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import com.nuocao.plugin.dev.api.enums.sms.DevSmsTypeEnum;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -51,4 +54,6 @@ public class DevSmsTemplateResult {
     @ApiModelProperty(value = "模板备注说明",position = 8)
     private String remark;
 
+    @ApiModelProperty(value = "模板变量集合",notes = "json表达的key value对",position = 9)
+    private List<DevSmsTemplateVariableDTO> variables;
 }

@@ -38,6 +38,7 @@ import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.ValidationUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
 import com.nuocao.data.access.tenant.util.TenantUtils;
+import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import com.nuocao.sys.api.SysTenantApi;
 import com.nuocao.plugin.dev.api.DevConfigApi;
 import com.nuocao.plugin.dev.api.DevEmailApi;
@@ -111,7 +112,7 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         imageCaptchaUtils.validate(VALID_CODE_GROUP,param.getValidCodeReqId(),param.getValidCode());
 
         //发送手机验证码
-        return devSmsApi.sendSmsCode(null,VALID_CODE_GROUP,param.getPhone());
+        return devSmsApi.sendSmsCodeByScene(DevConfigSceneEnum.ACCOUNT_LOGIN,VALID_CODE_GROUP,param.getPhone());
     }
 
     @Override

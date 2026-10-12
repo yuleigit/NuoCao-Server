@@ -6,6 +6,7 @@ import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.handler.JacksonTypeHandler;
 import com.nuocao.common.pojo.CommonEntity;
+import com.nuocao.plugin.dev.api.dto.sms.DevSmsTemplateVariableDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,6 +71,6 @@ public class DevSmsTemplate extends CommonEntity {
      * */
     @ApiModelProperty(value = "模板参数", position = 10)
     @Column(typeHandler = JacksonTypeHandler.class)
-    private List<String> params;
+    private List<DevSmsTemplateVariableDTO> variables;
 
 }

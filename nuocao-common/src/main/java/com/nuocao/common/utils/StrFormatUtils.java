@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StrFormatUtils {
     /**
-     * 将错误编号对应的消息使用 params 进行格式化。
+     * 将错误编号对应的消息使用 param 进行格式化。
      *
      * @param code           错误编号
      * @param messagePattern 消息模版
@@ -42,7 +42,7 @@ public class StrFormatUtils {
     }
 
     /**
-     * 将错误编号对应的消息使用 params 进行格式化。
+     * 将错误编号对应的消息使用 param 进行格式化。
      *
      * @param messagePattern 消息模版
      * @param params         参数

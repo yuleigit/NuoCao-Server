@@ -119,7 +119,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         //使用map定义子菜单，循环一次
         Map<Long,SysMenuTreeResultDTO> idToMenuMap =new HashMap<>();
         for (SysMenuTreeResultDTO menu : dtoList) {
-            //params.setChildren(new ArrayList<>()); //保证有内容
+            //param.setChildren(new ArrayList<>()); //保证有内容
             idToMenuMap.put(menu.getId(), menu);
         }
         //存储根节点，最后只返回根节点就小姑娘

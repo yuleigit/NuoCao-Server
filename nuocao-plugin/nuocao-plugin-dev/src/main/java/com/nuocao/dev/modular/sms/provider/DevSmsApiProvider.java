@@ -1,23 +1,28 @@
 package com.nuocao.dev.modular.sms.provider;
 
+import com.nuocao.common.exception.CommonException;
 import com.nuocao.common.utils.json.JsonUtils;
 import com.nuocao.dev.modular.sms.DevSmsHelper;
+import com.nuocao.dev.modular.sms.template.service.DevSmsTemplateService;
 import com.nuocao.plugin.dev.api.DevSmsApi;
+import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import com.nuocao.plugin.dev.api.enums.sms.SmsChannelEnum;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * 短信接口实现
  */
 @Component
-public class DevApiProvider implements DevSmsApi {
+public class DevSmsApiProvider implements DevSmsApi {
 
     @Inject
     private DevSmsHelper devSmsHelper;
-
+    @Inject
+    private DevSmsTemplateService templateService;
     @Override
     public void sendSms(String phoneNumbers, String templateCodeOrId, LinkedHashMap<String,String> paramMap) {
         devSmsHelper.sendSms(phoneNumbers,null,templateCodeOrId,paramMap);
@@ -38,8 +43,25 @@ public class DevApiProvider implements DevSmsApi {
         return devSmsHelper.sendSmsCode(group,phoneNumber,templateCode);
     }
 
+
+    @Override
+    public void sendSmsByScene(DevConfigSceneEnum sceneEnum, String phoneNumbers, LinkedHashMap<String, String> variables) {
+        throw new CommonException("The sendSmsByScene interface has not been implemented yet");
+    }
+
+    @Override
+    public String sendSmsCodeByScene(DevConfigSceneEnum sceneEnum, String group, String phoneNumber) {
+        return devSmsHelper.sendSmsCodeByScene(sceneEnum,phoneNumber,group);
+    }
+
     @Override
     public void validateSmsCode(String group, String phone, String reqId, String inputCode) {
         devSmsHelper.validateSmsCode(group,phone,reqId,inputCode);
     }
+
+    @Override
+    public void availabilitySmsTemplate(Long templateId, Set<String> variables) {
+        templateService.availabilitySmsTemplate(templateId,variables);
+    }
+
 }

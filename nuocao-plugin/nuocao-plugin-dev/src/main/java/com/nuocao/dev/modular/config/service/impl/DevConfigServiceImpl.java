@@ -118,7 +118,7 @@ public class DevConfigServiceImpl  implements DevConfigService {
     @Override
     public List<DevConfigKeyValueResult> sysConfigList() {
         LambdaQueryWrapperX<DevConfig> query = new LambdaQueryWrapperX<>();
-        query.selectX(DevConfig::getConfigGroup,DevConfig::getConfigValue)
+        query.selectX(DevConfig::getConfigKey,DevConfig::getConfigValue)
                 .eqX(DevConfig::getConfigCategory,DevConfigCategoryEnum.SYS_CONFIG.getValue());
         return mapper.selectListByQueryAs(query,DevConfigKeyValueResult.class);
     }

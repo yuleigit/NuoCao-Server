@@ -163,7 +163,7 @@ public class SysUserController {
     @SaCheckPermission("sys:user:resetPwd")
     @Mapping("/sys/user/resetPassword")
     public CommonResult<String> resetPassword(@Validated SysUserResetPwdParam resetPwdParam) {
-        if(tenantConfig.getTenantEnable()){
+        if(tenantConfig.isEnabled()){
            throw new CommonExceptionI18n("sys.user.tenant.disableResetPwd");
         }
         String newPassword = sysUserService.updatePassword(resetPwdParam.getId(),resetPwdParam.getNewPassword());

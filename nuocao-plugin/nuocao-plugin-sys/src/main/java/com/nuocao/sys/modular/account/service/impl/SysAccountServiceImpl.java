@@ -462,7 +462,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
                     SysAccountDTO accountDto = getAccountDtoByCache(username);
                     if(accountDto==null){
                         //如果是多租户情况则没有注册让他去注册
-                        if(tenantConfig.getTenantEnable())
+                        if(tenantConfig.isEnabled())
                         {
                             throw new CommonExceptionI18n("sys.user.account.notExists",username);
                         }else{

@@ -21,4 +21,12 @@ public class DataScopeContext {
     public static boolean isIgnore(){
         return IGNORE_DATA_SCOPE.get();
     }
+
+    /**
+     * 清理线程上下文。
+     * <p>与 {@code TenantContext.clear()} 对齐：请求级入口归零、出口清理，避免线程池复用时的状态残留。
+     */
+    public static void clear() {
+        IGNORE_DATA_SCOPE.remove();
+    }
 }

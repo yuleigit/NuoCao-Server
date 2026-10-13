@@ -214,7 +214,7 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = SysUserConvert.INSTANCE.convert(sysUserAddParam);
         //验证是否开启多租户模式，多租户模式不可直接添加仅能通过邀请进入
         //未启用时，必须输入密码
-        if(!tenantConfig.getTenantEnable()){
+        if(!tenantConfig.isEnabled()){
             if(StringUtils.isEmpty(sysUserAddParam.getPassword()) ){
                 throw new CommonExceptionI18n("sys.password.notEmpty");
             }
@@ -258,7 +258,7 @@ public class SysUserServiceImpl implements SysUserService {
         mapper.updateById(sysUser);
 
         //如果不是多租户模式，则同步修改账号信息
-        if(!tenantConfig.getTenantEnable()) {
+        if(!tenantConfig.isEnabled()) {
             sysAccountApi.updateByUsername(sysUser.getUsername(),
                     sysUser.getName(),
                     sysUser.getNickname(),
@@ -296,7 +296,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         //如果不是多租户模式，则同步删除账号信息
-        if(!tenantConfig.getTenantEnable()) {
+        if(!tenantConfig.isEnabled()) {
             sysAccountApi.deleteByUsernames(userNames);
         }
     }

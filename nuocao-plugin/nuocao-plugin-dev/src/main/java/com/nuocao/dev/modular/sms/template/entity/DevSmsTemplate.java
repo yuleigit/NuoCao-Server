@@ -64,6 +64,9 @@ public class DevSmsTemplate extends CommonEntity {
     /** 模板备注说明 */
     @ApiModelProperty(value = "模板备注说明",position = 8)
     private String remark;
+    /** 使用签名 */
+    @ApiModelProperty(value = "使用签名",position = 8)
+    private String signName;
 
     /** 模板参数
      *

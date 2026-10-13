@@ -53,7 +53,9 @@ public class DevSmsTemplateResult {
     /** 模板备注说明 */
     @ApiModelProperty(value = "模板备注说明",position = 8)
     private String remark;
-
+    /** 使用签名 */
+    @ApiModelProperty(value = "使用签名",position = 8)
+    private String signName;
     @ApiModelProperty(value = "模板变量集合",notes = "json表达的key value对",position = 9)
     private List<DevSmsTemplateVariableDTO> variables;
 }

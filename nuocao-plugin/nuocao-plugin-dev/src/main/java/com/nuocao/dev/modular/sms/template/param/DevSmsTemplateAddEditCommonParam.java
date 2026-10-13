@@ -64,6 +64,10 @@ public class DevSmsTemplateAddEditCommonParam implements Serializable {
     @Length(max = 4000)
     private String content;
 
+    /** 使用签名 */
+    @ApiModelProperty(value = "使用签名",position = 8)
+    private String signName;
+
     /** 模板中的参数 */
     @ApiModelProperty(value = "模板变量集合",notes = "json表达的key value对",position = 9)
     private List<DevSmsTemplateVariableEditParam> variables;

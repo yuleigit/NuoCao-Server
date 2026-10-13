@@ -48,7 +48,9 @@ public class DevSmsTemplateDTO {
     /** 排序码 */
     @ApiModelProperty(value = "模板可用性", position = 7)
     private Integer status;
-
+    /** 签名" */
+    @ApiModelProperty(value = "签名", position = 7)
+    private String signName;
     /** 模板参数
      *
      * 模板参数目前仅支持[code,username,userAccount]等这个支持度需在templateService中配置

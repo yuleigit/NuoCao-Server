@@ -5,6 +5,7 @@ import com.mybatisflex.core.service.IService;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.dev.modular.config.entity.DevConfig;
 import com.nuocao.dev.modular.config.param.*;
+import com.nuocao.dev.modular.config.result.DevConfigKeyValueResult;
 
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public interface DevConfigService {
     /**
      * 获取基础配置列表
      */
-    List<DevConfig> sysConfigList();
+    List<DevConfigKeyValueResult> sysConfigList();
 
     /**
      * 获取配置列表

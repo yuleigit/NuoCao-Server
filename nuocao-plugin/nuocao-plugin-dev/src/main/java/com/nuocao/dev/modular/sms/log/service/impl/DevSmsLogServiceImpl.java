@@ -59,7 +59,7 @@ public class DevSmsLogServiceImpl implements DevSmsLogService {
 
     @Override
     public Long add(DevSmsLogAddParam addParam) {
-        ValidationUtils.validate(addParam);
+        ValidationUtils.validateEntity(addParam);
         DevSmsLog smsLog = DevSmsLogConvert.INSTANCE.convert(addParam);
         mapper.insert(smsLog);
         return smsLog.getId();

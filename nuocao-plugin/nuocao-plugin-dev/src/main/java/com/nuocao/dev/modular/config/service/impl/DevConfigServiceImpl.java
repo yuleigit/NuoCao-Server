@@ -15,6 +15,7 @@ import com.nuocao.common.utils.json.JsonUtils;
 import com.nuocao.dev.modular.config.convert.DevConfigConvert;
 import com.nuocao.dev.modular.config.entity.DevConfig;
 import com.nuocao.dev.modular.config.enums.DevConfigCategoryEnum;
+import com.nuocao.dev.modular.config.result.DevConfigKeyValueResult;
 import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import com.nuocao.dev.modular.config.mapper.DevConfigMapper;
 import com.nuocao.dev.modular.config.param.*;
@@ -115,10 +116,11 @@ public class DevConfigServiceImpl  implements DevConfigService {
     }
 
     @Override
-    public List<DevConfig> sysConfigList() {
-        DevConfigListParam devConfigListParam = new DevConfigListParam();
-        devConfigListParam.setConfigCategory(DevConfigCategoryEnum.SYS_CONFIG.getValue());
-        return this.list(devConfigListParam);
+    public List<DevConfigKeyValueResult> sysConfigList() {
+        LambdaQueryWrapperX<DevConfig> query = new LambdaQueryWrapperX<>();
+        query.selectX(DevConfig::getConfigGroup,DevConfig::getConfigValue)
+                .eqX(DevConfig::getConfigCategory,DevConfigCategoryEnum.SYS_CONFIG.getValue());
+        return mapper.selectListByQueryAs(query,DevConfigKeyValueResult.class);
     }
 
     @Override

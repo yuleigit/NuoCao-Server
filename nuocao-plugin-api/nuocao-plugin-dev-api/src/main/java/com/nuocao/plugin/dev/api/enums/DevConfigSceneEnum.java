@@ -39,14 +39,14 @@ public enum DevConfigSceneEnum implements StrArrayValuable {
                     MediumMeta.required(
                             "sms_scene_account_reg_code",
                             "code",
-                            "expire"
+                            "time"
                     ),
                     MessageMediumEnum.EMAIL,
                     MediumMeta.required(
                             "email_scene_account_reg_code",
                             "code",
                             "link",
-                            "expire"
+                            "time"
                     )
             )
     ),
@@ -61,13 +61,13 @@ public enum DevConfigSceneEnum implements StrArrayValuable {
                     MediumMeta.required(
                             "sms_scene_account_login_code",
                             "code",
-                            "expire"
+                            "time"
                     ),
                     MessageMediumEnum.EMAIL,
                     MediumMeta.required(
                             "email_scene_account_login_code",
                             "code",
-                            "expire"
+                            "time"
                     )
             )
     ),
@@ -82,14 +82,14 @@ public enum DevConfigSceneEnum implements StrArrayValuable {
                     MediumMeta.required(
                             "sms_scene_password_get_code",
                             "code",
-                            "expire"
+                            "time"
                     ),
                     MessageMediumEnum.EMAIL,
                     MediumMeta.required(
                             "email_scene_password_get_code",
                             "code",
                             "link",
-                            "expire"
+                            "time"
                     )
             )
     ),
@@ -104,13 +104,13 @@ public enum DevConfigSceneEnum implements StrArrayValuable {
                     MediumMeta.required(
                             "sms_scene_password_update_code",
                             "code",
-                            "expire"
+                            "time"
                     ),
                     MessageMediumEnum.EMAIL,
                     MediumMeta.required(
                             "email_scene_password_update_code",
                             "code",
-                            "expire"
+                            "time"
                     )
             )
     ),
@@ -321,12 +321,12 @@ public enum DevConfigSceneEnum implements StrArrayValuable {
     public static ConfigKeyRef ofConfigKey(String configKey) {
         ConfigKeyRef result = CONFIG_KEY_CACHE.get(configKey);
 
-        if (result == null) {
-            throw new CommonException(
-                    "不存在的消息配置键：{}",
-                    configKey
-            );
-        }
+//        if (result == null) {
+//            throw new CommonException(
+//                    "不存在的消息配置键：{}",
+//                    configKey
+//            );
+//        }
 
         return result;
     }

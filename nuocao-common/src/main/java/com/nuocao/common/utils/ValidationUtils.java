@@ -46,17 +46,7 @@ public class ValidationUtils {
         return StrUtil.isNotBlank(str)
                 && PATTERN_XML_NCNAME.matcher(str).matches();
     }
-    public static void validate(Object object, Class<?>... groups) {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        Assert.notNull(validator);
-        validate(validator, object, groups);
-    }
-    public static void validate(Validator validator, Object object, Class<?>... groups) {
-        Set<ConstraintViolation<Object>> constraintViolations = validator.validate(object, groups);
-        if (CollUtil.isNotEmpty(constraintViolations)) {
-            throw new ConstraintViolationException(constraintViolations);
-        }
-    }
+
     /**
      * 验证是否为合法邮箱
      */

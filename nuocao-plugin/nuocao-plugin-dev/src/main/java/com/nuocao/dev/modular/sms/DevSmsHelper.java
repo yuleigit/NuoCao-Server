@@ -1,7 +1,6 @@
 package com.nuocao.dev.modular.sms;
 
 import cn.hutool.core.util.RandomUtil;
-import com.alibaba.excel.util.StringUtils;
 import com.nuocao.common.ObjectUtils;
 import com.nuocao.common.cache.CacheUtils;
 import com.nuocao.common.captcha.CaptchaGroupEnum;
@@ -11,6 +10,7 @@ import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.utils.LocalDateTimeUtils;
 import com.nuocao.common.utils.StrFormatUtils;
+import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.json.JsonUtils;
 import com.nuocao.common.utils.uuid.IdUtils;
 import com.nuocao.dev.core.client.sms.SmsChannelClient;
@@ -143,7 +143,7 @@ public class DevSmsHelper {
             paramsMap.putAll(variables);
         }
         paramsMap.put("code",smsCode);
-        paramsMap.put("expire",SMS_CODE_EXPIRE.toString());
+        paramsMap.put("time",SMS_CODE_EXPIRE.toString());
 
 
         //验证模板参数是否符合预期
@@ -162,8 +162,9 @@ public class DevSmsHelper {
         //写入验证码缓存
         String cacheCodeKey = getCodeCacheKey(group,phoneNumber,smsReqId);
         cacheUtils.setObject(cacheCodeKey,smsCode,SMS_CODE_EXPIRE); //10分钟有效
+        String signName= StringUtils.firstNotBlank(smsTemplate.getSignName(),client.getDefaultSignName());
 
-        createLog(DevSmsTypeEnum.CODE, client.getChannelCode(),smsTemplate.getCode(),smsTemplate.getContent(),
+        createLog(DevSmsTypeEnum.CODE, client.getChannelCode(),smsTemplate.getCode(),signName,smsTemplate.getContent(),
                 phoneNumber,JsonUtils.toJsonString(paramsMap),userType,userId,smsReqId,resultCode.toString(),resultMessage);
 
         return smsReqId;
@@ -247,7 +248,8 @@ public class DevSmsHelper {
             resultMessage = ex.getMessage();
             resultCode=CommonResult.CODE_ERROR;
         }
-        createLog(DevSmsTypeEnum.NOTIFY, client.getChannelCode(),templateCode,smsTemplate.getContent(),
+        String signName= StringUtils.firstNotBlank(smsTemplate.getSignName(),client.getDefaultSignName());
+        createLog(DevSmsTypeEnum.NOTIFY, client.getChannelCode(),templateCode, signName,smsTemplate.getContent(),
                 phoneNumber,JsonUtils.toJsonString(templateParams),userType,userId,smsReqId,resultCode.toString(),resultMessage);
 
         return smsReqId;
@@ -336,7 +338,21 @@ public class DevSmsHelper {
     }
 
 
-    private void createLog(DevSmsTypeEnum smsType,String channelCode,String templateCode,
+    /**
+     * 创建短信日志
+     * @param smsType 短信类型
+     * @param channelCode 使用通道
+     * @param templateCode 模板编码
+     * @param content 短信内容
+     * @param phoneNumber 接收人手机号
+     * @param paramsMap 餐宿字符串
+     * @param userType 用户类型
+     * @param userId 用户id
+     * @param reqId 请求id
+     * @param resultCode 返回结果吗
+     * @param resultMessage 返回消息
+     */
+    private void createLog(DevSmsTypeEnum smsType,String channelCode,String templateCode,String signName,
                                   String content,String phoneNumber,String paramsMap,
                                   String userType,Long userId,String reqId,
                                   String resultCode,
@@ -349,6 +365,7 @@ public class DevSmsHelper {
         logAddParam.setTemplateParam(JsonUtils.toJsonString(paramsMap));
         logAddParam.setChannelCode(channelCode);
         logAddParam.setTemplateCode(templateCode);
+        logAddParam.setSignName(signName);
         logAddParam.setContent(content);
         logAddParam.setSendTime(LocalDateTimeUtils.now());
         logAddParam.setType(smsType.getValue());

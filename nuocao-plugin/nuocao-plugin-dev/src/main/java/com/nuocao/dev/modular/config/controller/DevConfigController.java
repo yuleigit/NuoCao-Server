@@ -7,8 +7,10 @@ import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
 import com.nuocao.common.utils.collection.CollectionUtils;
+import com.nuocao.data.access.tenant.annotation.TenantIgnore;
 import com.nuocao.dev.modular.config.entity.DevConfig;
 import com.nuocao.dev.modular.config.param.*;
+import com.nuocao.dev.modular.config.result.DevConfigKeyValueResult;
 import com.nuocao.dev.modular.config.service.DevConfigService;
 import com.nuocao.dev.modular.sms.template.param.DevSmsTemplatePageParam;
 import com.nuocao.dev.modular.sms.template.result.DevSmsTemplateSelectorResult;
@@ -55,7 +57,8 @@ public class DevConfigController {
     @ApiOperation("获取系统基础配置")
     @Get
     @Mapping("/dev/config/sysConfigList")
-    public CommonResult<List<DevConfig>> sysConfigList() {
+    @TenantIgnore
+    public CommonResult<List<DevConfigKeyValueResult>> sysConfigList() {
         return CommonResult.data(devConfigService.sysConfigList());
     }
 

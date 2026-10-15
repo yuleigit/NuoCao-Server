@@ -24,8 +24,8 @@ public class SysAccountFindPwdByPhoneParam {
 
     /** 验证码请求号 */
     @ApiModelProperty(value = "验证码请求号")
-    @NotBlank(message = "validCodeReqNo不能为空")
-    private String validCodeReqNo;
+    @NotBlank(message = "validCodeReqId不能为空")
+    private String validCodeReqId;
 
     /** 新密码 */
     @ApiModelProperty(value = "新密码",notes = "加密发送")

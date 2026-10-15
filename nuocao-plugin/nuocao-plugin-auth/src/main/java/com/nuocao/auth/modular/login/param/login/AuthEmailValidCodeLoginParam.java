@@ -25,7 +25,7 @@ public class AuthEmailValidCodeLoginParam {
     /** 验证码请求号 */
     @ApiModelProperty(value = "验证码请求号", required = true, position = 3)
     @NotBlank(message = "验证码请求号不能为空")
-    private String validCodeReqNo;
+    private String validCodeReqId;
 
     /** 设备 */
     @ApiModelProperty(value = "设备")

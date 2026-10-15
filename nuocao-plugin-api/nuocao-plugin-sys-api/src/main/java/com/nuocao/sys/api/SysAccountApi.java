@@ -42,8 +42,20 @@ public interface SysAccountApi {
     void deleteByUsernames(List<String> usernames);
 
 
+    /**
+     * 同步密码，这个使用在
+     * @param username
+     * @param password
+     * @param passwordHashValue
+     */
     void syncPassword(String username,String password,boolean passwordHashValue);
 
+    /* ################   找回密码相关  #################### */
 
-
+    /**
+     * 修改账户密码
+     * @param accountId 账户ID
+     * @param newPassword 账户密码（明文），未sm加密的
+     */
+    void updatePassword(Long accountId,String newPassword);
 }

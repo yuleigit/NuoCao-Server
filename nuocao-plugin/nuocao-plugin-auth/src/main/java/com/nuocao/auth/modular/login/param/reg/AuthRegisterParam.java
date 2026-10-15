@@ -19,7 +19,7 @@ public class AuthRegisterParam {
     /** 账号 */
     @ApiModelProperty(value = "账号", required = true)
     @NotBlank(message = "账号不能为空")
-    private String account;
+    private String username;
 
     /** 账号 */
     @ApiModelProperty(value = "手机号码")

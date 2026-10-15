@@ -9,6 +9,7 @@ import com.nuocao.auth.modular.login.param.common.AuthGetPhoneValidCodeParam;
 import com.nuocao.auth.modular.login.param.login.AuthAccountPasswordLoginParam;
 import com.nuocao.auth.modular.login.param.login.AuthPhoneValidCodeLoginParam;
 import com.nuocao.auth.modular.login.param.login.AuthSwitchTenantParam;
+import com.nuocao.auth.modular.login.param.password.AuthPhoneFindPasswordParam;
 import com.nuocao.auth.modular.login.param.reg.AuthRegisterParam;
 import com.nuocao.auth.modular.login.result.login.AuthLoginResult;
 import com.nuocao.auth.modular.login.service.AuthAccountUserService;
@@ -91,6 +92,17 @@ public class AuthController {
     }
 
     /**
+     * 账号注册获取手机验证码
+     **/
+    @ApiOperation("获取手机登录短信验证码")
+    @Get
+    @Mapping("/auth/account/getPhoneLoginValidCode")
+    public CommonResult<String> getPhoneLoginValidCode(@Validated AuthGetPhoneValidCodeParam authGetPhoneValidCodeParam) {
+        return CommonResult.data(authAccountUserService.getPhoneLoginValidCode(authGetPhoneValidCodeParam));
+    }
+
+
+    /**
      * 账户登录退出
      **/
     @ApiOperation("账户登录退出")
@@ -124,6 +136,31 @@ public class AuthController {
         authAccountUserService.register(authRegisterParam);
         return CommonResult.ok();
     }
+
+
+    /**
+     * 获取取回密码手机验证码
+     **/
+    @ApiOperation(value = "获取取回密码手机验证码",position = 9)
+    @Get
+    @Mapping("/auth/account/getPhoneFindPasswordValidCode")
+    public CommonResult<String> getPhoneFindPasswordValidCode(@Validated AuthGetPhoneValidCodeParam getPhoneValidCodeParam) {
+        return CommonResult.ok( authAccountUserService.getPhoneFindPasswordValidCode(getPhoneValidCodeParam));
+    }
+
+
+    /**
+     * 通过手机验证码修改密码
+     **/
+    @ApiOperation(value = "通过手机验证码修改密码",position = 9)
+    @Post
+    @Mapping("/auth/account/phoneFindPassword")
+    public CommonResult<String> phoneFindPassword(@Validated AuthPhoneFindPasswordParam findPasswordParam) {
+        authAccountUserService.doPhoneFindPassword(findPasswordParam);
+        return CommonResult.ok();
+    }
+
+
 
     /**
      * 获取登录用户信息（获取的为当前租户的，每个租户的登录状态单独存储，只是用统一的account登录

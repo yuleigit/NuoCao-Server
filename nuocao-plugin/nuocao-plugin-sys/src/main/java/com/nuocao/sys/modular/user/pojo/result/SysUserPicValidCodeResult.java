@@ -17,5 +17,5 @@ public class SysUserPicValidCodeResult {
 
     /** 验证码请求号 */
     @ApiModelProperty(value = "验证码请求号", position = 2)
-    private String validCodeReqNo;
+    private String validCodeReqId;
 }

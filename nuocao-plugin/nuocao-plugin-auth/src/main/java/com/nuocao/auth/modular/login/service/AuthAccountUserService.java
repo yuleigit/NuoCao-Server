@@ -108,7 +108,7 @@ public interface AuthAccountUserService {
      * @param authGetPhoneValidCodeParam
      * @return
      */
-    String getPhoneFindPasswordValid(AuthGetPhoneValidCodeParam authGetPhoneValidCodeParam);
+    String getPhoneFindPasswordValidCode(AuthGetPhoneValidCodeParam authGetPhoneValidCodeParam);
 
     /**
      * 获取找回密码邮箱验证码

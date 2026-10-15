@@ -59,7 +59,7 @@ public class DevSmsHelper {
      */
     private static final String SMS_CODE_CACHE_PREFIX= "sms-valid-code:{}:{}:{}";
 
-    private static final Integer SMS_CODE_EXPIRE=60*10; //短信验证码有效期10分钟
+    private static final Integer SMS_CODE_EXPIRE=10; //短信验证码有效期10分钟
 
     /**
      * 通过场景发送短信
@@ -161,7 +161,7 @@ public class DevSmsHelper {
 
         //写入验证码缓存
         String cacheCodeKey = getCodeCacheKey(group,phoneNumber,smsReqId);
-        cacheUtils.setObject(cacheCodeKey,smsCode,SMS_CODE_EXPIRE); //10分钟有效
+        cacheUtils.setObject(cacheCodeKey,smsCode,SMS_CODE_EXPIRE*10); //10分钟有效
         String signName= StringUtils.firstNotBlank(smsTemplate.getSignName(),client.getDefaultSignName());
 
         createLog(DevSmsTypeEnum.CODE, client.getChannelCode(),smsTemplate.getCode(),signName,smsTemplate.getContent(),
@@ -211,6 +211,7 @@ public class DevSmsHelper {
         //获取缓存
         String smsCode = cacheUtils.get(cacheCodeKey,String.class);
         if(inputCode.equals(smsCode)){
+            cacheUtils.remove(cacheCodeKey);
             return ;
         }
         throw new CommonExceptionI18n("dev.sms.code.error");
@@ -251,7 +252,9 @@ public class DevSmsHelper {
         String signName= StringUtils.firstNotBlank(smsTemplate.getSignName(),client.getDefaultSignName());
         createLog(DevSmsTypeEnum.NOTIFY, client.getChannelCode(),templateCode, signName,smsTemplate.getContent(),
                 phoneNumber,JsonUtils.toJsonString(templateParams),userType,userId,smsReqId,resultCode.toString(),resultMessage);
-
+        if(resultCode.equals(CommonResult.CODE_ERROR)){
+            throw new CommonExceptionI18n("dev.sms.code.sendFailed",resultMessage);
+        }
         return smsReqId;
     }
 

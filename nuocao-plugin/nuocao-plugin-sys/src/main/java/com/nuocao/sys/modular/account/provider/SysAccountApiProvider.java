@@ -50,4 +50,9 @@ public class SysAccountApiProvider implements SysAccountApi {
     public void syncPassword(String username, String password, boolean passwordHashValue) {
         sysAccountService.syncPasswordByUsername(username, password,  passwordHashValue);
     }
+
+    @Override
+    public void updatePassword(Long accountId, String newPassword) {
+        sysAccountService.updatePassword(accountId,newPassword);
+    }
 }

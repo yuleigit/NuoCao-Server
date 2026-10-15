@@ -37,8 +37,10 @@ import com.nuocao.common.utils.NumberUtils;
 import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.ValidationUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
+import com.nuocao.common.utils.http.RequestUtils;
 import com.nuocao.data.access.tenant.util.TenantUtils;
 import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
+import com.nuocao.sys.api.SysAccountApi;
 import com.nuocao.sys.api.SysTenantApi;
 import com.nuocao.plugin.dev.api.DevConfigApi;
 import com.nuocao.plugin.dev.api.DevEmailApi;
@@ -99,6 +101,14 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
     @Inject
     private AuthApi authApi;
 
+    @Inject
+    private SysAccountApi sysAccountApi;
+
+    //启用账号注册
+    private static final String ACCOUNT_REGISTER_ENABLE = "account_register_enable";
+    //账号注册需要手机验证码
+    private static final String ACCOUNT_REGISTER_SMS_CODE_ENABLE = "account_register_sms_code_enable";
+
     @Override
     public CommonPicValidCodeResult getPicCaptcha() {
         //创建验证码
@@ -110,7 +120,6 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
     public String getPhoneLoginValidCode(AuthGetPhoneValidCodeParam param) {
         //验证图形验证码
         imageCaptchaUtils.validate(VALID_CODE_GROUP,param.getValidCodeReqId(),param.getValidCode());
-
         //发送手机验证码
         return devSmsApi.sendSmsCodeByScene(DevConfigSceneEnum.ACCOUNT_LOGIN,VALID_CODE_GROUP,param.getPhone());
     }
@@ -314,7 +323,13 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
 
     @Override
     public String getPhoneRegValidCode(AuthGetPhoneValidCodeParam authGetPhoneValidCodeParam) {
-        return null;
+        // 手机号
+        String phone = authGetPhoneValidCodeParam.getPhone();
+        // 校验获取手机号验证码的图片验证码
+        imageCaptchaUtils.validate(VALID_CODE_GROUP,authGetPhoneValidCodeParam.getValidCodeReqId(),authGetPhoneValidCodeParam.getValidCode());
+        //根据注册场景配置发送验证码
+        return devSmsApi.sendSmsCodeByScene(DevConfigSceneEnum.ACCOUNT_REG,VALID_CODE_GROUP,phone);
+
     }
 
     @Override
@@ -324,7 +339,34 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
 
     @Override
     public void register(AuthRegisterParam authRegisterParam) {
+        // 校验是否允许注册
+        checkRegisterEnableByConfig();
 
+        // 获取账号
+        String username = authRegisterParam.getUsername();
+        String name = authRegisterParam.getName();
+        // 获取账号
+        String phone = authRegisterParam.getPhone();
+        // 获取密码
+        String password = authRegisterParam.getPassword();
+        // 获取验证码
+        if(devConfigApi.getBooleanValue(ACCOUNT_REGISTER_SMS_CODE_ENABLE,false)){
+            devSmsApi.validateSmsCode(VALID_CODE_GROUP,phone,authRegisterParam.getValidCodeReqId(),authRegisterParam.getValidCode());
+        }
+        else{ //没开启短信验证码则验证图形验证码
+            imageCaptchaUtils.validate(VALID_CODE_GROUP,authRegisterParam.getValidCodeReqId(),authRegisterParam.getValidCode());
+        }
+        // SM2解密前端传来的密码
+        String passwordDecrypt = CryptUtils.sm2Decrypt(password);
+        accountLoginApi.doRegister(username,name,phone,passwordDecrypt);
+
+    }
+
+    /**
+     * 验证注册配置
+     */
+    private void checkRegisterEnableByConfig(){
+        CommonExceptionI18n.isTrue(devConfigApi.getBooleanValue(ACCOUNT_REGISTER_ENABLE,false),"auth.account.register.unavailable");
     }
 
     @Override
@@ -333,23 +375,40 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
     }
 
     @Override
-    public String getPhoneFindPasswordValid(AuthGetPhoneValidCodeParam authGetPhoneValidCodeParam) {
-        return null;
+    public String getPhoneFindPasswordValidCode(AuthGetPhoneValidCodeParam authGetPhoneValidCodeParam) {
+        AccountLoginInfoDTO account = accountLoginApi.getAccountByPhone(authGetPhoneValidCodeParam.getPhone());
+        CommonExceptionI18n.notNull(account,"auth.login.account.phone.notExists",authGetPhoneValidCodeParam.getPhone());
+        // 校验获取手机号验证码的图片验证码
+        imageCaptchaUtils.validate(VALID_CODE_GROUP,authGetPhoneValidCodeParam.getValidCodeReqId(),authGetPhoneValidCodeParam.getValidCode());
+        //根据注册场景配置发送验证码
+        return devSmsApi.sendSmsCodeByScene(DevConfigSceneEnum.ACCOUNT_REG,VALID_CODE_GROUP,authGetPhoneValidCodeParam.getPhone());
     }
 
     @Override
     public String getEmailFindPasswordValid(AuthGetEmailValidCodeParam authGetEmailValidCodeParam) {
-        return null;
+        throw new CommonExceptionI18n("common.notSupported", RequestUtils.getReqUrl());
     }
 
     @Override
     public void doPhoneFindPassword(AuthPhoneFindPasswordParam authPhoneFindPasswordParam) {
+        // 获取账号
+        String phone = authPhoneFindPasswordParam.getPhone();
+        // 获取密码
+        String password = authPhoneFindPasswordParam.getNewPassword();
+        // 验证短信验证码
+        devSmsApi.validateSmsCode(VALID_CODE_GROUP,phone,authPhoneFindPasswordParam.getValidCodeReqId(),authPhoneFindPasswordParam.getValidCode());
+        AccountLoginInfoDTO account = accountLoginApi.getAccountByPhone(phone);
+        CommonExceptionI18n.notNull(account,"auth.login.account.phone.notExists",phone);
+        // SM2解密前端传来的密码
+        String passwordDecrypt = CryptUtils.sm2Decrypt(password);
+        // 查询是否有这个用户
+        sysAccountApi.updatePassword(account.getId(),passwordDecrypt);
 
     }
 
     @Override
     public void doEmailFindPassword(AuthEmailFindPasswordParam authEmailFindPasswordParam) {
-
+        throw new CommonExceptionI18n("common.notSupported", RequestUtils.getReqUrl());
     }
 
 

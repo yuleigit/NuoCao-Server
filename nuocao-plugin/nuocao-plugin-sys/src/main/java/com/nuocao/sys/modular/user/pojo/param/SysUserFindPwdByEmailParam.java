@@ -25,8 +25,8 @@ public class SysUserFindPwdByEmailParam {
 
     /** 验证码请求号 */
     @ApiModelProperty(value = "验证码请求号", required = true, position = 3)
-    @NotBlank(message = "validCodeReqNo不能为空")
-    private String validCodeReqNo;
+    @NotBlank(message = "validCodeReqId不能为空")
+    private String validCodeReqId;
 
     /** 新密码 */
     @ApiModelProperty(value = "新密码", required = true, position = 4)

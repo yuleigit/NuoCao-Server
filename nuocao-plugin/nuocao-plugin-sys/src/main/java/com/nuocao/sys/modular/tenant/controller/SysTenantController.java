@@ -42,18 +42,6 @@ public class SysTenantController {
     @Inject
     private SaTokenConfig saTokenConfig; // 注入配置类
 
-
-//    @Init // Solon 初始化完成后执行
-//    public void printSaTokenConfig() {
-//        System.out.println("===== Sa-Token 配置 =====");
-//        System.out.println("token-name: " + saTokenConfig.getTokenName());
-//        System.out.println("timeout: " + saTokenConfig.getTimeout());
-//        System.out.println("is-share: " + saTokenConfig.getIsShare());
-//        System.out.println("token-prefix: " + saTokenConfig.getTokenPrefix());
-//        System.out.println("is-read-cookie: " + saTokenConfig.getIsReadCookie());
-//
-//        // 正常输出应包含: SaTokenDaoRedis
-//    }
     /**
      * 获取客户机构分页
      *

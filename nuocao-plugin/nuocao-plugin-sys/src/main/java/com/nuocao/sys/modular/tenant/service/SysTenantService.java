@@ -131,7 +131,7 @@ public interface SysTenantService  {
      */
     boolean isTenantAdmin(Long tenantId,Long userId);
 
-    List<SysTenantDTO> getTenantListByUserAccount(String account);
+    List<SysTenantDTO> getTenantListByUsername(String account);
 
 
     /**

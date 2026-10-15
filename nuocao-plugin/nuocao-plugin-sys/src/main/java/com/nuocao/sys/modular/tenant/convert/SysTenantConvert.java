@@ -5,6 +5,7 @@ import com.nuocao.common.page.PageResult;
 import com.nuocao.sys.api.dto.SysTenantDTO;
 import com.nuocao.sys.modular.tenant.entity.SysTenant;
 import com.nuocao.sys.modular.tenant.result.SysTenantPageResult;
+import com.nuocao.sys.modular.tenant.result.UserTenantsResult;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -23,4 +24,6 @@ public interface SysTenantConvert {
 
 
     List<SysTenantDTO> convertListDTO(List<SysTenant> list);
+
+    List<UserTenantsResult.UserTenantResult> convertUserTenantResultList(List<SysTenantDTO> list);
 }

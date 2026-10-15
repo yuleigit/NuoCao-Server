@@ -8,9 +8,6 @@ import org.noear.solon.validation.annotation.NotNull;
 
 /**
  * 切换租户
- *
- * @author LEI
- * @date 2022/7/7 16:46
  **/
 @Getter
 @Setter
@@ -23,4 +20,8 @@ public class AuthSwitchTenantParam {
 
     @ApiModelProperty(value = "当前设备", position = 5)
     private String device;
+
+
+    @ApiModelProperty(value = "登录设备客户ID", position = 5)
+    private String clientId;
 }

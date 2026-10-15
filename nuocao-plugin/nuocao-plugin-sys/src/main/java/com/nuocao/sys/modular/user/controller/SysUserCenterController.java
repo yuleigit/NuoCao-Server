@@ -1,7 +1,13 @@
 package com.nuocao.sys.modular.user.controller;
 
+import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
+import com.nuocao.auth.api.dto.SaUserLoginInfoDTO;
 import com.nuocao.common.annotation.CommonLog;
 import com.nuocao.common.pojo.CommonResult;
+import com.nuocao.sys.api.SysTenantApi;
+import com.nuocao.sys.api.dto.SysTenantDTO;
+import com.nuocao.sys.modular.tenant.convert.SysTenantConvert;
+import com.nuocao.sys.modular.tenant.result.UserTenantsResult;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdateInfoParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdatePwdByOldParam;
 import com.nuocao.sys.modular.user.pojo.result.SysUserResult;
@@ -15,6 +21,8 @@ import org.noear.solon.core.handle.UploadedFile;
 import org.noear.solon.validation.annotation.Valid;
 import org.noear.solon.validation.annotation.Validated;
 
+import java.util.List;
+
 /**
  * 用户中心控制器
  **/
@@ -27,7 +35,8 @@ public class SysUserCenterController {
     private SysUserCenterService sysUserCenterService;
     @Inject
     private DevMessageApi devMessageApi;
-
+    @Inject
+    private SysTenantApi sysTenantApi;
     @ApiOperation("获取用户信息")
     @Get@Mapping("/sys/userCenter/getProfile")
     public CommonResult<SysUserResult> getProfile() {
@@ -72,5 +81,21 @@ public class SysUserCenterController {
         return CommonResult.ok();
     }
 
+
+    @ApiOperation("获取当前登录用户的所属的租户")
+    @Get
+    @Mapping("/sys/userCenter/tenants")
+    public CommonResult<UserTenantsResult> tenants() {
+        //得到当前登录用户
+        SaUserLoginInfoDTO loginUser = StpLoginUserUtils.getLoginUser();
+        if(loginUser==null){
+            return CommonResult.data(new UserTenantsResult());
+        }
+        List<SysTenantDTO> myTenantlist = sysTenantApi.getAccountTenantList(loginUser.getUsername());
+        UserTenantsResult result = new UserTenantsResult();
+        result.setCurrent(myTenantlist.stream().filter(o->o.getId().equals(loginUser.getTenantId())).findFirst().orElse(null));
+        result.setTenants(SysTenantConvert.INSTANCE.convertUserTenantResultList(myTenantlist));
+        return CommonResult.data(result);
+    }
 
 }

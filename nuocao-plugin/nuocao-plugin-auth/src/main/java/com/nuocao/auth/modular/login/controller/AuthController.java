@@ -3,23 +3,31 @@ package com.nuocao.auth.modular.login.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
+import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.auth.api.dto.SaUserLoginInfoDTO;
 import com.nuocao.auth.modular.login.param.common.AuthGetPhoneValidCodeParam;
 import com.nuocao.auth.modular.login.param.login.AuthAccountPasswordLoginParam;
 import com.nuocao.auth.modular.login.param.login.AuthPhoneValidCodeLoginParam;
+import com.nuocao.auth.modular.login.param.login.AuthSwitchTenantParam;
 import com.nuocao.auth.modular.login.param.reg.AuthRegisterParam;
 import com.nuocao.auth.modular.login.result.login.AuthLoginResult;
 import com.nuocao.auth.modular.login.service.AuthAccountUserService;
+import com.nuocao.common.exception.CommonException;
+import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.data.access.datascope.annotation.DataScopeIgnore;
+import com.nuocao.data.access.tenant.util.TenantUtils;
 import com.nuocao.sys.api.SysAccountApi;
 import com.nuocao.sys.api.SysTenantApi;
+import com.nuocao.sys.api.dto.SysTenantDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.noear.solon.annotation.*;
 import org.noear.solon.validation.annotation.Valid;
 import org.noear.solon.validation.annotation.Validated;
+
+import java.util.List;
 
 /**
  * 账号登录 控制器
@@ -130,6 +138,25 @@ public class AuthController {
     }
 
 
+    /**
+     * 切换租户
+     **/
+    @ApiOperation(value = "切换租户,登录成功后的用户可用")
+    @Post
+    @Mapping("/auth/user/switchTenant")
+    public CommonResult<AuthLoginResult> switchTenant(@Validated AuthSwitchTenantParam switchParam) {
+        SaUserLoginInfoDTO loginUser= StpLoginUserUtils.getLoginUser();
+        CommonExceptionI18n.notNull(loginUser,"auth.user.switchTenant.notLogin");
+        List<SysTenantDTO> tenantList = tenantApi.getAccountTenantList(loginUser.getUsername());
+        CommonExceptionI18n.notEmpty(tenantList,"auth.user.switchTenant.notTenant");
+        SysTenantDTO toTenant = tenantList.stream().filter(o->o.getId().equals(switchParam.getTenantId())).findFirst().orElse(null);
+        CommonException.notNull(toTenant,"auth.user.switchTenant.notExists");
+        AuthLoginResult loginResult = TenantUtils.execute(toTenant.getId(),()->{
+            return authAccountUserService.doLoginUser(loginUser.getUsername(),
+                    switchParam.getDevice() ,switchParam.getClientId(),null);
+        });
+        return CommonResult.data(loginResult);
+    }
 
 
 }

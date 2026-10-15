@@ -8,34 +8,54 @@ import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.solon.integration.SaTokenInterceptor;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.Header;
 import com.nuocao.common.annotation.PublicMapping;
-import com.nuocao.common.pojo.KeyValue;
 import com.nuocao.core.config.handler.GlobalExceptionUtil;
-import io.swagger.models.HttpMethod;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
+import org.noear.solon.annotation.Init;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.cache.redisson.RedissonClientOriginalSupplier;
-import org.noear.solon.core.AppContext;
-import org.noear.solon.core.handle.MethodType;
+import org.noear.solon.core.handle.Action;
+import org.noear.solon.core.handle.Handler;
+import org.noear.solon.core.route.Routing;
+import org.noear.solon.core.route.VersionedTarget;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * SaToken配置
+ *
+ * <p>关于「无需登录的接口」共有两个来源：
+ * <ol>
+ *     <li>{@link #NO_LOGIN_PATH_ARR} —— 静态路径白名单（登录接口、静态资源等）；</li>
+ *     <li>{@link PublicMapping} 注解 —— 标在 Controller 类或方法上，从 Solon 路由表里反查出来。</li>
+ * </ol>
+ * 两者在 {@link #initAnonUrls()} 里合并为一份「匿名放行 URI 列表」（{@link #anonUrls}），
+ * 只在<b>启动期</b>计算一次；请求链路上只做一次 {@code notMatch} 判断，不再重复扫描。
+ *
+ * <p>注意：注解白名单是「按最终 URI」匹配的，所以必须枚举<b>路由表</b>拿全路径，
+ * 不能用「Controller 类上的 {@code @Mapping} 前缀」去匹配 —— 前缀 `/dev/config`
+ * 并不等于最终 URI `/dev/config/sysConfigList`（见 {@code PathMatcher} 语义）。
  **/
 @Configuration
 public class SaTokenConfigure {
 
+    private static final Logger log = LoggerFactory.getLogger(SaTokenConfigure.class);
+
     /**
-     * 无需登录的接口地址集合
+     * 无需登录的接口地址集合（静态部分）
      */
     private static final String[] NO_LOGIN_PATH_ARR = {
             /* 主入口 */
@@ -59,7 +79,16 @@ public class SaTokenConfigure {
     };
 
     /**
-     * 注册跨域过滤器
+     * 匿名放行的最终 URI 列表 = 静态白名单 + {@link PublicMapping} 扫描结果。
+     *
+     * <p>由 {@link #initAnonUrls()} 在启动期一次性算好：{@code @Init} 注册为 index=1 的生命周期节点，
+     * HTTP 端口监听是 index=99，升序执行 ⇒ 首个请求进来时本字段必然已就绪。
+     * 请求链路上只读不写，用 {@code volatile} 保证跨线程可见性。
+     */
+    private volatile List<String> anonUrls = Collections.emptyList();
+
+    /**
+     * 注册鉴权拦截器
      */
     @Bean(index = -100)
     public SaTokenInterceptor saTokenInit() {
@@ -71,8 +100,9 @@ public class SaTokenConfigure {
                 // 设置鉴权的接口
                 .setAuth(r -> {
                     SaRouter.match("/**")
-                            .notMatch(CollectionUtil.newArrayList(NO_LOGIN_PATH_ARR))
-                            .notMatch(getMappingPublicUrlsFromAnnotations())
+                            // anonUrls 已在启动期算好：静态白名单与 @PublicMapping 已合并为一份列表，
+                            // 此处只引用、不计算（notMatch 的参数表达式在每次请求都会被求值）。
+                            .notMatch(anonUrls)
                             .check(r1 -> StpUtil.checkLogin());
                 })
                 // 前置函数：在每次认证函数之前执行
@@ -126,49 +156,78 @@ public class SaTokenConfigure {
         // 手动构造并传入 RedissonClient
         return new SaTokenDaoForRedisson(redissonClient);
     }
+
     /**
-     * 获得全部标记了MappingPublic的url，用于使用注解开放访问
-     * @return
+     * 启动期收集「匿名放行 URI」：静态白名单 + 路由表上标了 {@link PublicMapping} 的接口。
+     *
+     * <p><b>必须是同步 {@code @Init}，禁止改成 {@code @Init(async = true)}。</b>
+     * Solon 把 {@code @Init} 注册为 index=1 的生命周期节点（{@code @Init#index()} 默认 0，
+     * 注册时取 {@code index() + 1}），端口监听由 {@code SmHttpPlugin} 注册为 index=99，
+     * 生命周期按 index 升序执行 ⇒ 本方法一定跑在端口对外服务之前。一旦标成 {@code async}，
+     * 它会被挪到 {@code executeAsyncInitTasks} 里延后执行（发生在端口监听之后），保证失效。
+     *
+     * <p>另外 {@code @Init} 的执行时机（{@code AppContext.start()}）晚于 {@code beanScan}，
+     * 此刻 Controller 路由已注册完整，所以能扫全。注意<b>不要</b>把扫描放进
+     * {@code saTokenInit()} 的 {@code @Bean} 方法里 —— 那发生在 {@code beanScan} 期间，
+     * 与 Controller 注册的先后顺序不确定，可能扫不全。
      */
-    private List<String> getMappingPublicUrlsFromAnnotations() {
-        Map<HttpMethod, List<String>> result = new HashMap<>();
+    @Init
+    public void initAnonUrls() {
+        Set<String> urls = new LinkedHashSet<>(Arrays.asList(NO_LOGIN_PATH_ARR));
+        try {
+            urls.addAll(scanPublicUrlsFromAnnotations());
+        } catch (Exception e) {
+            // 旁路能力不影响启动主链路：扫不到就退回静态白名单
+            // （失败方向是「多要一次登录」，不会误放行，可接受）
+            log.error("[SaToken] 扫描 {} 失败，本次仅使用静态白名单", PublicMapping.class.getSimpleName(), e);
+        }
+        this.anonUrls = Collections.unmodifiableList(new ArrayList<>(urls));
+        log.info("[SaToken] 匿名放行 URI（{} 个）: {}", anonUrls.size(), anonUrls);
+    }
 
+    /**
+     * 扫描路由表，收集类或方法上标注了 {@link PublicMapping} 的最终 URI。
+     *
+     * <p>数据来源是 Solon 的<b>路由表</b>（{@code Solon.app().router().findAll()}）而不是 Controller 的类注解：
+     * 路由表里的 {@code path()} 已经是「类上的 {@code @Mapping} 前缀 + 方法上的 {@code @Mapping}」拼好的最终 URI，
+     * 并且天然覆盖「多路径、路径参数 {@code {id}}、继承的父类 Controller」等情况。
+     *
+     * @return 公开访问的 URI 列表
+     */
+    private List<String> scanPublicUrlsFromAnnotations() {
+        Set<String> urls = new LinkedHashSet<>();
 
-        AppContext context = Solon.context();
-        Set<String> publicEndpoints = new HashSet<>();
-
-
-        // 扫描所有控制器
-        context.beanForeach(beanWrap -> {
-            Class<?> clazz = beanWrap.clz();
-
-            // 检查类级别是否有 @MappingPublic 注解
-            if (clazz.isAnnotationPresent(PublicMapping.class)) {
-                KeyValue<String,MethodType[]> basePath = getControllerPath(clazz);
-                if(basePath!=null) {
-                    publicEndpoints.add(basePath.getKey());
+        Collection<Routing<Handler>> routings = Solon.app().router().findAll();
+        if (routings != null) {
+            for (Routing<Handler> routing : routings) {
+                Collection<VersionedTarget<Handler>> targets = routing.targets();
+                if (targets == null) {
+                    continue;
+                }
+                for (VersionedTarget<Handler> versionedTarget : targets) {
+                    Handler handler = versionedTarget.getTarget();
+                    // 注：本模块 source level 为 11，不能用 instanceof 模式匹配
+                    if (handler instanceof Action && isPublicAction((Action) handler)) {
+                        urls.add(routing.path());
+                        break;
+                    }
                 }
             }
-        });
+        }
 
-
-        return publicEndpoints.stream().distinct().collect(Collectors.toList());
+        return new ArrayList<>(urls);
     }
 
     /**
-     * 得到控制器地址和method
-     * @param clazz
-     * @return path,methods
+     * 判断该 Action 是否允许匿名访问：方法上或所属 Controller 类上有 {@link PublicMapping} 即算公开。
      */
-    private KeyValue<String, MethodType[]> getControllerPath(Class<?> clazz) {
-
-        org.noear.solon.annotation.Mapping mappingAnno =
-                clazz.getAnnotation(org.noear.solon.annotation.Mapping.class);
-        if (mappingAnno != null) {
-            return new KeyValue<>(mappingAnno.value(),mappingAnno.method());
+    private boolean isPublicAction(Action action) {
+        // 1. 方法级注解
+        if (action.method().isAnnotationPresent(PublicMapping.class)) {
+            return true;
         }
-        return null;
+        // 2. 类级注解
+        return action.controller().clz().isAnnotationPresent(PublicMapping.class);
     }
-
 
 }

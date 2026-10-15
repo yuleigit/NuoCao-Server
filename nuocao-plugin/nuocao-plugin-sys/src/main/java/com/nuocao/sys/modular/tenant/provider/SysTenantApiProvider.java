@@ -73,12 +73,12 @@ public class SysTenantApiProvider implements SysTenantApi {
 
     /**
      * 根据账号得到对应信息
-     * @param account
+     * @param username
      * @return
      */
     @Override
-    public List<SysTenantDTO> getAccountTenantList(String account){
-        return sysTenantService.getTenantListByUserAccount(account);
+    public List<SysTenantDTO> getAccountTenantList(String username){
+        return sysTenantService.getTenantListByUsername(username);
     }
 
     @Override

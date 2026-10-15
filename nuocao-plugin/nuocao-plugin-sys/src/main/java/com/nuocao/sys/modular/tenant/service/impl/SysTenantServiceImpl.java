@@ -312,7 +312,7 @@ public class SysTenantServiceImpl implements SysTenantService {
     @Override
     @TenantIgnore
     @DataScopeIgnore
-    public List<SysTenantDTO> getTenantListByUserAccount(String account) {
+    public List<SysTenantDTO> getTenantListByUsername(String account) {
         if(account==null){
             CommonException.throwException("必须传入account");
         }

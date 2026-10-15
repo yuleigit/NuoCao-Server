@@ -62,10 +62,10 @@ public interface SysTenantApi {
 
     /**
      * 根据账号得到对应租户信息
-     * @param account
+     * @param username
      * @return
      */
-    List<SysTenantDTO> getAccountTenantList(String account);
+    List<SysTenantDTO> getAccountTenantList(String username);
 
     /**
      * 根据套餐统计租户数

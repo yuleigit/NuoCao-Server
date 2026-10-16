@@ -381,7 +381,7 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         // 校验获取手机号验证码的图片验证码
         imageCaptchaUtils.validate(VALID_CODE_GROUP,authGetPhoneValidCodeParam.getValidCodeReqId(),authGetPhoneValidCodeParam.getValidCode());
         //根据注册场景配置发送验证码
-        return devSmsApi.sendSmsCodeByScene(DevConfigSceneEnum.ACCOUNT_REG,VALID_CODE_GROUP,authGetPhoneValidCodeParam.getPhone());
+        return devSmsApi.sendSmsCodeByScene(DevConfigSceneEnum.PASSWORD_FIND,VALID_CODE_GROUP,authGetPhoneValidCodeParam.getPhone());
     }
 
     @Override

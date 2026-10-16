@@ -47,7 +47,6 @@ public class AuthController {
     private SysTenantApi tenantApi;
     @Inject
     private SysAccountApi sysAccountApi;
-    @Inject
 
     /**
      * 获取账户登录验证码

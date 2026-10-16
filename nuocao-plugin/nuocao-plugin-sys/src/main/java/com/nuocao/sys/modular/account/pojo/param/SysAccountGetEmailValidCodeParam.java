@@ -7,8 +7,9 @@ import org.noear.solon.validation.annotation.NotBlank;
 
 /**
  * 获取邮箱验证码
- *
+ * @deprecated 已迁移至 auth 模块，请使用 AuthGetEmailValidCodeParam
  **/
+@Deprecated
 @Getter
 @Setter
 public class SysAccountGetEmailValidCodeParam {

@@ -7,8 +7,9 @@ import org.noear.solon.validation.annotation.NotBlank;
 
 /**
  * 获取手机验证码参数
- *
+ * @deprecated 已迁移至 auth 模块，请使用 AuthGetPhoneValidCodeParam
  **/
+@Deprecated
 @Getter
 @Setter
 public class SysAccountGetPhoneValidCodeParam {

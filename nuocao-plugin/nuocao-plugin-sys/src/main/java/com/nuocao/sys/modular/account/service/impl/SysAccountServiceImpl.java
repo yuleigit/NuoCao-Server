@@ -332,6 +332,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
         return result;
     }
 
+    @Deprecated
     @Override
     public String findPasswordGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam) {
         // 手机号
@@ -367,16 +368,19 @@ public class SysAccountServiceImpl  implements SysAccountService {
         return phoneValidCodeReqId;
     }
 
+    @Deprecated
     @Override
     public String findPasswordGetEmailValidCode(SysAccountGetEmailValidCodeParam getEmailValidCodeParam) {
         return null;
     }
 
+    @Deprecated
     @Override
     public void findPasswordByPhone(SysAccountFindPwdByPhoneParam findPwdByPhoneParam) {
 
     }
 
+    @Deprecated
     @Override
     public void findPasswordByEmail(SysAccountFindPwdByEmailParam findPwdByEmailParam) {
 

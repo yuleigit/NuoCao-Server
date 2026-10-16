@@ -7,6 +7,11 @@ import lombok.Setter;
 import org.noear.solon.validation.annotation.NotBlank;
 
 
+/**
+ * 用户找回密码参数
+ * @deprecated 已迁移至 auth 模块，请使用 AuthPhoneFindPasswordParam
+ **/
+@Deprecated
 @Getter
 @Setter
 public class SysAccountFindPwdByPhoneParam {

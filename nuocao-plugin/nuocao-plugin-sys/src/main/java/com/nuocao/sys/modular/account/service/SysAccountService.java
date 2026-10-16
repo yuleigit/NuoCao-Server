@@ -180,25 +180,31 @@ public interface SysAccountService {
     /**
      * 找回密码获取手机验证码
      * @return 请求号码，之后验证使用需携带
+     * @deprecated 已迁移至 auth 模块，请使用 AuthAccountUserService#getPhoneFindPasswordValidCode
      **/
+    @Deprecated
     String findPasswordGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam);
 
     /**
      * 找回密码获取邮箱验证码【暂时无效，email系统暂时不介入】
      * @return 请求号码，之后验证使用需携带
+     * @deprecated 已迁移至 auth 模块，请使用 AuthAccountUserService#getEmailFindPasswordValid
      **/
+    @Deprecated
     String findPasswordGetEmailValidCode(SysAccountGetEmailValidCodeParam getEmailValidCodeParam);
 
     /**
      * 通过手机号找回用户密码
-     *
+     * @deprecated 已迁移至 auth 模块，请使用 AuthAccountUserService#doPhoneFindPassword
      **/
+    @Deprecated
     void findPasswordByPhone(SysAccountFindPwdByPhoneParam findPwdByPhoneParam);
 
     /**
      * 通过邮箱找回用户密码
-     *
+     * @deprecated 已迁移至 auth 模块，请使用 AuthAccountUserService#doEmailFindPassword
      **/
+    @Deprecated
     void findPasswordByEmail(SysAccountFindPwdByEmailParam findPwdByEmailParam);
 
     /**

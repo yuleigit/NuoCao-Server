@@ -75,7 +75,7 @@ public enum DevConfigSceneEnum implements StrArrayValuable {
     /**
      * 找回密码
      */
-    PASSWORD_GET(
+    PASSWORD_FIND(
             "password_get",
             Map.of(
                     MessageMediumEnum.SMS,

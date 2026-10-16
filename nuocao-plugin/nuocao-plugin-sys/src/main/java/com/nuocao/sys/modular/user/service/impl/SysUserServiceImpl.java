@@ -754,7 +754,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         if (StringUtils.isNotBlank(info.getEmail())) {
-            SysUser temp = mapper.selectOne(SysUser::getPhone,info.getPhone());
+            SysUser temp = mapper.selectOne(SysUser::getEmail,info.getEmail());
             if(temp!=null && !temp.getId().equals(info.getId()))
             {
                 throw new CommonExceptionI18n("sys.user.email.exists",temp.getUsername());

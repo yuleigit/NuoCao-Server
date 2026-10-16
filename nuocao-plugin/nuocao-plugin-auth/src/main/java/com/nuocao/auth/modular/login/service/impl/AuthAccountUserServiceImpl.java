@@ -50,6 +50,7 @@ import org.noear.solon.annotation.Inject;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 登录Service接口实现类
@@ -221,7 +222,7 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
     }
 
     @Override
-    public AuthLoginResult doLoginUser(String userAccount, String device, String deviceId, String checkPasswordHash) {
+    public AuthLoginResult doLoginUser(String userAccount, String device, String deviceId, String checkPasswordHash,Long lockTenantId) {
 
         //得到用户登录的账号信息，用于验证密码
         AccountLoginInfoDTO accountInfoDTO = accountLoginApi.getAccountByUsername(userAccount);
@@ -242,13 +243,18 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         //这里先更新下account登录状态，user最后登录状态由sa监听器AuthListener更新，因为account只在登录验证时使用，不会真正存储登录状态
         //就算之后用户验证那失败了，其实也登录成功了
         accountLoginApi.updateUserLoginInfo(accountInfoDTO.getId(),device);
-
+        //存储真实登录用户对象
+        AuthLoginUserDTO realLoginUser ;
         //根据账户，得到所属租户的列表
-        List<AuthLoginUserDTO> userList = userLoginApi.getAllTenantUserByAccount(userAccount);
 
+        List<AuthLoginUserDTO> userList = userLoginApi.getAllTenantUserByAccount(userAccount);
+        if(lockTenantId!=null){
+            userList=userList.stream().filter(o->o.getTenantId().equals(lockTenantId)).collect(Collectors.toList());
+            //TODO:这里后续需要改成按tenantId读取，或者直接在doLoginUser外使用TenantUtils.Execute执行，不然每次都读取全量用户
+        }
         if (CollectionUtils.isEmpty(userList)) {
             // 提示账号错误，注意，前段这个编码，弹出用户创建或加入租户的对话框
-            throw new CommonExceptionI18n(500404,AuthExceptionEnum.ACCOUNT_NOT_EXISTS_USER.getI18nKey());
+            throw new CommonExceptionI18n(500404, AuthExceptionEnum.ACCOUNT_NOT_EXISTS_USER.getI18nKey());
         }
 
         //按时间排序，为null一般为新创建的，所以靠前拍
@@ -257,8 +263,7 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
                 Comparator.nullsFirst(Comparator.reverseOrder())
         ));
         //取第一个
-        AuthLoginUserDTO realLoginUser = userList.stream().filter(o->o.getStatus().equals(CommonEnableStatusEnum.ENABLE.getValue())).findFirst().orElse(null);
-
+        realLoginUser = userList.stream().filter(o -> o.getStatus().equals(CommonEnableStatusEnum.ENABLE.getValue())).findFirst().orElse(null);
         if(realLoginUser==null){
             CommonExceptionI18n.notNull(userAccount,"auth.login.account.tenant.disable",userAccount);
         }

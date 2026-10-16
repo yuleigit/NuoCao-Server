@@ -56,9 +56,15 @@ public interface AuthAccountUserService {
      * @param userAccount
      * @param device
      * @param checkPasswordHash 密码的hash值，为null时则跳过密码验证，直接登录账号，请配合TenantUtils执行使用
+     * @param lockTenantId 锁定登录的租户ID
      * @return
      */
-    AuthLoginResult doLoginUser(String userAccount,  String device,String deviceId,String checkPasswordHash);
+    AuthLoginResult doLoginUser(String userAccount,  String device,String deviceId,String checkPasswordHash,Long lockTenantId);
+
+    default AuthLoginResult doLoginUser(String userAccount,  String device,String deviceId,String checkPasswordHash){
+        return doLoginUser(userAccount,device,deviceId,checkPasswordHash,null);
+    }
+
 
     /**
      * 登录到置顶租户的用户上

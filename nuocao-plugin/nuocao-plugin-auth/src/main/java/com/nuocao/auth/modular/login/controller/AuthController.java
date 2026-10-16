@@ -186,10 +186,10 @@ public class AuthController {
         List<SysTenantDTO> tenantList = tenantApi.getAccountTenantList(loginUser.getUsername());
         CommonExceptionI18n.notEmpty(tenantList,"auth.user.switchTenant.notTenant");
         SysTenantDTO toTenant = tenantList.stream().filter(o->o.getId().equals(switchParam.getTenantId())).findFirst().orElse(null);
-        CommonException.notNull(toTenant,"auth.user.switchTenant.notExists");
+        CommonExceptionI18n.notNull(toTenant,"auth.user.switchTenant.notExists");
         AuthLoginResult loginResult = TenantUtils.execute(toTenant.getId(),()->{
             return authAccountUserService.doLoginUser(loginUser.getUsername(),
-                    switchParam.getDevice() ,switchParam.getClientId(),null);
+                    switchParam.getDevice() ,switchParam.getClientId(),null,toTenant.getId());
         });
         return CommonResult.data(loginResult);
     }

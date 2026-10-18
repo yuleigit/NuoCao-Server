@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public enum CaptchaGroupEnum {
 
+    AUTH("auth"),
     ACCOUNT("account");
 
     String value;

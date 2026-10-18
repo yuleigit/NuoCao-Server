@@ -25,10 +25,10 @@ import com.nuocao.sys.modular.account.convert.SysAccountConvert;
 import com.nuocao.sys.modular.account.entity.SysAccount;
 import com.nuocao.sys.modular.account.enums.SysAccountFromSourceEnum;
 import com.nuocao.sys.modular.account.mapper.SysAccountMapper;
-import com.nuocao.sys.modular.account.pojo.param.*;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountDetailResult;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountPageResult;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountSimpleResult;
+import com.nuocao.sys.modular.account.param.*;
+import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
+import com.nuocao.sys.modular.account.result.SysAccountPageResult;
+import com.nuocao.sys.modular.account.result.SysAccountSimpleResult;
 import com.nuocao.sys.modular.account.service.SysAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Inject;
@@ -121,7 +121,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
     }
 
     @Override
-    public Long add(SysAccountAddParam addParam,String fromSource,boolean passwordIsSm2) {
+    public Long add(SysAccountAddParam addParam, String fromSource, boolean passwordIsSm2) {
 
         SysAccount sysAccount = SysAccountConvert.INSTANCE.convert(addParam);
 
@@ -210,7 +210,10 @@ public class SysAccountServiceImpl  implements SysAccountService {
     public SysAccountDetailResult detail(Long accountId) {
         return SysAccountConvert.INSTANCE.convertDetail(this.queryEntity(accountId));
     }
-
+    @Override
+    public SysAccountDetailResult detailByUsername(String username) {
+        return SysAccountConvert.INSTANCE.convertDetail(this.queryEntityByUsername(username));
+    }
     @Override
     public void updateLastLoginInfo(Long accountId, String device) {
         //查询账户信息
@@ -334,7 +337,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
 
     @Deprecated
     @Override
-    public String findPasswordGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam) {
+    public String findPasswordGetPhoneValidCode(SysAccountBindPhoneGetValidCodeParam getPhoneValidCodeParam) {
         // 手机号
         String phone = getPhoneValidCodeParam.getPhone();
         // 验证码正确则校验手机号格式
@@ -386,50 +389,7 @@ public class SysAccountServiceImpl  implements SysAccountService {
 
     }
 
-    @Override
-    public String updatePasswordGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam) {
-        return null;
-    }
 
-    @Override
-    public String updatePasswordGetEmailValidCode(SysAccountGetEmailValidCodeParam getEmailValidCodeParam) {
-        return null;
-    }
-
-    @Override
-    public void updatePasswordByOld(SysAccountUpdatePwdByOldParam updatePwdByOldParam) {
-
-    }
-
-    @Override
-    public void updatePasswordByPhone(SysAccountUpdatePwdByPhoneParam clientUserUpdatePwdByPhoneParam) {
-
-    }
-
-    @Override
-    public void updatePasswordByEmail(SysAccountUpdatePwdByEmailParam clientUserUpdatePwdByEmailParam) {
-
-    }
-
-    @Override
-    public String bindPhoneGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam) {
-        return null;
-    }
-
-    @Override
-    public void bindPhone(SysAccountBindPhoneParam bindPhoneParam) {
-
-    }
-
-    @Override
-    public String bindEmailGetEmailValidCode(SysAccountGetEmailValidCodeParam getEmailValidCodeParam) {
-        return null;
-    }
-
-    @Override
-    public void bindEmail(SysAccountBindEmailParam bindEmailParam) {
-
-    }
 
 
     @Override
@@ -528,6 +488,25 @@ public class SysAccountServiceImpl  implements SysAccountService {
         String pwd = passwordHashValue?password: CryptUtils.hashValue(password);
         UpdateChain.of(SysAccount.class).eq(SysAccount::getUsername,username)
                 .set(SysAccount::getPassword,pwd).update();
+    }
+
+    @Override
+    public void updatePhoneById(Long id, String phone) {
+        if(NumberUtils.isLeZero(id) || StringUtils.isBlank(phone)) return;
+        SysAccount tempAccount = mapper.selectOne(SysAccount::getPhone,phone);
+        if(tempAccount!=null){
+            if(id.equals(tempAccount.getId())){
+                if(phone.equals(tempAccount.getPhone())){
+                    throw new CommonExceptionI18n("sys.user.phone.notChange");
+                }
+            }else{
+                throw new CommonExceptionI18n("sys.user.phone.exists");
+            }
+        }
+        SysAccount account = new SysAccount();
+        account.setId(id);
+        account.setPhone(phone);
+        mapper.updateById(account);
     }
 
     /**

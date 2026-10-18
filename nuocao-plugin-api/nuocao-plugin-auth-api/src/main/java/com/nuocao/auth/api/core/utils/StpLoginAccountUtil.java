@@ -14,14 +14,14 @@ import com.nuocao.auth.api.dto.SaUserLoginInfoDTO;
 public class StpLoginAccountUtil {
 
     /**
-     * 获取当前B端登录用户
+     * 获取当前系统账户登录用户
      **/
     public static SaUserLoginInfoDTO getLoginUser() {
         return (SaUserLoginInfoDTO) StpUtil.getTokenSession().get("loginUser");
     }
 
     /**
-     * 获取当前B端登录用户
+     * 获取当前系统账户登录用户ID
      **/
     public static Long getLoginUserId() {
         SaUserLoginInfoDTO user= (SaUserLoginInfoDTO) StpUtil.getTokenSession().get("loginUser");

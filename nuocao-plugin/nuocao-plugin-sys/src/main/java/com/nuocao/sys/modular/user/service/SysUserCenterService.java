@@ -3,6 +3,7 @@ package com.nuocao.sys.modular.user.service;
 import com.nuocao.sys.api.dto.menu.SysMenuTreeResultDTO;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdateInfoParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdatePwdByOldParam;
+import com.nuocao.sys.modular.user.pojo.result.SysUserProfileResult;
 import com.nuocao.sys.modular.user.pojo.result.SysUserResult;
 import org.noear.solon.core.handle.UploadedFile;
 import org.noear.solon.web.sse.SseEmitter;
@@ -15,7 +16,7 @@ import java.util.List;
  **/
 public interface SysUserCenterService {
 
-    SysUserResult getProfile();
+    SysUserProfileResult getProfile();
 
     /**
      * 获取当前用户可用菜单tree

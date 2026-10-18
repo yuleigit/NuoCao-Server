@@ -60,7 +60,7 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
 
 
     //验证码分组
-    private final static String VALID_CODE_GROUP=CaptchaGroupEnum.ACCOUNT.getValue();
+    private final static String VALID_CODE_GROUP=CaptchaGroupEnum.AUTH.getValue();
 
     private final static String AUTH_LOGIN_CAPTCHA_OPEN_KEY="auth_login_captcha_open";
 

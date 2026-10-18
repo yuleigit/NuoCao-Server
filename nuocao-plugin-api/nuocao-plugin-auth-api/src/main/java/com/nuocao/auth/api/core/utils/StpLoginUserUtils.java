@@ -25,12 +25,22 @@ public class StpLoginUserUtils {
         return user==null?0L: user.getId();
     }
 
+    /**
+     * 獲取當前登錄用戶名
+     * @return
+     */
+    public static String getLoginUsername() {
+        SaUserLoginInfoDTO user= (SaUserLoginInfoDTO) StpUtil.getTokenSession().get("loginUser");
+        return user==null?null: user.getUsername();
+    }
+
     public static void setLoginUser(SaUserLoginInfoDTO loginUser){
         if(ObjectUtils.isEmpty(loginUser)){
             throw new CommonException("loginUser cannot be empty");
         }
         StpUtil.getTokenSession().set("loginUser",loginUser);
     }
+
 
 
     public static boolean hasPermission(String permission){

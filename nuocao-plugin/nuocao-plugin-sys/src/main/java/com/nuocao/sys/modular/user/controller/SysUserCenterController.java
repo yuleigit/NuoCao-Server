@@ -1,8 +1,10 @@
 package com.nuocao.sys.modular.user.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.auth.api.dto.SaUserLoginInfoDTO;
 import com.nuocao.common.annotation.CommonLog;
+import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.sys.api.SysTenantApi;
 import com.nuocao.sys.api.dto.SysTenantDTO;
@@ -10,6 +12,7 @@ import com.nuocao.sys.modular.tenant.convert.SysTenantConvert;
 import com.nuocao.sys.modular.tenant.result.UserTenantsResult;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdateInfoParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdatePwdByOldParam;
+import com.nuocao.sys.modular.user.pojo.result.SysUserProfileResult;
 import com.nuocao.sys.modular.user.pojo.result.SysUserResult;
 import com.nuocao.sys.modular.user.service.SysUserCenterService;
 import io.swagger.annotations.Api;
@@ -39,7 +42,7 @@ public class SysUserCenterController {
     private SysTenantApi sysTenantApi;
     @ApiOperation("获取用户信息")
     @Get@Mapping("/sys/userCenter/getProfile")
-    public CommonResult<SysUserResult> getProfile() {
+    public CommonResult<SysUserProfileResult> getProfile() {
         return CommonResult.data(sysUserCenterService.getProfile());
     }
 
@@ -97,5 +100,9 @@ public class SysUserCenterController {
         result.setTenants(SysTenantConvert.INSTANCE.convertUserTenantResultList(myTenantlist));
         return CommonResult.data(result);
     }
+
+
+
+
 
 }

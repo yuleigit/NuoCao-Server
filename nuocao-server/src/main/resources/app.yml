@@ -195,6 +195,7 @@ tenant:
     - /iot/callback/**
     - /dev/config/sysBaseList
     - /sys/tenantapply/**
+    - /sys/accountCenter/**
     - /iot/restful/**
     - /doc.html
     - /webjars/**

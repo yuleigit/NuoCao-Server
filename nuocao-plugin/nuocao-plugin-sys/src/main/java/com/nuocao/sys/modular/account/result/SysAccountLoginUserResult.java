@@ -1,4 +1,4 @@
-package com.nuocao.sys.modular.account.pojo.result;
+package com.nuocao.sys.modular.account.result;
 
 
 import com.nuocao.auth.api.dto.AccountLoginInfoDTO;

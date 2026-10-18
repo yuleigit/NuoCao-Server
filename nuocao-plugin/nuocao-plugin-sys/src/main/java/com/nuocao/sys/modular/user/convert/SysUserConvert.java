@@ -69,4 +69,7 @@ public interface SysUserConvert {
 
 
     List<UserSelectorResult> convertSelectorResultList(List<SysUser> list);
+
+
+    SysUserProfileResult convertProfile(SysUser bean);
 }

@@ -1,6 +1,5 @@
 package com.nuocao.sys.modular.role.service.impl;
 
-import com.alibaba.excel.util.StringUtils;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
 import com.nuocao.auth.api.dto.SaUserLoginInfoDTO;
@@ -9,6 +8,7 @@ import com.nuocao.common.exception.CommonExceptionI18n;
 import com.nuocao.common.mapper.LambdaQueryWrapperX;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.utils.NumberUtils;
+import com.nuocao.common.utils.StringUtils;
 import com.nuocao.common.utils.collection.CollectionUtils;
 import com.nuocao.data.access.tenant.util.TenantUtils;
 import com.nuocao.sys.api.SysDataScopeApi;
@@ -191,6 +191,12 @@ public class SysRoleServiceImpl implements SysRoleService {
         query.in(SysRole::getId,roleIds)
                 .select(SysRole::getName);
         return mapper.selectObjectListByQueryAs(query,String.class);
+    }
+
+    @Override
+    public String getNamesByUserId(Long userId) {
+        List<SysRoleDTO> list = getRoleListByUserId(userId);
+        return CollectionUtils.isEmpty(list)?"": StringUtils.join(list.stream().map(SysRoleDTO::getName).collect(Collectors.toList()));
     }
 
     @Override

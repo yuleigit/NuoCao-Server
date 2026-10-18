@@ -5,10 +5,10 @@ import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.sys.api.dto.SysAccountDTO;
 import com.nuocao.sys.modular.account.entity.SysAccount;
-import com.nuocao.sys.modular.account.pojo.param.*;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountDetailResult;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountPageResult;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountSimpleResult;
+import com.nuocao.sys.modular.account.param.*;
+import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
+import com.nuocao.sys.modular.account.result.SysAccountPageResult;
+import com.nuocao.sys.modular.account.result.SysAccountSimpleResult;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public interface SysAccountService {
      * @param passwordIsSm2 密码是否进行sm2加密
      *
      */
-    Long add(SysAccountAddParam clientUserAddParam,String formSource,boolean passwordIsSm2);
+    Long add(SysAccountAddParam clientUserAddParam, String formSource, boolean passwordIsSm2);
 
     /**
      * 编辑账户,用于后台修改，用户自己不适用
@@ -89,6 +89,7 @@ public interface SysAccountService {
      */
     String updatePassword(Long accountId, String newPassword);
 
+
     /**
      * 删除账户
      *
@@ -100,6 +101,11 @@ public interface SysAccountService {
      *
      */
     SysAccountDetailResult detail(Long accountId);
+    /**
+     * 获获取账户
+     *
+             */
+    SysAccountDetailResult detailByUsername(String username);
 
     /**
      * 更新登录信息
@@ -183,7 +189,7 @@ public interface SysAccountService {
      * @deprecated 已迁移至 auth 模块，请使用 AuthAccountUserService#getPhoneFindPasswordValidCode
      **/
     @Deprecated
-    String findPasswordGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam);
+    String findPasswordGetPhoneValidCode(SysAccountBindPhoneGetValidCodeParam getPhoneValidCodeParam);
 
     /**
      * 找回密码获取邮箱验证码【暂时无效，email系统暂时不介入】
@@ -207,53 +213,7 @@ public interface SysAccountService {
     @Deprecated
     void findPasswordByEmail(SysAccountFindPwdByEmailParam findPwdByEmailParam);
 
-    /**
-     * 修改密码获取手机验证码
-     * @return 请求号码，之后验证使用需携带
-     **/
-    String updatePasswordGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam);
 
-    /**
-     * 修改密码获取邮箱验证码
-     * @return 请求号码，之后验证使用需携带
-     **/
-    String updatePasswordGetEmailValidCode(SysAccountGetEmailValidCodeParam getEmailValidCodeParam);
-
-    /**
-     * 通过验证旧密码修改用户密码
-     **/
-    void updatePasswordByOld(SysAccountUpdatePwdByOldParam updatePwdByOldParam);
-
-    /**
-     * 通过验证手机号修改用户密码
-     **/
-    void updatePasswordByPhone(SysAccountUpdatePwdByPhoneParam clientUserUpdatePwdByPhoneParam);
-
-    /**
-     * 通过验证邮箱修改用户密码
-     *
-     **/
-    void updatePasswordByEmail(SysAccountUpdatePwdByEmailParam clientUserUpdatePwdByEmailParam);
-
-    /**
-     * 绑定手机号获取手机验证码
-     * @return 请求号码，之后验证使用需携带
-     **/
-    String bindPhoneGetPhoneValidCode(SysAccountGetPhoneValidCodeParam getPhoneValidCodeParam);
-
-    /**
-     * 绑定手机号
-     **/
-    void bindPhone(SysAccountBindPhoneParam bindPhoneParam);
-
-    /**
-     * 绑定邮箱获取邮箱验证码
-     **/
-    String bindEmailGetEmailValidCode(SysAccountGetEmailValidCodeParam getEmailValidCodeParam);
-    /**
-     * 绑定邮箱
-     **/
-    void bindEmail(SysAccountBindEmailParam bindEmailParam);
 
 
     /**
@@ -305,4 +265,7 @@ public interface SysAccountService {
      * @param passwordHashValue 是否经过hashValue加密
      */
     void syncPasswordByUsername(String username,String password,boolean  passwordHashValue);
+
+
+    void updatePhoneById(Long id,String phone);
 }

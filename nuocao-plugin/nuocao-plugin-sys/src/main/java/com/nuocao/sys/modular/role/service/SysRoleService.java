@@ -77,15 +77,22 @@ public interface SysRoleService  {
     List<String> getNames(List<Long> roleIds);
 
     /**
+     * 根据用户id获取所有角色名
+     * @param userId
+     * @return
+     */
+    String getNamesByUserId(Long userId);
+
+    /**
      * 根据用户获取所有角色
      * @param userId
      * @return
      */
     List<SysRoleDTO> getRoleListByUserId(Long userId);
 
+
     /**
      * 虎丘用户的下级角色列表，以自身角色选最大值确认，有角色管理权限和租户管理员可以管理全部
-     * @param userId
      * @return
      */
     List<SysRoleDTO> getLoginUserChildrenRoleList();

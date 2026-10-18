@@ -4,11 +4,11 @@ import com.nuocao.auth.api.dto.AccountLoginInfoDTO;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.sys.api.dto.SysAccountDTO;
 import com.nuocao.sys.modular.account.entity.SysAccount;
-import com.nuocao.sys.modular.account.pojo.param.SysAccountAddParam;
-import com.nuocao.sys.modular.account.pojo.param.SysAccountEditParam;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountDetailResult;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountPageResult;
-import com.nuocao.sys.modular.account.pojo.result.SysAccountSimpleResult;
+import com.nuocao.sys.modular.account.param.SysAccountAddParam;
+import com.nuocao.sys.modular.account.param.SysAccountEditParam;
+import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
+import com.nuocao.sys.modular.account.result.SysAccountPageResult;
+import com.nuocao.sys.modular.account.result.SysAccountSimpleResult;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -30,6 +30,6 @@ public interface SysAccountConvert {
 
      PageResult<SysAccountPageResult>  convertPage(PageResult<SysAccount> page);
 
- SysAccount convert(SysAccountAddParam bean);
- SysAccount convert(SysAccountEditParam bean);
+  SysAccount convert(SysAccountAddParam bean);
+  SysAccount convert(SysAccountEditParam bean);
 }

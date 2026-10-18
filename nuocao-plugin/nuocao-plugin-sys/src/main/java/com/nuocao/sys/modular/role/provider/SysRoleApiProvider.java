@@ -38,4 +38,9 @@ public class SysRoleApiProvider implements SysRoleApi {
     public List<SysRoleDTO> getRoleListByUserId(Long userId) {
         return sysRoleService.getRoleListByUserId(userId);
     }
+
+    @Override
+    public String getRoleNamesUserId(Long userId) {
+        return sysRoleService.getNamesByUserId(userId);
+    }
 }

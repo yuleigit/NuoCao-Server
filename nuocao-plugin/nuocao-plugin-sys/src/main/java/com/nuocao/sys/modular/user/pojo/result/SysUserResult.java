@@ -52,7 +52,7 @@ public class SysUserResult {
 
     /** 组织id */
     @ApiModelProperty(value = "组织id", position = 33)
-    private String orgId;
+    private Long orgId;
 
 
 }

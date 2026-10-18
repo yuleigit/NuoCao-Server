@@ -1,11 +1,14 @@
 package com.nuocao.sys.modular.user.service.impl;
 
 import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
+import com.nuocao.sys.api.SysOrgApi;
+import com.nuocao.sys.api.SysRoleApi;
 import com.nuocao.sys.api.dto.menu.SysMenuTreeResultDTO;
 import com.nuocao.sys.modular.permission.service.SysUserPermissionService;
 import com.nuocao.sys.modular.user.convert.SysUserConvert;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdateInfoParam;
 import com.nuocao.sys.modular.user.pojo.param.SysUserUpdatePwdByOldParam;
+import com.nuocao.sys.modular.user.pojo.result.SysUserProfileResult;
 import com.nuocao.sys.modular.user.pojo.result.SysUserResult;
 import com.nuocao.sys.modular.user.service.SysUserCenterService;
 import com.nuocao.sys.modular.user.service.SysUserService;
@@ -33,9 +36,18 @@ public class SysUserCenterServiceImpl implements SysUserCenterService {
     private DevMessageApi devMessageApi;
     @Inject
     private DevSseApi devSseApi;
+
+    @Inject
+    private SysRoleApi sysRoleApi;
+
+    @Inject
+    private SysOrgApi sysOrgApi;
     @Override
-    public SysUserResult getProfile() {
-        return SysUserConvert.INSTANCE.convert(sysUserService.getById(StpLoginUserUtils.getLoginUserId()));
+    public SysUserProfileResult getProfile() {
+        SysUserProfileResult profile =SysUserConvert.INSTANCE.convertProfile(sysUserService.getById(StpLoginUserUtils.getLoginUserId()));
+        profile.setRoleNames(sysRoleApi.getRoleNamesUserId(StpLoginUserUtils.getLoginUserId()));
+        profile.setOrgNames(sysOrgApi.getNameCacheById(profile.getOrgId()));
+        return profile;
     }
 
     @Override

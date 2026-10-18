@@ -23,5 +23,10 @@ public interface SysRoleApi {
      */
     List<SysRoleDTO> getRoleListByUserId(Long userId);
 
-
+    /**
+     * 获取用户角色列表，join sys_user_role
+     * @param userId
+     * @return
+     */
+    String getRoleNamesUserId(Long userId);
 }

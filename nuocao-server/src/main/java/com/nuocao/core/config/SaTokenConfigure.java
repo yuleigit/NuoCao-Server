@@ -11,7 +11,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.Header;
-import com.nuocao.common.annotation.PublicMapping;
+import com.nuocao.common.annotation.PermitAll;
 import com.nuocao.core.config.handler.GlobalExceptionUtil;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.Bean;
@@ -40,7 +40,7 @@ import java.util.Set;
  * <p>关于「无需登录的接口」共有两个来源：
  * <ol>
  *     <li>{@link #NO_LOGIN_PATH_ARR} —— 静态路径白名单（登录接口、静态资源等）；</li>
- *     <li>{@link PublicMapping} 注解 —— 标在 Controller 类或方法上，从 Solon 路由表里反查出来。</li>
+ *     <li>{@link PermitAll} 注解 —— 标在 Controller 类或方法上，从 Solon 路由表里反查出来。</li>
  * </ol>
  * 两者在 {@link #initAnonUrls()} 里合并为一份「匿名放行 URI 列表」（{@link #anonUrls}），
  * 只在<b>启动期</b>计算一次；请求链路上只做一次 {@code notMatch} 判断，不再重复扫描。
@@ -79,7 +79,7 @@ public class SaTokenConfigure {
     };
 
     /**
-     * 匿名放行的最终 URI 列表 = 静态白名单 + {@link PublicMapping} 扫描结果。
+     * 匿名放行的最终 URI 列表 = 静态白名单 + {@link PermitAll} 扫描结果。
      *
      * <p>由 {@link #initAnonUrls()} 在启动期一次性算好：{@code @Init} 注册为 index=1 的生命周期节点，
      * HTTP 端口监听是 index=99，升序执行 ⇒ 首个请求进来时本字段必然已就绪。
@@ -158,7 +158,7 @@ public class SaTokenConfigure {
     }
 
     /**
-     * 启动期收集「匿名放行 URI」：静态白名单 + 路由表上标了 {@link PublicMapping} 的接口。
+     * 启动期收集「匿名放行 URI」：静态白名单 + 路由表上标了 {@link PermitAll} 的接口。
      *
      * <p><b>必须是同步 {@code @Init}，禁止改成 {@code @Init(async = true)}。</b>
      * Solon 把 {@code @Init} 注册为 index=1 的生命周期节点（{@code @Init#index()} 默认 0，
@@ -179,14 +179,14 @@ public class SaTokenConfigure {
         } catch (Exception e) {
             // 旁路能力不影响启动主链路：扫不到就退回静态白名单
             // （失败方向是「多要一次登录」，不会误放行，可接受）
-            log.error("[SaToken] 扫描 {} 失败，本次仅使用静态白名单", PublicMapping.class.getSimpleName(), e);
+            log.error("[SaToken] 扫描 {} 失败，本次仅使用静态白名单", PermitAll.class.getSimpleName(), e);
         }
         this.anonUrls = Collections.unmodifiableList(new ArrayList<>(urls));
         log.info("[SaToken] 匿名放行 URI（{} 个）: {}", anonUrls.size(), anonUrls);
     }
 
     /**
-     * 扫描路由表，收集类或方法上标注了 {@link PublicMapping} 的最终 URI。
+     * 扫描路由表，收集类或方法上标注了 {@link PermitAll} 的最终 URI。
      *
      * <p>数据来源是 Solon 的<b>路由表</b>（{@code Solon.app().router().findAll()}）而不是 Controller 的类注解：
      * 路由表里的 {@code path()} 已经是「类上的 {@code @Mapping} 前缀 + 方法上的 {@code @Mapping}」拼好的最终 URI，
@@ -219,15 +219,15 @@ public class SaTokenConfigure {
     }
 
     /**
-     * 判断该 Action 是否允许匿名访问：方法上或所属 Controller 类上有 {@link PublicMapping} 即算公开。
+     * 判断该 Action 是否允许匿名访问：方法上或所属 Controller 类上有 {@link PermitAll} 即算公开。
      */
     private boolean isPublicAction(Action action) {
         // 1. 方法级注解
-        if (action.method().isAnnotationPresent(PublicMapping.class)) {
+        if (action.method().isAnnotationPresent(PermitAll.class)) {
             return true;
         }
         // 2. 类级注解
-        return action.controller().clz().isAnnotationPresent(PublicMapping.class);
+        return action.controller().clz().isAnnotationPresent(PermitAll.class);
     }
 
 }

@@ -2,9 +2,8 @@ package com.nuocao.dev.modular.config.controller;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.annotation.SaIgnore;
 import com.nuocao.common.annotation.CommonLog;
-import com.nuocao.common.annotation.PublicMapping;
+import com.nuocao.common.annotation.PermitAll;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.pojo.CommonValidList;
@@ -59,7 +58,7 @@ public class DevConfigController {
     @ApiOperation("获取系统基础配置")
     @Get
     @Mapping("/dev/config/sysConfigList")
-    @PublicMapping
+    @PermitAll
     @TenantIgnore
     public CommonResult<List<DevConfigKeyValueResult>> sysConfigList() {
         return CommonResult.data(devConfigService.sysConfigList());

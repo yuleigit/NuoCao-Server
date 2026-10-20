@@ -179,11 +179,11 @@ public class GenCodeServiceImpl implements GenCodeService {
         // 生成前端代码到临时目录
         previewResult.getWebResultList().forEach(genBasicCodeResult ->
                 FileUtil.writeUtf8String(genBasicCodeResult.getCodeFileContent(), FileUtil.file(tempFolder + File.separator
-                        + "frontend" + File.separator + genBasicCodeResult.getCodeFileWithPathName())));
+                        + GenGroupEnum.WEB.getValue()+ File.separator + genBasicCodeResult.getCodeFileWithPathName())));
         // 生成后端代码到临时目录
         previewResult.getJavaResultList().forEach(genBasicCodeResult ->
                 FileUtil.writeUtf8String(genBasicCodeResult.getCodeFileContent(), FileUtil.file(tempFolder + File.separator
-                        + "backend" + File.separator + genBasicCodeResult.getCodeFileWithPathName())));
+                        + GenGroupEnum.JAVA.getValue() + File.separator + genBasicCodeResult.getCodeFileWithPathName())));
 
         return tempFolder;
     }

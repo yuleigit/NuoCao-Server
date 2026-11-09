@@ -11,12 +11,10 @@ import com.nuocao.gen.modular.table.core.pojo.DbTableInfo;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Init;
-import org.noear.solon.annotation.Inject;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -118,7 +116,7 @@ public class DbTableHelper {
                 rs = metaData.getColumns(null, schema, tableName.toLowerCase(), "%");
             }
             while (rs.next()) {
-                String ColumnName = rs.getString("COLUMN_NAME").toUpperCase();
+                String ColumnName = rs.getString("COLUMN_NAME").toLowerCase();
                 int columnSize = rs.getInt("COLUMN_SIZE");
                 int nullable = rs.getInt("NULLABLE");
                 DbTableColumnInfo columnInfo = new DbTableColumnInfo();
@@ -133,9 +131,9 @@ public class DbTableHelper {
                 }
                 String typeName = rs.getString("TYPE_NAME").toUpperCase();
                 if (ObjectUtil.isEmpty(typeName)) {
-                    columnInfo.setTypeName("NONE");
+                    columnInfo.setColumnType("NONE");
                 } else {
-                    columnInfo.setTypeName(typeName);
+                    columnInfo.setColumnType(typeName);
                 }
 
                 columnInfo.setSizeMax(columnSize);

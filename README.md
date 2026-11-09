@@ -48,7 +48,7 @@ tenant:
 
 ### 4. 技术栈
 
-- 后端：Java 17、[Solon](https://solon.noear.org/) 4.1.1、[Sa-Token](https://sa-token.cc/) 1.46.0、[MyBatis-Flex](https://mybatis-flex.com/) 1.11.8、MySQL（可扩展其他数据库）
+- 后端：Java 17、[Solon](https://solon.noear.org/) 4.1.1、[Sa-Token](https://sa-token.cc/) 1.46.0、[MyBatis-Flex](https://mybatis-flex.com/) 1.11.8、MySQL 5.7（可扩展其他数据库）
 - 前端：Vue 3 + Element Plus（[element-plus-admin-mini](https://github.com/admin-mini/element-plus-admin-mini/tree/nuocao)）
 
 ### 5. 内置站内信
@@ -73,7 +73,7 @@ tenant:
 | --- | --- | --- |
 | JDK | **17 及以上**（推荐 17 LTS） | 开发环境使用 JDK 17；源码编译目标为 14，可运行于 JDK 14+ |
 | Maven | 3.6.9+ | 依赖管理与构建 |
-| MySQL | **8.x**（推荐 8.0.30+） | 项目使用 `mysql-connector-j 8.3.0`，字符集 `utf8mb4` |
+| MySQL | **5.7**（推荐 5.7.30+） | 项目使用 `mysql-connector-j 8.3.0`（向下兼容 5.7），字符集 `utf8mb4` |
 | Redis | 5.0+（推荐 6.x / 7.x） | 缓存、Sa-Token 会话存储（Redisson / Redis 序列化） |
 | 操作系统 | Windows / Linux / macOS | 均可运行，生产推荐 Linux |
 | IDE | IntelliJ IDEA | 已提供 `.idea` 工程配置 |
@@ -120,7 +120,7 @@ nuocao
 
 ### 1. 准备环境
 
-安装 JDK 17、Maven、MySQL 8.x、Redis，并启动 MySQL 与 Redis。
+安装 JDK 17、Maven、MySQL 5.7、Redis，并启动 MySQL 与 Redis。
 
 ### 2. 初始化数据库
 

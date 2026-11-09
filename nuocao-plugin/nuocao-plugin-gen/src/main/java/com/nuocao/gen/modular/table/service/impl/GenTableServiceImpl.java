@@ -2,6 +2,7 @@ package com.nuocao.gen.modular.table.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.UpdateChain;
@@ -208,7 +209,7 @@ public class GenTableServiceImpl implements GenTableService {
         for (GenColumnAddParam addParam:
                 addParams) {
             GenTableColumn tableColumn = BeanUtil.toBean(addParam, GenTableColumn.class);
-            columnMapper.insert(tableColumn);
+            columnMapper.insertSelective(tableColumn);
         }
         //删除不存在的数据
         List<Long> deleteColumnIds = oldColumneList.stream().filter(o->!newColumnNameList.contains(o.getColumnName().toLowerCase())).map(GenTableColumn::getId).collect(Collectors.toList());
@@ -242,7 +243,9 @@ public class GenTableServiceImpl implements GenTableService {
         addParam.setColumnType(item.getColumnType());
         addParam.setColumnRemark(item.getColumnRemark());
         addParam.setJavaType(GenDbTypeUtils.getJavaTypeBySqlType(item.getColumnType()));
+        addParam.setJavaName(StringUtils.toCamelCase(item.getColumnName()));
         addParam.setHtmlType(GenHtmlTypeEnum.INPUT.getValue().toLowerCase());
+        addParam.setDictType("");
 
         // 除主键、删除标志、租户ID、创建人、创建时间、修改人和修改时间外，所有默认在列表显示、在增改显示、非列省略、非必填，非查询
         if (table.getPkColumnName().equalsIgnoreCase(item.getColumnName()) ||

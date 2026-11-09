@@ -14,6 +14,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class GenTableAddEditCommonParam {
 
+    /** 数据源名称 */
+    @ApiModelProperty(value = "数据源名称", required = true, position = 1)
+    @NotBlank()
+    private String dataSourceName;
     /** 主表名称 */
     @ApiModelProperty(value = "主表名称", required = true, position = 1)
     @NotBlank(message = "gen.table.edit.tableNameNotBlank")
@@ -51,8 +55,8 @@ public class GenTableAddEditCommonParam {
 
     /** 上级目录 */
     @ApiModelProperty(value = "上级目录", required = true, position = 9)
-    @NotNull(message = "menuPid不能为空")
-    private String menuPid;
+    @NotNull(message = "menuParentId不能为空")
+    private String menuParentId;
 
     /** 移动端所属模块 */
     @ApiModelProperty(value = "移动端所属模块", required = true, position = 10)
@@ -66,7 +70,7 @@ public class GenTableAddEditCommonParam {
     /** 业务名 */
     @ApiModelProperty(value = "业务名", required = true, position = 12)
     @NotNull(message = "busName不能为空")
-    private String busName;
+    private String businessName;
 
     /** 类名 */
     @ApiModelProperty(value = "类名", required = true, position = 13)
@@ -81,7 +85,7 @@ public class GenTableAddEditCommonParam {
     /** 使用栅格 */
     @ApiModelProperty(value = "使用栅格", required = true, position = 15)
     @NotNull(message = "gridWhether不能为空")
-    private String gridWhether;
+    private String isGrid;
 
     /** 排序 */
     @ApiModelProperty(value = "排序", required = true, position = 16)

@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum GenGroupEnum {
 
-    JAVA("java","com/nuocao/${moduleName}/${businessName}/modular/${targetPath}"),
+    JAVA("java","com/nuocao/${moduleName}/${businessName}/modular/${targetPath}/"),
     WEB("web","${targetPath}/${moduleName}/${businessName}/"),
     SQL("sql","sql/");
 

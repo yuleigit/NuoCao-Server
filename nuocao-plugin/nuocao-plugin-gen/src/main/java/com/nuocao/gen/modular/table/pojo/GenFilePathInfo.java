@@ -57,4 +57,9 @@ public class GenFilePathInfo {
     {
         return create(GenGroupEnum.WEB,templateFileName,targetPath,targetFileName);
     }
+
+    public static GenFilePathInfo createSql(String templateFileName,String targetPath, String targetFileName)
+    {
+        return create(GenGroupEnum.SQL,templateFileName,targetPath,targetFileName);
+    }
 }

@@ -47,9 +47,6 @@ public class GenTable extends CommonEntity {
     @ApiModelProperty(value = "生成方式",notes = "zip和local", position = 7)
     private String generateType;
 
-    /** 所属模块 */
-    @ApiModelProperty(value = "所属模块ID", position = 8)
-    private Long moduleId;
 
     /** 上级目录 */
     @ApiModelProperty(value = "上级目录ID", position = 9)

@@ -173,7 +173,7 @@ public class DevLogServiceImpl implements DevLogService {
             queryWrapper.orderBy(DevLog::getId, false);
         }
         // page查询中排除较大的字段（提升查询速度）
-        queryWrapper.select(DevLog::getId, DevLog::getCategory,DevLog::getModular, DevLog::getTitle, DevLog::getExeStatus, DevLog::getOperatorIp,
+        queryWrapper.select(DevLog::getId, DevLog::getCategory,DevLog::getModular, DevLog::getTitle,DevLog::getOperationType, DevLog::getExeStatus, DevLog::getOperatorIp,
                 DevLog::getOperatorAddress, DevLog::getOperatorType, DevLog::getOperatorBrowser,
                 DevLog::getFunName, DevLog::getOperatorOs, DevLog::getClassName, DevLog::getReqMethod,
                 DevLog::getReqUrl, DevLog::getBeginTime, DevLog::getOperatorUserName, DevLog::getCreateTime, DevLog::getCreateTime,

@@ -17,7 +17,7 @@ public class DbTableColumnInfo {
 
     /** 字段类型 */
     @ApiModelProperty(value = "字段类型", position = 2)
-    private String typeName;
+    private String columnType;
 
     /** 字段注释 */
     @ApiModelProperty(value = "字段注释", position = 3)

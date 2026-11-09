@@ -14,6 +14,7 @@ import com.nuocao.common.language.LanguageUtils;
 import com.nuocao.common.utils.http.ResponseUtils;
 import com.nuocao.common.utils.PermissionCodeBuildUtils;
 import com.nuocao.common.utils.StringUtils;
+import com.nuocao.common.utils.uuid.IdUtils;
 import com.nuocao.gen.modular.code.enums.GenGroupEnum;
 import com.nuocao.gen.modular.code.service.GenCodeService;
 import com.nuocao.gen.modular.table.entity.GenTable;
@@ -81,9 +82,12 @@ public class GenCodeServiceImpl implements GenCodeService {
             GenFilePathInfo.createJava("serviceImpl.java.btl","service/impl",getJavaFileName("ServiceImpl")),
 
             //前段模板
-            GenFilePathInfo.createWeb("api.js.btl","api",getJsFileName("Api")),
-            GenFilePathInfo.createWeb("index.js.btl","views",getJsFileName("index")),
-            GenFilePathInfo.createWeb("form.js.btl","views",getVueFileName("form"))
+            GenFilePathInfo.createWeb("api.js.btl","api","${businessName}-api.js"),
+            GenFilePathInfo.createWeb("index.vue.btl","views","index.vue"),
+            GenFilePathInfo.createWeb("form.vue.btl","views","modules/form.vue"),
+
+            //菜单SQL模板
+            GenFilePathInfo.createSql("menu.sql.btl","","menu.sql")
 
 
     );
@@ -274,25 +278,25 @@ public class GenCodeServiceImpl implements GenCodeService {
         // 使用栅格
         jsonParams.set("gridWhether", table.getIsGrid());
         // 父菜单ID
-        jsonParams.set("parentId", table.getMenuParentId());
+        jsonParams.set("parentId", ObjectUtil.defaultIfNull(table.getMenuParentId(), 0L));
         // 菜单ID
-        jsonParams.set("menuId", IdUtil.getSnowflake().nextIdStr());
+        jsonParams.set("menuId", IdUtils.snowflakeId());
         // 菜单编码
         jsonParams.set("menuCode", RandomUtil.randomString(10));
         // 菜单路径
         jsonParams.set("menuPath", StrUtil.SLASH + table.getModuleName() + StrUtil.SLASH + table.getBusinessName());
         // 菜单组件
-        jsonParams.set("menuComponent", table.getModuleName() + StrUtil.SLASH + table.getBusinessName() + StrUtil.SLASH + "index");
-        // 模块ID
-        jsonParams.set("moduleId", table.getModuleId());
+        jsonParams.set("menuComponent", "view." + table.getModuleName() + StrUtil.UNDERLINE + table.getBusinessName() + "_index");
+        // 菜单排序
+        jsonParams.set("sortCode", ObjectUtil.defaultIfNull(table.getSortCode(), 0));
         // 查询权限按钮ID
-        jsonParams.set("queryButtonId", IdUtil.getSnowflake().nextIdStr());
+        jsonParams.set("queryButtonId", IdUtils.snowflakeId());
         // 添加按钮ID
-        jsonParams.set("addButtonId", IdUtil.getSnowflake().nextIdStr());
+        jsonParams.set("addButtonId", IdUtils.snowflakeId());
         // 编辑按钮ID
-        jsonParams.set("editButtonId", IdUtil.getSnowflake().nextIdStr());
+        jsonParams.set("editButtonId", IdUtils.snowflakeId());
         // 删除按钮ID
-        jsonParams.set("deleteButtonId", IdUtil.getSnowflake().nextIdStr());
+        jsonParams.set("deleteButtonId", IdUtils.snowflakeId());
 
         // 作者
         jsonParams.set("authorName", table.getAuthorName());
@@ -408,13 +412,5 @@ public class GenCodeServiceImpl implements GenCodeService {
     }
     private static String getXmlFileName(String file){
         return "${className}"+file+".xml";
-    }
-
-    private static String getJsFileName(String file){
-        return "${className}"+file+".js";
-    }
-
-    private static String getVueFileName(String file){
-        return "${className}"+file+".vue";
     }
 }

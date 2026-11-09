@@ -12,6 +12,11 @@ import lombok.Setter;
 @Setter
 public class GenDbTableResult {
 
+    /**
+     * 数据库名
+     */
+    @ApiModelProperty(value = "数据库名称", position = 1)
+    private String dataSource;
     /** 表名称 */
     @ApiModelProperty(value = "表名称", position = 1)
     private String tableName;

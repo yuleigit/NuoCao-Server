@@ -18,6 +18,16 @@
             <groupId>com.nuocao</groupId>
             <artifactId>nuocao-plugin-gen-api</artifactId>
         </dependency>
+        <!-- 每个插件都要引入自己的对外接口 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-dev-api</artifactId>
+        </dependency>
+        <!-- 账号鉴权模块 -->
+        <dependency>
+            <groupId>com.nuocao</groupId>
+            <artifactId>nuocao-plugin-auth-api</artifactId>
+        </dependency>
         <!-- 系统接口 -->
         <dependency>
             <groupId>com.nuocao</groupId>

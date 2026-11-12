@@ -1,0 +1,61 @@
+package ${packageName}.${moduleName}.modular.${businessName}.entity;
+
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
+import com.nuocao.common.pojo.CommonEntity;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+<%
+var needBigDecimal = false;
+var needDate = false;
+var needLocalDateTime = false;
+var hasTenantColumn = false;
+for(var i = 0; i < columnList.~size; i++) {
+    if(!columnList[i].needAutoInsert && !columnList[i].needAutoUpdate && !columnList[i].needLogicDelete) {
+        if(columnList[i].javaType == 'BigDecimal') { needBigDecimal = true; }
+        if(columnList[i].javaType == 'Date') { needDate = true; }
+        if(columnList[i].javaType == 'LocalDateTime') { needLocalDateTime = true; }
+        if(columnList[i].columnNameCamelCase == 'tenantId') { hasTenantColumn = true; }
+    }
+}
+if(hasTenantColumn) {
+%>
+import com.mybatisflex.annotation.Column;
+<% } %>
+<% if(needBigDecimal) { %>
+import java.math.BigDecimal;
+<% } %>
+<% if(needDate) { %>
+import java.util.Date;
+<% } %>
+<% if(needLocalDateTime) { %>
+import java.time.LocalDateTime;
+<% } %>
+
+/**
+ * ${functionName}实体
+ *
+ * @author ${authorName}
+ * @date ${genTime}
+ **/
+@Getter
+@Setter
+@Table(value = "${tableName}")
+public class ${className} extends CommonEntity {
+
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(!columnList[i].needAutoInsert && !columnList[i].needAutoUpdate && !columnList[i].needLogicDelete) { %>
+    /** ${columnList[i].columnRemark} */
+    @ApiModelProperty(value = "${columnList[i].columnRemark}", position = ${i + 1})
+<% if(columnList[i].needTableId) { %>
+    @Id
+<% } %>
+<% if(columnList[i].columnNameCamelCase == 'tenantId') { %>
+    @Column(tenantId = true)
+<% } %>
+    private ${columnList[i].javaType} ${columnList[i].columnNameCamelCase};
+
+<% } %>
+<% } %>
+}

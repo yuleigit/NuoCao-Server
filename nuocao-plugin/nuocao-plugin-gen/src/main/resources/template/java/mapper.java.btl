@@ -1,0 +1,14 @@
+package ${packageName}.${moduleName}.modular.${businessName}.mapper;
+
+import com.nuocao.common.mapper.BaseMapperX;
+import ${packageName}.${moduleName}.modular.${businessName}.entity.${className};
+
+/**
+ * ${functionName}Mapper接口
+ *
+ * @author ${authorName}
+ * @date ${genTime}
+ **/
+public interface ${className}Mapper extends BaseMapperX<${className}> {
+
+}

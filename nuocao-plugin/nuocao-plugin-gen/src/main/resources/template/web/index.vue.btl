@@ -1,0 +1,141 @@
+<%
+var dictCodes = '';
+for(var i = 0; i < columnList.~size; i++) {
+    var dictCode = columnList[i].dictTypeCode;
+    if(dictCode != null && dictCode != '') {
+        dictCodes = dictCodes + "'" + dictCode + "',";
+    }
+}
+var hasDict = dictCodes != '';
+%>
+<template>
+  <div class="admin-view">
+    <admin-table :api="api.get${className}Page" @init="onTableInit">
+      <template #search>
+        <el-form :inline="true" :model="$table.query" @submit.prevent="$table.search">
+          <admin-grid :cols="4" :x-gap="20">
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].needQuery && !columnList[i].needTableId) { %>
+<% if(columnList[i].dictTypeCode != null && columnList[i].dictTypeCode != '') { %>
+            <el-form-item label="${columnList[i].columnRemark}">
+              <select-dict v-model="$table.query.${columnList[i].columnNameCamelCase}" :dict="$dict['${columnList[i].dictTypeCode}']" show-all />
+            </el-form-item>
+<% } else if(columnList[i].javaType == 'LocalDateTime' || columnList[i].javaType == 'Date') { %>
+            <el-form-item label="${columnList[i].columnRemark}">
+              <date-picker-range
+                :begin="$table.query.${columnList[i].columnNameCamelCase}Start"
+                :end="$table.query.${columnList[i].columnNameCamelCase}End"
+                @update:begin="(val) => ($table.query.${columnList[i].columnNameCamelCase}Start = val)"
+                @update:end="(val) => ($table.query.${columnList[i].columnNameCamelCase}End = val)"
+              />
+            </el-form-item>
+<% } else if(columnList[i].javaType == 'Integer' || columnList[i].javaType == 'Long' || columnList[i].javaType == 'BigDecimal' || columnList[i].javaType == 'Double' || columnList[i].javaType == 'Float') { %>
+            <el-form-item label="${columnList[i].columnRemark}">
+              <el-input-number v-model="$table.query.${columnList[i].columnNameCamelCase}" style="width: 100%" controls-position="right" />
+            </el-form-item>
+<% } else { %>
+            <el-form-item label="${columnList[i].columnRemark}">
+              <el-input v-model="$table.query.${columnList[i].columnNameCamelCase}" clearable />
+            </el-form-item>
+<% } %>
+<% } %>
+<% } %>
+            <template #last>
+              <el-button native-type="submit" type="primary" icon="Search" :loading="$table.loading">
+                搜索
+              </el-button>
+            </template>
+          </admin-grid>
+        </el-form>
+      </template>
+
+      <template #btn>
+        <el-button v-if="$p(['${permissionCodePrefix}:add'])" type="primary" icon="Plus" @click="handleAdd">
+          新增${functionName}
+        </el-button>
+      </template>
+
+      <template #table>
+        <el-table :data="$table.data" v-loading="$table.loading">
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].isList) { %>
+<% if(columnList[i].dictTypeCode != null && columnList[i].dictTypeCode != '') { %>
+          <el-table-column prop="${columnList[i].columnNameCamelCase}" label="${columnList[i].columnRemark}" min-width="120"<% if(columnList[i].isListIgnore) { %> show-overflow-tooltip<% } %>>
+            <template #default="{ row }">
+              <dict-label tag type="${columnList[i].dictTypeCode}" :value="row.${columnList[i].columnNameCamelCase}" />
+            </template>
+          </el-table-column>
+<% } else { %>
+          <el-table-column prop="${columnList[i].columnNameCamelCase}" label="${columnList[i].columnRemark}" min-width="120"<% if(columnList[i].isListIgnore) { %> show-overflow-tooltip<% } %> />
+<% } %>
+<% } %>
+<% } %>
+          <el-table-column label="操作" width="160" fixed="right">
+            <template #default="{ row }">
+              <el-button v-if="$p(['${permissionCodePrefix}:edit'])" link type="primary" @click="handleEdit(row)">编辑</el-button>
+              <el-button v-if="$p(['${permissionCodePrefix}:delete'])" link type="danger" @click="handleDelete(row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </admin-table>
+  </div>
+</template>
+
+<script setup>
+import * as api from '@/api/${moduleName}/${businessName}/${businessName}-api'
+import useAdminDialog from '@/plugins/use-admin-dialog'
+import message from '@/utils/message'
+import { syncConfirm } from '@/utils/utils'
+<% if(hasDict) { %>
+import { getDict } from '@/utils/dict'
+<% } %>
+
+<% if(hasDict) { %>
+getDict([${dictCodes}])
+<% } %>
+
+const adminDialog = useAdminDialog()
+
+let $table
+
+function onTableInit(table) {
+  $table = table
+}
+
+function handleAdd() {
+  adminDialog({
+    component: import('./modules/form.vue'),
+    props: {
+      onSuccess: () => $table.getTable()
+    },
+    dialogProps: {
+      title: '新增${functionName}',
+      width: '720px'
+    }
+  })
+}
+
+function handleEdit(row) {
+  adminDialog({
+    component: import('./modules/form.vue'),
+    props: {
+      row,
+      onSuccess: () => $table.getTable()
+    },
+    dialogProps: {
+      title: '编辑${functionName}',
+      width: '720px'
+    }
+  })
+}
+
+function handleDelete(row) {
+  syncConfirm('是否确认删除${functionName}？', () => api.delete${className}([{ ${dbPkCamelCase}: row.${dbPkCamelCase} }]))
+    .then(() => {
+      message.success('删除成功')
+      $table.getTable()
+    })
+    .catch(() => {})
+}
+</script>

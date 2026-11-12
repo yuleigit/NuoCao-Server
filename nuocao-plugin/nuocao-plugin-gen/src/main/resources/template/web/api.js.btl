@@ -1,0 +1,18 @@
+import baseRequest from '../../base-request.js'
+
+const request = (url, data, method) => baseRequest('/${moduleName}/${businessName}/' + url, data, method)
+
+// ${functionName}分页
+export const get${className}Page = data => request('page', data)
+
+// 添加${functionName}
+export const add${className} = data => request('add', data, 'post')
+
+// 编辑${functionName}
+export const edit${className} = data => request('edit', data, 'post')
+
+// 删除${functionName}
+export const delete${className} = data => request('delete', data, 'post')
+
+// ${functionName}详情
+export const get${className}Detail = id => request('detail', { ${dbPkCamelCase}: id })

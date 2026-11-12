@@ -1,0 +1,37 @@
+package ${packageName}.${moduleName}.modular.${businessName}.convert;
+
+import com.nuocao.common.page.PageResult;
+import ${packageName}.${moduleName}.modular.${businessName}.entity.${className};
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}AddParam;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}EditParam;
+import ${packageName}.${moduleName}.modular.${businessName}.result.${className}PageResult;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+/**
+ * ${functionName}转换器
+ *
+ * @author ${authorName}
+ * @date ${genTime}
+ **/
+@Mapper
+public interface ${className}Convert {
+
+    ${className}Convert INSTANCE = Mappers.getMapper(${className}Convert.class);
+
+    /**
+     * 添加参数转实体
+     */
+    ${className} convert(${className}AddParam bean);
+
+    /**
+     * 编辑参数转实体
+     */
+    ${className} convert(${className}EditParam bean);
+
+    /**
+     * 分页实体转分页结果
+     */
+    PageResult<${className}PageResult> convertPage(PageResult<${className}> page);
+
+}

@@ -1,0 +1,126 @@
+package ${packageName}.${moduleName}.modular.${businessName}.service.impl;
+
+import com.nuocao.common.exception.CommonException;
+import com.nuocao.common.mapper.LambdaQueryWrapperX;
+import com.nuocao.common.page.PageResult;
+import com.nuocao.common.utils.LocalDateTimeUtils;
+import com.nuocao.common.utils.StringUtils;
+import com.nuocao.common.utils.ValidationUtils;
+import com.nuocao.common.utils.collection.CollectionUtils;
+import ${packageName}.${moduleName}.modular.${businessName}.convert.${className}Convert;
+import ${packageName}.${moduleName}.modular.${businessName}.entity.${className};
+import ${packageName}.${moduleName}.modular.${businessName}.mapper.${className}Mapper;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}AddParam;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}EditParam;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}IdParam;
+import ${packageName}.${moduleName}.modular.${businessName}.param.${className}PageParam;
+import ${packageName}.${moduleName}.modular.${businessName}.result.${className}PageResult;
+import ${packageName}.${moduleName}.modular.${businessName}.service.${className}Service;
+import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.data.annotation.Transaction;
+
+import java.util.List;
+
+/**
+ * ${functionName} Service实现
+ *
+ * @author ${authorName}
+ * @date ${genTime}
+ **/
+@Component
+public class ${className}ServiceImpl implements ${className}Service {
+
+    @Inject
+    private ${className}Mapper ${classNameFirstLower}Mapper;
+
+    @Override
+    public PageResult<${className}PageResult> page(${className}PageParam pageParam) {
+        LambdaQueryWrapperX<${className}> queryWrapper = buildQueryWrapper(pageParam);
+        return ${className}Convert.INSTANCE.convertPage(${classNameFirstLower}Mapper.selectPage(pageParam, queryWrapper));
+    }
+
+    @Override
+    @Transaction
+    public void add(${className}AddParam addParam) {
+        ValidationUtils.validateEntity(addParam);
+        ${className} ${classNameFirstLower} = ${className}Convert.INSTANCE.convert(addParam);
+        validInfo(${classNameFirstLower});
+        ${classNameFirstLower}Mapper.insert(${classNameFirstLower});
+    }
+
+    @Override
+    @Transaction
+    public void edit(${className}EditParam editParam) {
+        ValidationUtils.validateEntity(editParam);
+        ${className} ${classNameFirstLower} = ${className}Convert.INSTANCE.convert(editParam);
+        validInfo(${classNameFirstLower});
+        ${classNameFirstLower}Mapper.updateById(${classNameFirstLower});
+    }
+
+    @Override
+    @Transaction
+    public void delete(List<${className}IdParam> idParamList) {
+        List<${dbPkJavaType}> ids = CollectionUtils.toList(idParamList, ${className}IdParam::get${dbPkFirstUpper});
+        if (CollectionUtils.isNotEmpty(ids)) {
+            ${classNameFirstLower}Mapper.deleteBatchByIds(ids);
+        }
+    }
+
+    @Override
+    public ${className} detail(${className}IdParam idParam) {
+        return queryEntity(idParam.get${dbPkFirstUpper}());
+    }
+
+    @Override
+    public ${className} queryEntity(${dbPkJavaType} id) {
+        ${className} ${classNameFirstLower} = ${classNameFirstLower}Mapper.selectOneById(id);
+        if (${classNameFirstLower} == null) {
+            throw new CommonException("${functionName}不存在，id值为：{}", id);
+        }
+        return ${classNameFirstLower};
+    }
+
+    /**
+     * 校验唯一字段
+     */
+    private void validInfo(${className} ${classNameFirstLower}) {
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].isOnly && !columnList[i].needTableId && !columnList[i].needAutoInsert && !columnList[i].needAutoUpdate && !columnList[i].needLogicDelete) { %>
+        if (${classNameFirstLower}.get${columnList[i].columnNameCamelCaseFirstUpper}() != null) {
+            ${className} temp = ${classNameFirstLower}Mapper.selectOne(${className}::get${columnList[i].columnNameCamelCaseFirstUpper}, ${classNameFirstLower}.get${columnList[i].columnNameCamelCaseFirstUpper}());
+            if (temp != null && !temp.get${dbPkFirstUpper}().equals(${classNameFirstLower}.get${dbPkFirstUpper}())) {
+                throw new CommonException("${columnList[i].columnRemark}已存在：{}", ${classNameFirstLower}.get${columnList[i].columnNameCamelCaseFirstUpper}());
+            }
+        }
+<% } %>
+<% } %>
+    }
+
+    /**
+     * 构建查询条件
+     */
+    private LambdaQueryWrapperX<${className}> buildQueryWrapper(${className}PageParam pageParam) {
+        LambdaQueryWrapperX<${className}> queryWrapper = new LambdaQueryWrapperX<>();
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].needQuery && !columnList[i].needTableId) { %>
+<% if(columnList[i].javaType == 'LocalDateTime' || columnList[i].javaType == 'Date') { %>
+        if (StringUtils.isNotBlank(pageParam.get${columnList[i].columnNameCamelCaseFirstUpper}Start())) {
+            queryWrapper.ge(${className}::get${columnList[i].columnNameCamelCaseFirstUpper}, LocalDateTimeUtils.parseDefault(pageParam.get${columnList[i].columnNameCamelCaseFirstUpper}Start()));
+        }
+        if (StringUtils.isNotBlank(pageParam.get${columnList[i].columnNameCamelCaseFirstUpper}End())) {
+            queryWrapper.le(${className}::get${columnList[i].columnNameCamelCaseFirstUpper}, LocalDateTimeUtils.parseDefault(pageParam.get${columnList[i].columnNameCamelCaseFirstUpper}End()));
+        }
+<% } else if(columnList[i].javaType == 'String') { %>
+        queryWrapper.likeIfPresent(${className}::get${columnList[i].columnNameCamelCaseFirstUpper}, pageParam.get${columnList[i].columnNameCamelCaseFirstUpper}());
+<% } else { %>
+        queryWrapper.eqIfPresent(${className}::get${columnList[i].columnNameCamelCaseFirstUpper}, pageParam.get${columnList[i].columnNameCamelCaseFirstUpper}());
+<% } %>
+<% } %>
+<% } %>
+        if (!pageParam.hasSortingFields()) {
+            queryWrapper.orderBy(${className}::get${dbPkFirstUpper}, false);
+        }
+        return queryWrapper;
+    }
+}

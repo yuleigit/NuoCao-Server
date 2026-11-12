@@ -1,0 +1,41 @@
+package ${packageName}.${moduleName}.modular.${businessName}.param;
+
+import com.nuocao.common.page.SortPageParam;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
+
+/**
+ * ${functionName}分页参数
+ *
+ * @author ${authorName}
+ * @date ${genTime}
+ **/
+@Getter
+@Setter
+public class ${className}PageParam extends SortPageParam {
+
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].needQuery && !columnList[i].needTableId) { %>
+<% if(columnList[i].javaType == 'LocalDateTime' || columnList[i].javaType == 'Date') { %>
+    /** ${columnList[i].columnRemark}开始时间 */
+    @ApiModelProperty(value = "${columnList[i].columnRemark}开始时间")
+    private String ${columnList[i].columnNameCamelCase}Start;
+
+    /** ${columnList[i].columnRemark}结束时间 */
+    @ApiModelProperty(value = "${columnList[i].columnRemark}结束时间")
+    private String ${columnList[i].columnNameCamelCase}End;
+
+<% } else { %>
+    /** ${columnList[i].columnRemark} */
+    @ApiModelProperty(value = "${columnList[i].columnRemark}")
+    private ${columnList[i].javaType} ${columnList[i].columnNameCamelCase};
+
+<% } %>
+<% } %>
+<% } %>
+}

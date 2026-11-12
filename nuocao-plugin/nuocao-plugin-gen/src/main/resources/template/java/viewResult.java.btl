@@ -1,0 +1,30 @@
+package ${packageName}.${moduleName}.modular.${businessName}.result;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
+
+/**
+ * ${functionName}详情结果
+ *
+ * @author ${authorName}
+ * @date ${genTime}
+ **/
+@Getter
+@Setter
+public class ${className}ViewResult implements Serializable {
+
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].isView || columnList[i].needTableId) { %>
+    /** ${columnList[i].columnRemark} */
+    @ApiModelProperty(value = "${columnList[i].columnRemark}", position = ${i + 1})
+    private ${columnList[i].javaType} ${columnList[i].columnNameCamelCase};
+
+<% } %>
+<% } %>
+}

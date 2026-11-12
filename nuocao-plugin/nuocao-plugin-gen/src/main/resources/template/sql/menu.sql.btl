@@ -1,0 +1,44 @@
+-- ----------------------------
+-- ${functionName} 菜单 SQL
+-- 生成时间：${genTime}
+-- 说明：先执行本脚本创建主菜单及查询、添加、修改、删除按钮，执行后刷新系统菜单缓存
+-- ----------------------------
+
+-- 上级菜单信息（代码生成时选择的上级菜单）
+SET @parent_id = ${parentId};
+SET @parent_ancestors = IFNULL((SELECT ancestors FROM sys_menu WHERE id = @parent_id), '0');
+SET @parent_top_id = IFNULL((SELECT top_id FROM sys_menu WHERE id = @parent_id), 0);
+
+-- 当前菜单的祖级集合与顶级菜单ID
+SET @menu_ancestors = IF(@parent_id = 0, '0', CONCAT(@parent_ancestors, ',', @parent_id));
+SET @menu_top_id = IF(@parent_id = 0, 0, @parent_top_id);
+
+-- 主菜单
+INSERT INTO sys_menu
+(id, parent_id, ancestors, top_id, name, path, code, type, component, title, i18n_key, sort_code, icon, icon_type, href, hide_in_menu, keep_alive, active_menu, constant, multi_tab, fixed_index_in_tab, query, enable, delete_flag, create_user, create_time, update_user, update_time)
+VALUES
+(${menuId}, @parent_id, @menu_ancestors, @menu_top_id, '${moduleName}_${businessName}', '${menuPath}', '', 'menu', '${menuComponent}', '${functionName}', '', ${sortCode}, '', 0, '', 0, 0, '', 0, 0, NULL, '[]', 1, 0, NULL, NOW(), NULL, NULL);
+
+-- 查询按钮
+INSERT INTO sys_menu
+(id, parent_id, ancestors, top_id, name, path, code, type, component, title, i18n_key, sort_code, icon, icon_type, href, hide_in_menu, keep_alive, active_menu, constant, multi_tab, fixed_index_in_tab, query, enable, delete_flag, create_user, create_time, update_user, update_time)
+VALUES
+(${queryButtonId}, ${menuId}, CONCAT(@menu_ancestors, ',', ${menuId}), @menu_top_id, '', '', '${permissionCodePrefix}:query', 'button', '', '${functionName}查询', '', 1000, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, NULL, NOW(), NULL, NULL);
+
+-- 添加按钮
+INSERT INTO sys_menu
+(id, parent_id, ancestors, top_id, name, path, code, type, component, title, i18n_key, sort_code, icon, icon_type, href, hide_in_menu, keep_alive, active_menu, constant, multi_tab, fixed_index_in_tab, query, enable, delete_flag, create_user, create_time, update_user, update_time)
+VALUES
+(${addButtonId}, ${menuId}, CONCAT(@menu_ancestors, ',', ${menuId}), @menu_top_id, '', '', '${permissionCodePrefix}:add', 'button', '', '${functionName}添加', '', 1001, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, NULL, NOW(), NULL, NULL);
+
+-- 修改按钮
+INSERT INTO sys_menu
+(id, parent_id, ancestors, top_id, name, path, code, type, component, title, i18n_key, sort_code, icon, icon_type, href, hide_in_menu, keep_alive, active_menu, constant, multi_tab, fixed_index_in_tab, query, enable, delete_flag, create_user, create_time, update_user, update_time)
+VALUES
+(${editButtonId}, ${menuId}, CONCAT(@menu_ancestors, ',', ${menuId}), @menu_top_id, '', '', '${permissionCodePrefix}:edit', 'button', '', '${functionName}修改', '', 1002, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, NULL, NOW(), NULL, NULL);
+
+-- 删除按钮
+INSERT INTO sys_menu
+(id, parent_id, ancestors, top_id, name, path, code, type, component, title, i18n_key, sort_code, icon, icon_type, href, hide_in_menu, keep_alive, active_menu, constant, multi_tab, fixed_index_in_tab, query, enable, delete_flag, create_user, create_time, update_user, update_time)
+VALUES
+(${deleteButtonId}, ${menuId}, CONCAT(@menu_ancestors, ',', ${menuId}), @menu_top_id, '', '', '${permissionCodePrefix}:delete', 'button', '', '${functionName}删除', '', 1003, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, NULL, NOW(), NULL, NULL);

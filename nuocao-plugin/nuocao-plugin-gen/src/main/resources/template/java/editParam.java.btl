@@ -1,0 +1,46 @@
+package ${packageName}.${moduleName}.modular.${businessName}.param;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.noear.solon.validation.annotation.Length;
+import org.noear.solon.validation.annotation.NotBlank;
+import org.noear.solon.validation.annotation.NotNull;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
+
+/**
+ * ${functionName}编辑参数
+ *
+ * @author ${authorName}
+ * @date ${genTime}
+ **/
+@Getter
+@Setter
+public class ${className}EditParam implements Serializable {
+
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].needEdit) { %>
+    /** ${columnList[i].columnRemark} */
+    @ApiModelProperty(value = "${columnList[i].columnRemark}", position = ${i + 1})
+<% if(columnList[i].required) { %>
+<% if(columnList[i].javaType == 'String') { %>
+    @NotBlank(message = "${columnList[i].columnRemark}不能为空")
+<% } else { %>
+    @NotNull(message = "${columnList[i].columnRemark}不能为空")
+<% } %>
+<% } %>
+<% if(columnList[i].validAnnotation != null && columnList[i].validAnnotation != '') { %>
+    ${columnList[i].validAnnotation}
+<% } %>
+<% if(columnList[i].valueSizeMax != null && columnList[i].javaType == 'String') { %>
+    @Length(max = ${columnList[i].valueSizeMax}, message = "${columnList[i].columnRemark}长度不能超过${columnList[i].valueSizeMax}")
+<% } %>
+    private ${columnList[i].javaType} ${columnList[i].columnNameCamelCase};
+
+<% } %>
+<% } %>
+}

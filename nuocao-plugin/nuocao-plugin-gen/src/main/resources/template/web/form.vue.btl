@@ -1,0 +1,122 @@
+<%
+var dictCodes = '';
+for(var i = 0; i < columnList.~size; i++) {
+    var dictCode = columnList[i].dictTypeCode;
+    if(dictCode != null && dictCode != '') {
+        dictCodes = dictCodes + "'" + dictCode + "',";
+    }
+}
+var hasDict = dictCodes != '';
+%>
+<template>
+  <admin-dialog-content v-loading="loading">
+    <el-form ref="formRef" :model="postData" :rules="rules" label-position="right" label-width="110px">
+<% if(gridWhether == 1) { %>
+      <admin-space cols="2">
+<% } else { %>
+      <div>
+<% } %>
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if((columnList[i].needAdd || columnList[i].needEdit) && !columnList[i].needTableId) { %>
+        <el-form-item label="${columnList[i].columnRemark}" prop="${columnList[i].columnNameCamelCase}"<% if(columnList[i].required) { %> :rules="[$rules.required]"<% } %>>
+<% if(columnList[i].dictTypeCode != null && columnList[i].dictTypeCode != '') { %>
+          <select-dict v-model="postData.${columnList[i].columnNameCamelCase}" :dict="$dict['${columnList[i].dictTypeCode}']" placeholder="请选择${columnList[i].columnRemark}" />
+<% } else if(columnList[i].javaType == 'LocalDateTime' || columnList[i].javaType == 'Date') { %>
+          <el-date-picker v-model="postData.${columnList[i].columnNameCamelCase}" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择${columnList[i].columnRemark}" style="width: 100%" />
+<% } else if(columnList[i].javaType == 'Boolean') { %>
+          <el-switch v-model="postData.${columnList[i].columnNameCamelCase}" :active-value="true" :inactive-value="false" active-text="是" inactive-text="否" />
+<% } else if(columnList[i].javaType == 'Integer' || columnList[i].javaType == 'Long' || columnList[i].javaType == 'BigDecimal' || columnList[i].javaType == 'Double' || columnList[i].javaType == 'Float') { %>
+          <el-input-number v-model="postData.${columnList[i].columnNameCamelCase}" style="width: 100%" controls-position="right" placeholder="请输入${columnList[i].columnRemark}" />
+<% } else if(columnList[i].htmlType == 'textarea' || columnList[i].htmlType == 'editor') { %>
+          <el-input v-model="postData.${columnList[i].columnNameCamelCase}" type="textarea" :rows="3" placeholder="请输入${columnList[i].columnRemark}" />
+<% } else { %>
+          <el-input v-model="postData.${columnList[i].columnNameCamelCase}" placeholder="请输入${columnList[i].columnRemark}" />
+<% } %>
+        </el-form-item>
+<% } %>
+<% } %>
+<% if(gridWhether == 1) { %>
+      </admin-space>
+<% } else { %>
+      </div>
+<% } %>
+    </el-form>
+    <template #footer>
+      <el-button @click="emits('end')">取消</el-button>
+      <el-button type="primary" :loading="loading" @click="submitForm">确定</el-button>
+    </template>
+  </admin-dialog-content>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import message from '@/utils/message'
+<% if(hasDict) { %>
+import { getDict } from '@/utils/dict'
+<% } %>
+import * as api from '@/api/${moduleName}/${businessName}/${businessName}-api'
+
+<% if(hasDict) { %>
+getDict([${dictCodes}])
+<% } %>
+
+const props = defineProps({ row: Object })
+const emits = defineEmits(['end', 'success'])
+
+const formRef = ref()
+const loading = ref(false)
+const isEditing = computed(() => !!props.row?.${dbPkCamelCase})
+
+const postData = ref({})
+const rules = {}
+
+function loadDetail(id) {
+  loading.value = true
+  api.get${className}Detail(id)
+    .then((resp) => {
+      postData.value = resp.data || {}
+    })
+    .catch(() => {})
+    .finally(() => { loading.value = false })
+}
+
+function buildPayload() {
+  if (isEditing.value) {
+    return {
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].needEdit) { %>
+      ${columnList[i].columnNameCamelCase}: postData.value.${columnList[i].columnNameCamelCase},
+<% } %>
+<% } %>
+    }
+  }
+  return {
+<% for(var i = 0; i < columnList.~size; i++) { %>
+<% if(columnList[i].needAdd) { %>
+    ${columnList[i].columnNameCamelCase}: postData.value.${columnList[i].columnNameCamelCase},
+<% } %>
+<% } %>
+  }
+}
+
+function submitForm() {
+  formRef.value?.validate((valid) => {
+    if (!valid) {
+      message.error('请填写完整信息')
+      return
+    }
+    loading.value = true
+    const fn = isEditing.value ? api.edit${className} : api.add${className}
+    fn(buildPayload())
+      .then((resp) => {
+        message.success(resp.msg || '保存成功')
+        emits('success')
+      })
+      .finally(() => { loading.value = false })
+  })
+}
+
+onMounted(() => {
+  if (isEditing.value) loadDetail(props.row.${dbPkCamelCase})
+})
+</script>

@@ -72,6 +72,12 @@
             <artifactId>bcprov-jdk15on</artifactId>
         </dependency>
 
+        <!-- zxing 二维码（2FA 绑定二维码） -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+
 
         <!-- 账号鉴权模块 -->
         <dependency>

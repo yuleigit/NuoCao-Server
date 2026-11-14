@@ -2,6 +2,7 @@ package com.nuocao.sys.modular.account.service.impl;
 
 
 import com.nuocao.auth.api.core.utils.StpLoginUserUtils;
+import com.nuocao.auth.api.dto.SaUserLoginInfoDTO;
 import com.nuocao.common.captcha.CaptchaGroupEnum;
 import com.nuocao.common.captcha.ImageCaptchaUtils;
 import com.nuocao.common.exception.CommonExceptionI18n;
@@ -10,7 +11,11 @@ import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.pojo.KeyValue;
 import com.nuocao.common.utils.CryptUtils;
 import com.nuocao.common.utils.StringUtils;
+import com.nuocao.common.utils.http.RequestUtils;
+import com.nuocao.plugin.dev.api.DevMfaApi;
 import com.nuocao.plugin.dev.api.DevSmsApi;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaBindInitDTO;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaStatusDTO;
 import com.nuocao.plugin.dev.api.enums.DevConfigSceneEnum;
 import com.nuocao.sys.modular.account.entity.SysAccount;
 import com.nuocao.sys.modular.account.param.*;
@@ -35,6 +40,8 @@ public class SysAccountCenterServiceImpl implements SysAccountCenterService {
     private ImageCaptchaUtils imageCaptchaUtils;
     @Inject
     private DevSmsApi devSmsApi;
+    @Inject
+    private DevMfaApi devMfaApi;
 
 
     @Override
@@ -126,6 +133,61 @@ public class SysAccountCenterServiceImpl implements SysAccountCenterService {
     public SysAccountDetailResult detail() {
 
         return sysAccountService.detailByUsername(getCurrentUsername());
+    }
+
+    @Override
+    public DevMfaStatusDTO mfaStatus() {
+        SaUserLoginInfoDTO loginUser = currentLoginUser();
+        return devMfaApi.getStatus(loginUser.getTenantId(), loginUser.getId());
+    }
+
+    @Override
+    public DevMfaBindInitDTO mfaBindInit() {
+        SaUserLoginInfoDTO loginUser = currentLoginUser();
+        return devMfaApi.beginBind(loginUser.getTenantId(), loginUser.getId(), loginUser.getUsername(),
+                currentIp(), currentUserAgent());
+    }
+
+    @Override
+    public void mfaBindConfirm(SysAccountMfaBindConfirmParam param) {
+        SaUserLoginInfoDTO loginUser = currentLoginUser();
+        devMfaApi.confirmBind(loginUser.getTenantId(), loginUser.getId(), param.getBindId(), param.getCode(),
+                currentIp(), currentUserAgent());
+    }
+
+    @Override
+    public DevMfaBindInitDTO mfaBindInitByLogin(SysAccountMfaBindLoginParam param) {
+        return devMfaApi.beginBindByLogin(param.getMfaReqId(), param.getUserId(), currentIp(), currentUserAgent());
+    }
+
+    @Override
+    public void mfaBindConfirmByLogin(SysAccountMfaBindLoginConfirmParam param) {
+        devMfaApi.confirmBindByLogin(param.getMfaReqId(), param.getUserId(), param.getBindId(), param.getCode(),
+                currentIp(), currentUserAgent());
+    }
+
+    private SaUserLoginInfoDTO currentLoginUser() {
+        SaUserLoginInfoDTO loginUser = StpLoginUserUtils.getLoginUser();
+        if (loginUser == null) {
+            throw new CommonExceptionI18n("sys.user.notExists");
+        }
+        return loginUser;
+    }
+
+    private String currentIp() {
+        try {
+            return RequestUtils.isWeb() ? RequestUtils.getCurrentRequest().realIp() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String currentUserAgent() {
+        try {
+            return RequestUtils.isWeb() ? RequestUtils.getCurrentRequest().userAgent() : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

@@ -30,8 +30,6 @@ public class DevMfaChallenge implements Serializable {
 
     private String username;
 
-    private String name;
-
     private String device;
 
     private String deviceId;

@@ -11,6 +11,7 @@ import com.nuocao.auth.modular.login.param.reg.AuthRegisterParam;
 import com.nuocao.auth.modular.login.result.login.AuthLoginResult;
 import com.nuocao.auth.modular.login.param.login.AuthAccountPasswordLoginParam;
 import com.nuocao.auth.modular.login.param.login.AuthEmailValidCodeLoginParam;
+import com.nuocao.auth.modular.login.param.login.AuthMfaLoginParam;
 import com.nuocao.auth.modular.login.param.login.AuthPhoneValidCodeLoginParam;
 import com.nuocao.common.page.CommonPicValidCodeResult;
 
@@ -43,6 +44,11 @@ public interface AuthAccountUserService {
      * 手机验证码登录
      **/
     AuthLoginResult doLoginByPhone(AuthPhoneValidCodeLoginParam authPhoneValidCodeLoginParam);
+
+    /**
+     * 2FA 动态码登录验证，成功后签发 token
+     **/
+    AuthLoginResult doMfaLogin(AuthMfaLoginParam authMfaLoginParam);
 
     /**
      * 邮箱验证码登录

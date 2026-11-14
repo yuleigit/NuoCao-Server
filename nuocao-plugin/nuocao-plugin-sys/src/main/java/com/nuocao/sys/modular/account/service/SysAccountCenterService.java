@@ -1,6 +1,8 @@
 package com.nuocao.sys.modular.account.service;
 
 import com.nuocao.common.page.CommonPicValidCodeResult;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaBindInitDTO;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaStatusDTO;
 import com.nuocao.sys.modular.account.param.*;
 import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
 
@@ -67,4 +69,29 @@ public interface SysAccountCenterService {
      * @return
      */
     SysAccountDetailResult detail();
+
+    /**
+     * 当前登录用户 2FA 状态
+     **/
+    DevMfaStatusDTO mfaStatus();
+
+    /**
+     * 当前登录用户发起 2FA 绑定
+     **/
+    DevMfaBindInitDTO mfaBindInit();
+
+    /**
+     * 当前登录用户确认 2FA 绑定
+     **/
+    void mfaBindConfirm(SysAccountMfaBindConfirmParam param);
+
+    /**
+     * 登录流程中未绑定用户发起绑定（凭 mfaReqId 免登录）
+     **/
+    DevMfaBindInitDTO mfaBindInitByLogin(SysAccountMfaBindLoginParam param);
+
+    /**
+     * 登录流程中未绑定用户确认绑定（凭 mfaReqId 免登录）
+     **/
+    void mfaBindConfirmByLogin(SysAccountMfaBindLoginConfirmParam param);
 }

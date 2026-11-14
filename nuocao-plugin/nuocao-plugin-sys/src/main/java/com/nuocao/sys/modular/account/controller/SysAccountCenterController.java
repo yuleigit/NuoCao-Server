@@ -1,8 +1,12 @@
 package com.nuocao.sys.modular.account.controller;
 
+import com.nuocao.common.annotation.PermitAll;
 import com.nuocao.common.page.CommonPicValidCodeResult;
 import com.nuocao.common.pojo.CommonResult;
 import com.nuocao.common.utils.DesensitizationUtils;
+import com.nuocao.data.access.tenant.annotation.TenantIgnore;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaBindInitDTO;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaStatusDTO;
 import com.nuocao.sys.modular.account.param.*;
 import com.nuocao.sys.modular.account.result.SysAccountDetailResult;
 import com.nuocao.sys.modular.account.service.SysAccountCenterService;
@@ -75,6 +79,53 @@ public class SysAccountCenterController {
         SysAccountDetailResult account = accountCenterService.detail();
         account.setPhone(DesensitizationUtils.desensitizePhone(account.getPhone()));
         return CommonResult.data(account);
+    }
+
+    @ApiOperation("获取当前用户2FA状态")
+    @Get
+    @Mapping("/sys/accountCenter/mfa/status")
+    public CommonResult<DevMfaStatusDTO> mfaStatus() {
+        return CommonResult.data(accountCenterService.mfaStatus());
+    }
+
+    @ApiOperation("发起2FA绑定")
+    @Post
+    @Mapping("/sys/accountCenter/mfa/bindInit")
+    public CommonResult<DevMfaBindInitDTO> mfaBindInit() {
+        return CommonResult.data(accountCenterService.mfaBindInit());
+    }
+
+    @ApiOperation("确认2FA绑定")
+    @Post
+    @Mapping("/sys/accountCenter/mfa/bindConfirm")
+    public CommonResult<Void> mfaBindConfirm(@Validated SysAccountMfaBindConfirmParam param) {
+        accountCenterService.mfaBindConfirm(param);
+        return CommonResult.ok();
+    }
+
+    /**
+     * 登录流程中用户尚未绑定 2FA，凭一次性 mfaReqId 发起绑定，无需登录态
+     */
+    @ApiOperation("登录时发起2FA绑定")
+    @Post
+    @PermitAll
+    @TenantIgnore
+    @Mapping("/sys/accountCenter/mfa/bindInitByLogin")
+    public CommonResult<DevMfaBindInitDTO> mfaBindInitByLogin(@Validated SysAccountMfaBindLoginParam param) {
+        return CommonResult.data(accountCenterService.mfaBindInitByLogin(param));
+    }
+
+    /**
+     * 登录流程中确认绑定，成功后前端回到登录页重新登录
+     */
+    @ApiOperation("登录时确认2FA绑定")
+    @Post
+    @PermitAll
+    @TenantIgnore
+    @Mapping("/sys/accountCenter/mfa/bindConfirmByLogin")
+    public CommonResult<Void> mfaBindConfirmByLogin(@Validated SysAccountMfaBindLoginConfirmParam param) {
+        accountCenterService.mfaBindConfirmByLogin(param);
+        return CommonResult.ok();
     }
 
 }

@@ -284,13 +284,14 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
             if (mfaCheck.isNeedMfa() || mfaCheck.isNeedBindMfa()) {
                 AuthLoginResult pending = new AuthLoginResult(realLoginUser.getTenantId());
                 pending.setUsername(userAccount);
-                pending.setName(realLoginUser.getName());
                 pending.setNeedMfa(mfaCheck.isNeedMfa());
                 pending.setNeedBindMfa(mfaCheck.isNeedBindMfa());
                 pending.setMfaReqId(mfaCheck.getMfaReqId());
+                pending.setUserId(realLoginUser.getId());
                 pending.setMfaExpiresIn(mfaCheck.getExpiresIn());
                 pending.setBindId(mfaCheck.getBindId());
                 pending.setOtpauthUri(mfaCheck.getOtpauthUri());
+                pending.setQrCodeDataUrl(mfaCheck.getQrCodeDataUrl());
                 pending.setBindExpiresIn(mfaCheck.getBindExpiresIn());
                 return pending;
             }
@@ -351,7 +352,6 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         param.setTenantId(realLoginUser.getTenantId());
         param.setUserId(realLoginUser.getId());
         param.setUsername(userAccount);
-        param.setName(StringUtils.firstNotBlank(realLoginUser.getName(), realLoginUser.getNickname()));
         param.setDevice(device);
         param.setDeviceId(deviceId);
         param.setIp(currentIp());

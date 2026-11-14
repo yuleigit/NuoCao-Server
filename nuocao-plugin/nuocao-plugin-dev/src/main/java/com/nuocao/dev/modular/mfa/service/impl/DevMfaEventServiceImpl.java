@@ -1,7 +1,6 @@
 package com.nuocao.dev.modular.mfa.service.impl;
 
-import cn.hutool.core.util.StrUtil;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.nuocao.common.mapper.LambdaQueryWrapperX;
 import com.nuocao.common.page.PageResult;
 import com.nuocao.data.access.tenant.util.TenantUtils;
 import com.nuocao.dev.modular.mfa.entity.DevMfaEvent;
@@ -23,27 +22,14 @@ public class DevMfaEventServiceImpl implements DevMfaEventService {
 
     @Override
     public PageResult<DevMfaEventPageResult> page(DevMfaEventPageParam param) {
-        QueryWrapper query = QueryWrapper.create();
         Long tenantId = param.getTenantId() != null ? param.getTenantId() : TenantUtils.currentTenantId();
-        if (tenantId != null) {
-            query.eq(DevMfaEvent::getTenantId, tenantId);
-        }
-        if (StrUtil.isNotBlank(param.getOwnerType())) {
-            query.eq(DevMfaEvent::getOwnerType, param.getOwnerType());
-        }
-        if (param.getOwnerId() != null) {
-            query.eq(DevMfaEvent::getOwnerId, param.getOwnerId());
-        }
-        if (StrUtil.isNotBlank(param.getEvent())) {
-            query.eq(DevMfaEvent::getEvent, param.getEvent());
-        }
-        if (param.getStartTime() != null) {
-            query.ge(DevMfaEvent::getCreateTime, param.getStartTime());
-        }
-        if (param.getEndTime() != null) {
-            query.le(DevMfaEvent::getCreateTime, param.getEndTime());
-        }
-        query.orderBy(DevMfaEvent::getCreateTime, false);
+        LambdaQueryWrapperX<DevMfaEvent> query = new LambdaQueryWrapperX<>();
+        query.eqIfPresent(DevMfaEvent::getTenantId, tenantId)
+                .eqIfPresent(DevMfaEvent::getOwnerType, param.getOwnerType())
+                .eqIfPresent(DevMfaEvent::getOwnerId, param.getOwnerId())
+                .eqIfPresent(DevMfaEvent::getEvent, param.getEvent())
+                .betweenIfPresent(DevMfaEvent::getCreateTime, param.getStartTime(), param.getEndTime())
+                .orderBy(DevMfaEvent::getCreateTime, false);
         return devMfaEventMapper.selectJoinPage(param, DevMfaEventPageResult.class, query);
     }
 }

@@ -83,6 +83,7 @@ INSERT INTO `dev_config` VALUES (40, 'system', 'account_register_sms_code_enable
 INSERT INTO `dev_config` VALUES (41, 'system', 'account_login_methods', 'password', 'sys_config', '开启登录方式', 0, 0, NULL, NULL, '1', '2026-10-17 09:50:04');
 INSERT INTO `dev_config` VALUES (42, 'system', 'account_find_password_enable', 'true', 'sys_config', '密码找回开启', 0, 0, NULL, NULL, '1', '2026-10-17 09:50:04');
 INSERT INTO `dev_config` VALUES (463461539912581120, 'other', 'tt', '123123', 'other', '12312', 0, 0, '1', '2026-10-02 10:51:42', NULL, NULL);
+INSERT INTO `dev_config` VALUES (463461539912581121, 'system', 'account_login_2fa_verify', '0', 'sys_config', '登录2FA强制级别：0=关闭，1=可选，2=强制', 0, 0, NULL, NULL, '1', '2026-11-14 10:00:00');
 
 -- ----------------------------
 -- Table structure for dev_dict
@@ -586,6 +587,13 @@ INSERT INTO `sys_menu` VALUES (463548679497392128, 463547221913837568, '0,378675
 INSERT INTO `sys_menu` VALUES (463548679518363648, 463547221913837568, '0,378675820795498490,463546688209625088,463547221913837568', 0, '', '', 'sys:tenant:delete', 'button', '', '租户删除', '', 1003, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-10-02 16:37:58', '1', '2026-10-02 16:37:58');
 INSERT INTO `sys_menu` VALUES (467235642180046848, 455504055889522688, '0,378763754596945920,455504055889522688', 0, '', '', 'dev:config:edit', 'button', '', '编辑参数', '', 1001, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-10-12 20:48:38', '1', '2026-10-12 20:48:38');
 INSERT INTO `sys_menu` VALUES (467238718609813504, 457822891724763136, '0,378763754596945920,457823214174466048,457822891724763136', 0, '', '', 'dev:sms:send', 'button', '', '发送新短信', '', 1002, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-10-12 21:00:51', '1', '2026-10-12 21:00:51');
+INSERT INTO `sys_menu` VALUES (470000000000000101, 378763754596945920, '0,378763754596945920', 0, 'dev_mfa', '/dev/mfa', '', 'menu', 'view.dev_mfa_index', '2FA绑定管理', '', 10, 'lock', 1, '', 0, 0, NULL, 0, 1, NULL, '[]', 1, 0, '1', '2026-11-14 10:00:00', NULL, NULL);
+INSERT INTO `sys_menu` VALUES (470000000000000102, 470000000000000101, '0,378763754596945920,470000000000000101', 0, '', '', 'dev:mfa:query', 'button', '', '2FA绑定查询', '', 1000, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-11-14 10:00:00', NULL, NULL);
+INSERT INTO `sys_menu` VALUES (470000000000000103, 470000000000000101, '0,378763754596945920,470000000000000101', 0, '', '', 'dev:mfa:reset', 'button', '', '重置2FA失败次数', '', 1001, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-11-14 10:00:00', NULL, NULL);
+INSERT INTO `sys_menu` VALUES (470000000000000104, 470000000000000101, '0,378763754596945920,470000000000000101', 0, '', '', 'dev:mfa:disable', 'button', '', '失效2FA绑定', '', 1002, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-11-14 10:00:00', NULL, NULL);
+INSERT INTO `sys_menu` VALUES (470000000000000105, 470000000000000101, '0,378763754596945920,470000000000000101', 0, '', '', 'dev:mfa:delete', 'button', '', '删除2FA绑定', '', 1003, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-11-14 10:00:00', NULL, NULL);
+INSERT INTO `sys_menu` VALUES (470000000000000106, 378763754596945920, '0,378763754596945920', 0, 'dev_mfa_event', '/dev/mfa/event', '', 'menu', 'view.dev_mfa_event_index', '2FA验证事件', '', 11, 'list', 1, '', 0, 0, NULL, 0, 1, NULL, '[]', 1, 0, '1', '2026-11-14 10:00:00', NULL, NULL);
+INSERT INTO `sys_menu` VALUES (470000000000000107, 470000000000000106, '0,378763754596945920,470000000000000106', 0, '', '', 'dev:mfaEvent:query', 'button', '', '2FA验证事件查询', '', 1000, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, 1, 0, '1', '2026-11-14 10:00:00', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_org

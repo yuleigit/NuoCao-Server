@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 /**
  * 用户 2FA 绑定实体。
  * <p>主键为 (tenant_id, owner_type, owner_id)，表结构由 SQL 保证唯一，实体不再重复声明 @Id，
- * 所有写操作都通过 Mapper 中的显式 SQL 完成，避免复合主键 API 的歧义。
+ * 读写统一通过 QueryWrapper / UpdateChain 按复合主键条件操作，避免复合主键 API 的歧义。
  **/
 @Getter
 @Setter

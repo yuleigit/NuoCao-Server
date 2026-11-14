@@ -1,5 +1,7 @@
 package com.nuocao.dev.modular.mfa.service;
 
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.update.UpdateChain;
 import com.nuocao.common.cache.CacheUtils;
 import com.nuocao.common.config.NuoCaoMfaConfig;
 import com.nuocao.common.exception.CommonExceptionI18n;
@@ -79,7 +81,7 @@ public class DevMfaAuthService {
             return result;
         }
 
-        DevMfa mfa = devMfaMapper.selectByOwner(param.getTenantId(), OWNER_TYPE_USER, param.getUserId());
+        DevMfa mfa = selectMfa(param.getTenantId(), param.getUserId());
         boolean active = mfa != null && Objects.equals(mfa.getStatus(), DevMfaStatusEnum.ACTIVE.getValue());
 
         if (active) {
@@ -117,7 +119,7 @@ public class DevMfaAuthService {
             throw new CommonExceptionI18n("dev.mfa.req.invalid");
         }
 
-        DevMfa mfa = devMfaMapper.selectByOwner(challenge.getTenantId(), OWNER_TYPE_USER, userId);
+        DevMfa mfa = selectMfa(challenge.getTenantId(), userId);
         if (mfa == null || !Objects.equals(mfa.getStatus(), DevMfaStatusEnum.ACTIVE.getValue())) {
             throw new CommonExceptionI18n("dev.mfa.notBound");
         }
@@ -130,7 +132,7 @@ public class DevMfaAuthService {
         }
 
         int offset = (int) (matchedStep - TotpUtils.currentTimeStep(mfa.getPeriodSeconds()));
-        int updated = devMfaMapper.markUsed(challenge.getTenantId(), OWNER_TYPE_USER, userId, matchedStep, offset);
+        int updated = markUsed(challenge.getTenantId(), userId, matchedStep, offset);
         if (updated <= 0) {
             // 同一时间步已被使用：防重放
             throw new CommonExceptionI18n("dev.mfa.replay");
@@ -144,7 +146,6 @@ public class DevMfaAuthService {
         result.setTenantId(challenge.getTenantId());
         result.setUserId(userId);
         result.setUsername(challenge.getUsername());
-        result.setName(challenge.getName());
         result.setDevice(challenge.getDevice());
         result.setDeviceId(challenge.getDeviceId());
         result.setMatchedStep(matchedStep);
@@ -155,7 +156,7 @@ public class DevMfaAuthService {
      * 查询用户 2FA 状态。
      */
     public DevMfaStatusDTO getStatus(Long tenantId, Long userId) {
-        DevMfa mfa = devMfaMapper.selectByOwner(tenantId, OWNER_TYPE_USER, userId);
+        DevMfa mfa = selectMfa(tenantId, userId);
         DevMfaStatusDTO result = new DevMfaStatusDTO();
         if (mfa == null) {
             result.setBound(false);
@@ -225,7 +226,7 @@ public class DevMfaAuthService {
 
     private DevMfaBindInitDTO doBeginBind(Long tenantId, Long userId, String account,
                                           String ip, String userAgent) {
-        DevMfa existing = devMfaMapper.selectByOwner(tenantId, OWNER_TYPE_USER, userId);
+        DevMfa existing = selectMfa(tenantId, userId);
         if (existing != null && Objects.equals(existing.getStatus(), DevMfaStatusEnum.ACTIVE.getValue())) {
             throw new CommonExceptionI18n("dev.mfa.alreadyBound");
         }
@@ -248,7 +249,7 @@ public class DevMfaAuthService {
         mfa.setPeriodSeconds(totp.getPeriodSeconds());
         mfa.setBindId(bindId);
         mfa.setBindExpiresAt(bindExpiresAt);
-        devMfaMapper.savePending(mfa);
+        saveBinding(mfa);
 
         eventRecorder.record(tenantId, OWNER_TYPE_USER, userId, DevMfaEventEnum.BIND_INIT,
                 bindId, "发起绑定", ip, userAgent);
@@ -265,7 +266,7 @@ public class DevMfaAuthService {
 
     private void doConfirmBind(Long tenantId, Long userId, String account, String bindId, String code,
                                String ip, String userAgent) {
-        DevMfa mfa = devMfaMapper.selectByOwnerForUpdate(tenantId, OWNER_TYPE_USER, userId);
+        DevMfa mfa = selectMfa(tenantId, userId);
         if (mfa == null || !Objects.equals(mfa.getStatus(), DevMfaStatusEnum.PENDING.getValue())
                 || !Objects.equals(mfa.getBindId(), bindId)) {
             throw new CommonExceptionI18n("dev.mfa.bind.notPending");
@@ -289,7 +290,7 @@ public class DevMfaAuthService {
             throw new CommonExceptionI18n("dev.mfa.code.error");
         }
 
-        int updated = devMfaMapper.activate(tenantId, OWNER_TYPE_USER, userId, bindId, matchedStep, account);
+        int updated = activateBinding(tenantId, userId, bindId, matchedStep, account);
         if (updated <= 0) {
             throw new CommonExceptionI18n("dev.mfa.bind.expired");
         }
@@ -327,8 +328,7 @@ public class DevMfaAuthService {
                 ? LocalDateTime.now().plus(mfaConfig.getTotp().getLockDuration())
                 : null;
 
-        devMfaMapper.incrementFailure(challenge.getTenantId(), OWNER_TYPE_USER, challenge.getOwnerId(),
-                maxAttempts, lockedUntil);
+        incrementFailure(challenge.getTenantId(), challenge.getOwnerId(), maxAttempts, lockedUntil);
         eventRecorder.record(challenge.getTenantId(), OWNER_TYPE_USER, challenge.getOwnerId(),
                 shouldLock ? DevMfaEventEnum.LOCKED : DevMfaEventEnum.VERIFY_FAIL,
                 challenge.getReqId(), shouldLock ? "连续失败次数过多，已锁定" : "动态码校验失败", ip, userAgent);
@@ -340,6 +340,121 @@ public class DevMfaAuthService {
         }
     }
 
+    private DevMfa selectMfa(Long tenantId, Long userId) {
+        return devMfaMapper.selectOneByQuery(new QueryWrapper()
+                .eq(DevMfa::getTenantId, tenantId)
+                .eq(DevMfa::getOwnerType, OWNER_TYPE_USER)
+                .eq(DevMfa::getOwnerId, userId));
+    }
+
+    /**
+     * 发起绑定时写入或覆盖绑定记录，保证同一用户只有一条记录。
+     */
+    private void saveBinding(DevMfa mfa) {
+        if (selectMfa(mfa.getTenantId(), mfa.getOwnerId()) == null) {
+            mfa.setLastAcceptedStep(-1L);
+            mfa.setClockOffsetSteps(0);
+            mfa.setFailedAttempts(0);
+            mfa.setDeleteFlag(0);
+            devMfaMapper.insert(mfa);
+            return;
+        }
+        UpdateChain.of(DevMfa.class)
+                .set(DevMfa::getOwnerName, mfa.getOwnerName())
+                .set(DevMfa::getSecretCipher, mfa.getSecretCipher())
+                .set(DevMfa::getCipherVersion, mfa.getCipherVersion())
+                .set(DevMfa::getStatus, mfa.getStatus())
+                .set(DevMfa::getAlgorithm, mfa.getAlgorithm())
+                .set(DevMfa::getDigits, mfa.getDigits())
+                .set(DevMfa::getPeriodSeconds, mfa.getPeriodSeconds())
+                .set(DevMfa::getLastAcceptedStep, -1L)
+                .set(DevMfa::getClockOffsetSteps, 0)
+                .set(DevMfa::getRecoveryHashes, null)
+                .set(DevMfa::getFailedAttempts, 0)
+                .set(DevMfa::getLockedUntil, null)
+                .set(DevMfa::getBindId, mfa.getBindId())
+                .set(DevMfa::getBindExpiresAt, mfa.getBindExpiresAt())
+                .set(DevMfa::getActivatedAt, null)
+                .set(DevMfa::getLastUsedAt, null)
+                .set(DevMfa::getUpdateUser, mfa.getOwnerName())
+                .set(DevMfa::getUpdateTime, LocalDateTime.now())
+                .where(DevMfa::getTenantId).eq(mfa.getTenantId())
+                .and(DevMfa::getOwnerType).eq(mfa.getOwnerType())
+                .and(DevMfa::getOwnerId).eq(mfa.getOwnerId())
+                .update();
+    }
+
+    /**
+     * 绑定确认：只有 PENDING 且 bindId 匹配时才允许激活。
+     */
+    private int activateBinding(Long tenantId, Long userId, String bindId, long step, String updateUser) {
+        LocalDateTime now = LocalDateTime.now();
+        boolean updated = UpdateChain.of(DevMfa.class)
+                .set(DevMfa::getStatus, DevMfaStatusEnum.ACTIVE.getValue())
+                .set(DevMfa::getLastAcceptedStep, step)
+                .set(DevMfa::getClockOffsetSteps, 0)
+                .set(DevMfa::getActivatedAt, now)
+                .set(DevMfa::getBindId, null)
+                .set(DevMfa::getBindExpiresAt, null)
+                .set(DevMfa::getFailedAttempts, 0)
+                .set(DevMfa::getLockedUntil, null)
+                .set(DevMfa::getUpdateUser, updateUser)
+                .set(DevMfa::getUpdateTime, now)
+                .where(DevMfa::getTenantId).eq(tenantId)
+                .and(DevMfa::getOwnerType).eq(OWNER_TYPE_USER)
+                .and(DevMfa::getOwnerId).eq(userId)
+                .and(DevMfa::getStatus).eq(DevMfaStatusEnum.PENDING.getValue())
+                .and(DevMfa::getBindId).eq(bindId)
+                .update();
+        return updated ? 1 : 0;
+    }
+
+    /**
+     * 验证通过：last_accepted_step 单调递增，天然防重放。
+     */
+    private int markUsed(Long tenantId, Long userId, long step, int offset) {
+        LocalDateTime now = LocalDateTime.now();
+        boolean updated = UpdateChain.of(DevMfa.class)
+                .set(DevMfa::getLastAcceptedStep, step)
+                .set(DevMfa::getLastUsedAt, now)
+                .set(DevMfa::getFailedAttempts, 0)
+                .set(DevMfa::getLockedUntil, null)
+                .set(DevMfa::getClockOffsetSteps, offset)
+                .set(DevMfa::getUpdateTime, now)
+                .where(DevMfa::getTenantId).eq(tenantId)
+                .and(DevMfa::getOwnerType).eq(OWNER_TYPE_USER)
+                .and(DevMfa::getOwnerId).eq(userId)
+                .and(DevMfa::getStatus).eq(DevMfaStatusEnum.ACTIVE.getValue())
+                .and(DevMfa::getLastAcceptedStep).lt(step)
+                .update();
+        return updated ? 1 : 0;
+    }
+
+    /**
+     * 验证失败计数，用失败次数做乐观锁避免并发覆盖，达到上限时锁定。
+     */
+    private void incrementFailure(Long tenantId, Long userId, int maxAttempts, LocalDateTime lockedUntil) {
+        for (int i = 0; i < 3; i++) {
+            DevMfa current = selectMfa(tenantId, userId);
+            if (current == null) {
+                return;
+            }
+            int previous = valueOrZero(current.getFailedAttempts());
+            boolean updated = UpdateChain.of(DevMfa.class)
+                    .set(DevMfa::getFailedAttempts, previous + 1)
+                    .set(DevMfa::getLockedUntil, previous + 1 >= maxAttempts ? lockedUntil : current.getLockedUntil())
+                    .set(DevMfa::getUpdateTime, LocalDateTime.now())
+                    .where(DevMfa::getTenantId).eq(tenantId)
+                    .and(DevMfa::getOwnerType).eq(OWNER_TYPE_USER)
+                    .and(DevMfa::getOwnerId).eq(userId)
+                    .and(DevMfa::getFailedAttempts).eq(previous)
+                    .update();
+            if (updated) {
+                return;
+            }
+        }
+    }
+
     private String createChallenge(DevMfaLoginCheckParamDTO param, String purpose, String bindId) {
         DevMfaChallenge challenge = new DevMfaChallenge();
         challenge.setReqId(UUID.randomUUID().toString().replace("-", ""));
@@ -347,7 +462,6 @@ public class DevMfaAuthService {
         challenge.setOwnerType(OWNER_TYPE_USER);
         challenge.setOwnerId(param.getUserId());
         challenge.setUsername(param.getUsername());
-        challenge.setName(param.getName());
         challenge.setDevice(param.getDevice());
         challenge.setDeviceId(param.getDeviceId());
         challenge.setPurpose(purpose);

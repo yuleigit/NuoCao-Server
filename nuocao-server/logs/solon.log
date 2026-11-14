@@ -1,0 +1,52 @@
+INFO  2026-10-05 14:58:01.456 [-main][*][o.noear.solon.Solon]: 
+App: Start loading
+INFO  2026-10-05 14:58:01.465 [-main][*][o.n.solon.SolonApp]: 
+Using profiles env: local
+INFO  2026-10-05 14:58:02.891 [-main][*][o.redisson.Version]: 
+Redisson 3.45.0
+INFO  2026-10-05 14:58:03.819 [-redisson-netty-1-4][*][o.r.c.ConnectionsHolder]: 
+1 connections initialized for 127.0.0.1/127.0.0.1:6379
+INFO  2026-10-05 14:58:03.842 [-redisson-netty-1-13][*][o.r.c.ConnectionsHolder]: 
+5 connections initialized for 127.0.0.1/127.0.0.1:6379
+INFO  2026-10-05 14:58:06.855 [-main][*][o.noear.solon.Solon]: 
+App: End loading elapsed=5884ms pid=12300 v=3.9.0
+INFO  2026-10-05 14:58:06.856 [-main][*][c.nuocao.Application]: 
+>>> APPLICATION STARTING SUCCESS
+INFO  2026-10-05 14:58:07.476 [-main][*][o.n.s.a.AppContextNativeProcessorDefault]: 
+Aot process bean, bean size: 153
+INFO  2026-10-05 14:58:07.536 [-main][*][o.n.s.a.SolonAotProcessor]: 
+create file: D:\my_project\nuocao\project\nuocao\nuocao-server\target\classes\META-INF\native-image\com\nuocao\native-image.properties
+INFO  2026-10-05 14:58:07.908 [-main][*][o.n.s.a.SolonAotProcessor]: 
+create file: D:\my_project\nuocao\project\nuocao\nuocao-server\target\classes\META-INF\native-image\com\nuocao\solon-resource.json
+INFO  2026-10-05 14:58:07.929 [-main][*][o.n.s.a.SolonAotProcessor]: 
+create file: D:\my_project\nuocao\project\nuocao\nuocao-server\target\classes\META-INF\native-image\com\nuocao\resource-config.json
+INFO  2026-10-05 14:58:07.933 [-main][*][o.n.s.a.SolonAotProcessor]: 
+create file: D:\my_project\nuocao\project\nuocao\nuocao-server\target\classes\META-INF\native-image\com\nuocao\reflect-config.json
+INFO  2026-10-05 14:58:07.970 [-main][*][o.n.s.a.SolonAotProcessor]: 
+create file: D:\my_project\nuocao\project\nuocao\nuocao-server\target\classes\META-INF\native-image\com\nuocao\serialization-config.json
+INFO  2026-10-05 14:58:07.973 [-main][*][o.n.s.a.SolonAotProcessor]: 
+create file: D:\my_project\nuocao\project\nuocao\nuocao-server\target\classes\META-INF\native-image\com\nuocao\proxy-config.json
+INFO  2026-10-05 14:58:07.974 [-main][*][o.n.s.a.SolonAotProcessor]: 
+Aot processor end.
+INFO  2026-10-05 14:58:07.988 [-main][*][o.noear.solon.Solon]: 
+App: Stopped
+INFO  2026-10-05 14:58:40.310 [-main][*][o.noear.solon.Solon]: 
+App: Start loading
+INFO  2026-10-05 14:58:40.318 [-main][*][o.n.solon.SolonApp]: 
+Using profiles env: local
+INFO  2026-10-05 14:58:41.777 [-main][*][o.redisson.Version]: 
+Redisson 3.45.0
+INFO  2026-10-05 14:58:42.701 [-redisson-netty-1-4][*][o.r.c.ConnectionsHolder]: 
+1 connections initialized for 127.0.0.1/127.0.0.1:6379
+INFO  2026-10-05 14:58:42.724 [-redisson-netty-1-13][*][o.r.c.ConnectionsHolder]: 
+5 connections initialized for 127.0.0.1/127.0.0.1:6379
+INFO  2026-10-05 14:58:44.839 [-main][*][o.noear.solon.Solon]: 
+App: End loading elapsed=5015ms pid=16172 v=3.9.0
+INFO  2026-10-05 14:58:44.840 [-main][*][c.nuocao.Application]: 
+>>> APPLICATION STARTING SUCCESS
+INFO  2026-10-05 14:58:45.285 [-main][*][o.n.s.a.AppContextNativeProcessorDefault]: 
+Aot process bean, bean size: 153
+INFO  2026-10-05 14:58:45.874 [-main][*][o.n.s.a.SolonAotProcessor]: 
+Aot processor end.
+INFO  2026-10-05 14:58:45.877 [-main][*][o.noear.solon.Solon]: 
+App: Stopped

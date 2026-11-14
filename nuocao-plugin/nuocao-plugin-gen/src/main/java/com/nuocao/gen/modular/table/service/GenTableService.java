@@ -28,7 +28,7 @@ public interface GenTableService  {
     GenTable add(GenTableAddParam addParam);
 
     /**
-     * 编辑数据表基础信息
+     * 编辑数据表基础信息d
      */
     GenTable edit(GenTableEditParam editParam);
 

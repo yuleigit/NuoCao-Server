@@ -174,6 +174,27 @@ nuocao.ip2region:
   # 初始化失败时是否中断启动；false = 降级为「未知」并记录 error 日志，不影响主业务
   fail-fast: false
 
+# 2fa登录动态验证配置
+nuocao.mfa:
+  # 2faReqId 有效期。用户要求 5 分钟内完成验证
+  request-ttl: 300s
+  # 绑定二维码有效期
+  bind-ttl: 15m
+  totp:
+    issuer: NuoCaoAdmin              # 显示在验证器 App 里的名字，上线后别改
+    digits: 6                  # 6 或 8
+    period-seconds: 30         # 30 或 60
+    window: 1                  # 允许前后各偏移 1 个时间步（±30s），上限 2
+    secret-bytes: 20           # 160 bit，是下限，别调小
+    max-failed-attempts: 5     # 连续失败 5 次锁定
+    lock-duration: 15m
+  # secret 落库加密密钥（AES-256-GCM），生产环境务必通过环境变量覆盖
+  secret-key:
+    active-version: 1
+    keys:
+      1: "bnVvY2FvLW1mYS1kZXYtc2VjcmV0LWtleS0wMDAwMDE="
+
+
 tenant:
   enable: true
   table-ignore:

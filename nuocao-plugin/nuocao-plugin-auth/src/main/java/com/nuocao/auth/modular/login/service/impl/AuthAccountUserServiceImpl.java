@@ -16,6 +16,7 @@ import com.nuocao.auth.modular.login.param.common.AuthGetEmailValidCodeParam;
 import com.nuocao.auth.modular.login.param.common.AuthGetPhoneValidCodeParam;
 import com.nuocao.auth.modular.login.param.login.AuthAccountPasswordLoginParam;
 import com.nuocao.auth.modular.login.param.login.AuthEmailValidCodeLoginParam;
+import com.nuocao.auth.modular.login.param.login.AuthMfaLoginParam;
 import com.nuocao.auth.modular.login.param.login.AuthPhoneValidCodeLoginParam;
 import com.nuocao.auth.modular.login.param.password.AuthEmailFindPasswordParam;
 import com.nuocao.auth.modular.login.param.password.AuthPhoneFindPasswordParam;
@@ -44,7 +45,11 @@ import com.nuocao.sys.api.SysAccountApi;
 import com.nuocao.sys.api.SysTenantApi;
 import com.nuocao.plugin.dev.api.DevConfigApi;
 import com.nuocao.plugin.dev.api.DevEmailApi;
+import com.nuocao.plugin.dev.api.DevMfaApi;
 import com.nuocao.plugin.dev.api.DevSmsApi;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaLoginCheckDTO;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaLoginCheckParamDTO;
+import com.nuocao.plugin.dev.api.dto.mfa.DevMfaVerifyResultDTO;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 
@@ -89,6 +94,9 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
 
     @Inject
     private DevEmailApi devEmailApi;
+
+    @Inject
+    private DevMfaApi devMfaApi;
 
     @Inject
     private CacheUtils cacheUtils;
@@ -184,7 +192,7 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
             passwordHash = CryptUtils.hashValue(passwordHash);
         } catch (Exception e) {
         }
-        // 根据账号获取用户信息，根据B端或C端判断
+        // 根据账号获取用户信息
         AuthLoginResult result = doLoginUser(uesrname,device,deviceId,passwordHash);
         if(result!=null){
             result.setUsername(uesrname); //返回真正的账号 、为了兼容phone和account兼容的登录
@@ -269,6 +277,25 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         }
 
 
+        //账号密码登录时先做 2FA 校验：未通过前不签发 token
+        if (checkPasswordHash != null) {
+            DevMfaLoginCheckDTO mfaCheck = devMfaApi.checkLogin(
+                    buildMfaCheckParam(realLoginUser, userAccount, device, deviceId));
+            if (mfaCheck.isNeedMfa() || mfaCheck.isNeedBindMfa()) {
+                AuthLoginResult pending = new AuthLoginResult(realLoginUser.getTenantId());
+                pending.setUsername(userAccount);
+                pending.setName(realLoginUser.getName());
+                pending.setNeedMfa(mfaCheck.isNeedMfa());
+                pending.setNeedBindMfa(mfaCheck.isNeedBindMfa());
+                pending.setMfaReqId(mfaCheck.getMfaReqId());
+                pending.setMfaExpiresIn(mfaCheck.getExpiresIn());
+                pending.setBindId(mfaCheck.getBindId());
+                pending.setOtpauthUri(mfaCheck.getOtpauthUri());
+                pending.setBindExpiresIn(mfaCheck.getBindExpiresIn());
+                return pending;
+            }
+        }
+
         //这里直接获取user登录信息，如果不想使用account层，请该用user表验证上边验证信息
         //最终，以user身份登录
         StpUtil.login(realLoginUser.getId(), new SaLoginModel().setDevice(device).setDeviceId(deviceId).setExtra("name", StringUtils.firstNotBlank(realLoginUser.getName(),realLoginUser.getNickname())));
@@ -285,6 +312,67 @@ public class AuthAccountUserServiceImpl implements AuthAccountUserService {
         return TenantUtils.execute(tenantId,()->{
             return doLoginUser(userAccount,device,deviceId,checkPasswordHash);
         });
+    }
+
+    @Override
+    public AuthLoginResult doMfaLogin(AuthMfaLoginParam authMfaLoginParam) {
+        //1. 校验动态码，成功后返回挑战中记录的用户与设备信息
+        DevMfaVerifyResultDTO verified = devMfaApi.verifyLogin(authMfaLoginParam.getMfaReqId(),
+                authMfaLoginParam.getUserId(), authMfaLoginParam.getCode(),
+                currentIp(), currentUserAgent());
+
+        //2. 在对应租户下重新加载用户，避免挑战数据被伪造
+        SaUserLoginInfoDTO loginUser = TenantUtils.execute(verified.getTenantId(),
+                () -> userLoginApi.getUserById(verified.getUserId()));
+        CommonExceptionI18n.notNull(loginUser, "auth.login.account.tenant.disable", verified.getUsername());
+        CommonExceptionI18n.isTrue(Boolean.TRUE.equals(loginUser.getEnabled()),
+                "auth.login.account.tenant.disable", verified.getUsername());
+
+        //3. 写入登录态
+        String device = StringUtils.firstNotBlank(verified.getDevice(), AuthDeviceTypeEnum.PC.getValue());
+        StpUtil.login(loginUser.getId(), new SaLoginModel()
+                .setDevice(device)
+                .setDeviceId(verified.getDeviceId())
+                .setExtra("name", StringUtils.firstNotBlank(loginUser.getName(), loginUser.getNickname())));
+        StpLoginUserUtils.setLoginUser(loginUser);
+
+        AuthLoginResult result = new AuthLoginResult(StpUtil.getTokenInfo().tokenValue, verified.getTenantId());
+        result.setUsername(verified.getUsername());
+        result.setName(loginUser.getName());
+        return result;
+    }
+
+    /**
+     * 构造 2FA 策略检查参数
+     */
+    private DevMfaLoginCheckParamDTO buildMfaCheckParam(AuthLoginUserDTO realLoginUser, String userAccount,
+                                                        String device, String deviceId) {
+        DevMfaLoginCheckParamDTO param = new DevMfaLoginCheckParamDTO();
+        param.setTenantId(realLoginUser.getTenantId());
+        param.setUserId(realLoginUser.getId());
+        param.setUsername(userAccount);
+        param.setName(StringUtils.firstNotBlank(realLoginUser.getName(), realLoginUser.getNickname()));
+        param.setDevice(device);
+        param.setDeviceId(deviceId);
+        param.setIp(currentIp());
+        param.setUserAgent(currentUserAgent());
+        return param;
+    }
+
+    private String currentIp() {
+        try {
+            return RequestUtils.isWeb() ? RequestUtils.getCurrentRequest().realIp() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String currentUserAgent() {
+        try {
+            return RequestUtils.isWeb() ? RequestUtils.getCurrentRequest().userAgent() : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void fillLoginUserBaseInfo(AuthLoginUserDTO realLoginUser) {
